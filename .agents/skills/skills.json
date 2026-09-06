@@ -1,0 +1,61 @@
+{
+  "version": "2",
+  "_note": "Slim state registry: enabled flags only. Source of truth for what each skill is and when it fires = the SKILL.md frontmatter under .agents/skills/. Regenerate with 0_System/scripts/scan-skills.py. Do not hand-edit.",
+  "skills": [
+    {
+      "name": "find-skills",
+      "path": "find-skills/SKILL.md",
+      "enabled": true
+    },
+    {
+      "name": "student-bootstrap",
+      "path": "info1020/0-student-bootstrap/SKILL.md",
+      "enabled": true
+    },
+    {
+      "name": "base-rate-explainer",
+      "path": "info1020/1-base-rate-explainer/SKILL.md",
+      "enabled": true
+    },
+    {
+      "name": "demand-simulator",
+      "path": "info1020/2-demand-simulator/SKILL.md",
+      "enabled": true
+    },
+    {
+      "name": "ci-calculator",
+      "path": "info1020/3-ci-calculator/SKILL.md",
+      "enabled": true
+    },
+    {
+      "name": "one-sample-readout",
+      "path": "info1020/4-one-sample-readout/SKILL.md",
+      "enabled": true
+    },
+    {
+      "name": "ab-test-readout",
+      "path": "info1020/5-ab-test-readout/SKILL.md",
+      "enabled": true
+    },
+    {
+      "name": "group-comparison-readout",
+      "path": "info1020/6-group-comparison-readout/SKILL.md",
+      "enabled": true
+    },
+    {
+      "name": "segment-association-audit",
+      "path": "info1020/7-segment-association-audit/SKILL.md",
+      "enabled": true
+    },
+    {
+      "name": "project-analyst",
+      "path": "info1020/8-project-analyst/SKILL.md",
+      "enabled": true
+    },
+    {
+      "name": "util_verify_and_cite",
+      "path": "info1020/util_/util_verify_and_cite/SKILL.md",
+      "enabled": true
+    }
+  ]
+}
