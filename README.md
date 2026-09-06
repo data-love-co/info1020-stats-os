@@ -82,6 +82,19 @@ This repo is public and openly licensed on purpose. Fork it, keep it, add your o
 it in INFO 2020 and beyond. The method sheets in `4_Library/method/` are the formula reference for
 the whole course.
 
+## License
+
+Two licenses, because this repo holds two different kinds of thing.
+
+- **Course materials** (module briefs, method sheets, prompts, skill instructions, project
+  templates, datasets, and this README): [CC BY-NC-SA 4.0](LICENSE). Use them, remix them, and
+  teach with them. Credit the source, keep it non-commercial, and share your version under the
+  same terms.
+- **Code** (the scripts in `0_System/` and the site in `docs/`): [MIT](LICENSE-CODE).
+
+If you are a student in the course, none of this restricts what you do with your own work. You own
+what you build.
+
 ## Credits
 
 Course materials by Jasmine Walker Motupalli, Daniels College of Business, University of Denver.
