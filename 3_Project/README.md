@@ -1,11 +1,11 @@
 # Course project
 
 Thirty percent of the grade, in three parts plus a recorded presentation. You find your own
-dataset, clean it, describe it, and run the tests we learn on it. You may work with a partner.
-Sports datasets are strongly discouraged. Every deadline is a Sunday at 11:59 PM, at least a full
-week after the class that teaches what the part requires. Canvas has the rubrics, the video
-specs, and the dataset resources; this folder has the working templates and the AI rules for the
-project.
+dataset, clean it, describe it, and run the tests we learn on it. Work alone or in a team of up
+to three. Sports datasets are strongly discouraged. Every deadline is a Sunday at 11:59 PM, at least a full
+week after the class that teaches what the part requires. Canvas has the full instructions with
+rubrics, the video specs, and the dataset resources; this folder has the working templates and
+the AI rules for the project.
 
 | Part | Due | What it contains |
 |---|---|---|
