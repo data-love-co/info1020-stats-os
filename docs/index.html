@@ -143,6 +143,7 @@ img { max-width: 100%; }
     color: var(--ink-2); text-decoration: none; font-size: .875rem; line-height: 1.35;
   }
   .rail a:hover, .rail a:focus-visible { color: var(--crimson-ink); border-left-color: var(--crimson); }
+  .rail a.sub { padding-left: 26px; font-size: .81rem; color: var(--ink-3); }
 
   main { min-width: 0; padding-top: 44px; }
 
@@ -159,7 +160,7 @@ img { max-width: 100%; }
     color: var(--crimson-ink); margin: 0 0 8px; font-weight: 600;
   }
   .lede { color: var(--ink-2); margin: 0 0 26px; font-size: 1.02rem; }
-  h3 { font-family: var(--sans); font-size: 1rem; font-weight: 650; margin: 26px 0 6px; letter-spacing: -.005em; }
+  h3 { font-family: var(--sans); font-size: 1rem; font-weight: 650; margin: 26px 0 6px; letter-spacing: -.005em; scroll-margin-top: 20px; }
   p { margin: 0 0 14px; }
   a { color: var(--crimson-ink); text-underline-offset: 2px; }
   a:focus-visible, button:focus-visible { outline: 2px solid var(--crimson); outline-offset: 3px; border-radius: 2px; }
@@ -225,6 +226,14 @@ img { max-width: 100%; }
   .tag-all  { background: var(--crimson); color: #fff; }
   .tag-most { background: var(--navy);    color: var(--paper); }
   .tag-some { background: var(--surface-2); color: var(--ink-2); border: 1px solid var(--rule-strong); }
+
+  /* cards that carry more than one paragraph (the two tiers) */
+  .card p + p { margin-top: 9px; }
+  /* side-by-side rule table: both columns are equal, so the first is not a row label */
+  .cmp td:first-child { font-weight: 400; padding-right: 18px; }
+  .cmp td { width: 50%; }
+  .cmp td ul.plain { margin-bottom: 10px; }
+  .cmp td p:last-child { margin-bottom: 0; }
 
   ul.plain { margin: 0 0 14px; padding-left: 20px; }
   ul.plain li { margin-bottom: 7px; }
@@ -301,6 +310,8 @@ img { max-width: 100%; }
     <a href="#blocks">The seven AI Blocks</a>
     <a href="#how">How a block runs</a>
     <a href="#tools">Which tool you need</a>
+    <a class="sub" href="#ask-or-agent">Ask or Agent?</a>
+    <a class="sub" href="#tier2-setup">Set up Tier 2 once</a>
     <a href="#prompts">Prompts you can paste</a>
     <a href="#rounding">Rounding</a>
     <a href="#stuck">If you get stuck</a>
@@ -366,17 +377,97 @@ img { max-width: 100%; }
       <p class="kicker">Any of these work</p>
       <h2>Which tool you need</h2>
       <p class="lede">The workspace is plain text files, so it is not tied to one company's product. What changes between tools is how much is automatic, not whether you can do the work.</p>
+
+      <h3 id="two-tiers">Two tiers</h3>
+      <div class="cards">
+        <div class="card">
+          <span class="tag tag-all">Tier 1</span>
+          <h3>A chat window</h3>
+          <p>Copilot on github.com, Claude, ChatGPT, or Gemini. You paste the block prompt, upload or paste the data file, and the tool computes and explains. You carry the verification and the citation by hand, using the module's paste template. Every block works this way.</p>
+          <p><b>One limitation, stated plainly:</b> a web chat window cannot run code. When a prompt asks for a simulation, which starts in Module 2, a chat tool will describe the code rather than run it. Verify the exact values it gives you with the Excel function named in the prompt, or use Tier 2.</p>
+          <p>The four rules and the paste template are identical in both tiers. Only how much is automatic changes.</p>
+        </div>
+        <div class="card">
+          <span class="tag tag-most">Tier 2</span>
+          <h3>An agent that reads the folder</h3>
+          <p>GitHub Copilot agent mode in VS Code, free for verified students, or Claude Code, which is paid and not required. You clone the workspace once, say "get me started," then "run AI Block N." The skill builds the tool, runs the course data through it in real code, writes the output to <code>2_Outputs</code>, and hands you the verification and citation block.</p>
+          <p>The project skill needs this tier, because it reads your data file from the folder.</p>
+          <p>The four rules and the paste template are identical in both tiers. Only how much is automatic changes.</p>
+        </div>
+      </div>
+
       <div class="tw">
         <table>
           <thead><tr><th>If you have</th><th>You get</th><th>Cost</th></tr></thead>
           <tbody>
             <tr><td>GitHub Copilot Student or Copilot Free</td><td>Chat on github.com for every block. Agent mode in VS Code can also read the whole workspace and run the skills.</td><td>Free</td></tr>
+            <tr><td>VS Code with the GitHub Copilot extension, Agent mode</td><td>Reads the whole workspace and runs the skills.</td><td>Free with the Student or Free plan</td></tr>
             <tr><td>Claude, ChatGPT, or Gemini (free tier)</td><td>Paste the prompt, upload the CSV. Every block works this way.</td><td>Free</td></tr>
             <tr><td>Claude Code</td><td>Reads the workspace. Say "run AI Block 3" and it does the whole routine.</td><td>Paid; not required</td></tr>
           </tbody>
         </table>
       </div>
-      <p>Both free Copilot plans meter chat. One complete question per message, a new chat for each block, and Ask mode rather than agent mode for anything small will keep you well inside the allowance. Details in <a href="https://github.com/data-love-co/info1020-stats-os/blob/main/4_Library/tools/Using-Another-Assistant.md">Using another assistant</a>.</p>
+
+      <h3 id="ask-or-agent">Ask or Agent?</h3>
+      <p>In VS Code, the Copilot sidebar has modes. Two of them matter here, and picking the right one saves you credits.</p>
+      <div class="tw">
+        <table class="cmp">
+          <thead><tr><th>Use Ask when</th><th>Use Agent when</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>
+                <ul class="plain">
+                  <li>You have one question about a concept or a formula.</li>
+                  <li>You want it to explain a method sheet, or a formula sitting in your workbook.</li>
+                  <li>You are checking a sentence against the classic-errors list.</li>
+                  <li>Anything small.</li>
+                </ul>
+                <p>Ask does not run commands, and it spends fewer credits.</p>
+              </td>
+              <td>
+                <ul class="plain">
+                  <li>You say "get me started" or "run AI Block N."</li>
+                  <li>The block needs code run: a simulation, a calculator, a readout on a CSV.</li>
+                  <li>You want the verification and citation block written to <code>2_Outputs</code>.</li>
+                </ul>
+                <p>Agent asks before it runs a command. Read what it wants to run, then click Continue. Stop and ask a human if it wants to touch anything outside the workspace folder.</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Both free Copilot plans meter chat. One complete question per message, a new chat for each block, and Ask for anything small will keep you well inside the allowance. Details in <a href="https://github.com/data-love-co/info1020-stats-os/blob/main/4_Library/tools/Using-Another-Assistant.md">Using another assistant</a>.</p>
+
+      <h3 id="tier2-setup">Set up Tier 2 once</h3>
+      <p>Three things to say, in order. You do the first two once, ever. After that, every block is one line.</p>
+      <div class="prompts full">
+        <details class="prompt">
+          <summary><span class="pnum">A</span>Clone the workspace</summary>
+          <div class="pbody">
+            <p class="phint"><b>Needs:</b> Git installed (<a href="https://git-scm.com">git-scm.com</a>) and, for Copilot, VS Code with the GitHub Copilot extension signed in to your GitHub account. <b>Where it goes:</b> straight inside your user folder, not Documents, Desktop, OneDrive, or Google Drive, because a synced folder corrupts the hidden .git folder that git keeps there. Paste this into Copilot agent mode or Claude Code.</p>
+            <div class="ptop"><button class="copy" type="button">Copy prompt</button></div>
+            <pre><code>Clone https://github.com/data-love-co/info1020-stats-os into a folder called info1020 directly inside my user folder, then open it and follow the setup.</code></pre>
+          </div>
+        </details>
+        <details class="prompt">
+          <summary><span class="pnum">B</span>Get me started</summary>
+          <div class="pbody">
+            <p class="phint"><b>What happens:</b> the bootstrap detects your operating system, links CLAUDE.md, checks whether Python is available, and asks which module you are on. It writes 0_User/student.md with your first name, your module, and your tool, and nothing else. Then it says the four rules back to you.</p>
+            <div class="ptop"><button class="copy" type="button">Copy prompt</button></div>
+            <pre><code>get me started</code></pre>
+          </div>
+        </details>
+        <details class="prompt">
+          <summary><span class="pnum">C</span>Run a block</summary>
+          <div class="pbody">
+            <p class="phint"><b>Replace N</b> with your module number, 1 through 7. The agent asks you for the numbers first and never assumes them, because stating the task is your half of the block.</p>
+            <div class="ptop"><button class="copy" type="button">Copy prompt</button></div>
+            <pre><code>run AI Block N</code></pre>
+          </div>
+        </details>
+      </div>
+
+      <p>Nothing in the course requires Tier 2. A student working entirely on Tier 1 can do every block. The project is the one place Tier 2 is strongly recommended, because the project skill reads your own data file out of the folder.</p>
     </section>
 
     <section id="prompts">
@@ -683,7 +774,11 @@ critical values to three decimals. Show each value unrounded once, then rounded.
         <dt>The tool wrote my recommendation anyway</dt>
         <dd>Do not paste it. Take the numbers, write your own sentence, and note in the verification block that the tool overstepped. That is a legitimate and common finding.</dd>
         <dt>My chat allowance ran out</dt>
-        <dd>Switch to another free tool for this block. Credits reset on the first of the month. You never need to buy any.</dd>
+        <dd>Switch to another free tool for this block. Credits reset on the first of the month, and you never need to buy any. Using <a href="#ask-or-agent">Ask rather than Agent</a> for small questions is what makes an allowance last.</dd>
+        <dt>I do not know whether to use Ask or Agent</dt>
+        <dd>Ask for anything small: one question, one formula, one sentence you want checked. Agent when the block needs code run, or when you want the output written to <code>2_Outputs</code>. The full rule is in <a href="#ask-or-agent">Ask or Agent?</a>.</dd>
+        <dt>I cannot get the workspace onto my computer</dt>
+        <dd>You do not need it. Every block works from <a href="#prompts">the paste prompts</a> on a chat tool. If you do want the folder, the three setup prompts are in <a href="#tier2-setup">Set up Tier 2 once</a>.</dd>
         <dt>I do not know which test my project data needs</dt>
         <dd>One group against a number is Module 4; two groups is Module 5; three or more is Module 6; counts in categories is Module 7. The <a href="https://github.com/data-love-co/info1020-stats-os/blob/main/4_Library/method">method sheets</a> walk each one.</dd>
         <dt>Something in the workspace looks wrong</dt>
