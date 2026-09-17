@@ -16,6 +16,12 @@ CLAUDE.md
 4_Library/sources/raw/*
 !4_Library/sources/raw/.gitkeep
 
+# Agent work products: generated, re-runnable, and yours. They stay on your
+# machine. Re-run the skill rather than hand-editing or committing one.
+# The module folders stay tracked so a fresh clone has somewhere to write.
+2_Outputs/.agents/*/*
+!2_Outputs/.agents/*/.gitkeep
+
 # Your own work data, wherever it lands. Add your own patterns here.
 *.private.csv
 *.private.xlsx
