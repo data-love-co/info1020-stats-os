@@ -84,13 +84,23 @@ Approval and activation are two separate steps. Being approved for GitHub Educat
 
 Go to [github.com/copilot](https://github.com/copilot) while signed in. This is a normal chat window. Paste the AI Block prompt from the module, add the numbers from your workbook, and ask for what you need: a plain-language interpretation, a check on your manager sentence, or an explanation of an Excel formula you do not understand.
 
-### In Visual Studio Code (optional, for Python, R or SQL)
+### In Visual Studio Code (the Tier 2 setup)
 
-1.  Download Visual Studio Code free from [code.visualstudio.com](https://code.visualstudio.com) and install it. Copilot is built in; nothing else to install.
+This is what you need if you want the agent to read the workspace folder and run the AI Blocks for you instead of pasting prompts into a chat window. Nothing in the course requires it, and everything on the web still works without it.
 
-2.  Click the Copilot icon in the status bar at the bottom of the window, choose **Use AI Features**, and sign in with your GitHub account when the browser opens.
+1.  Download Visual Studio Code free from [code.visualstudio.com](https://code.visualstudio.com) and install it.
 
-3.  Open the Chat panel (the speech-bubble icon near the top right, or Ctrl+Alt+I on Windows and Control+Command+I on a Mac). Code suggestions appear in grey as you type; press Tab to accept one.
+2.  Install the GitHub Copilot extension. Open the Extensions view in the left sidebar (the four-squares icon), search for "GitHub Copilot," and click **Install**. Recent versions of VS Code already include it, so if you can see a Copilot icon, skip this step.
+
+3.  Sign in with the GitHub account that has your Education benefits on it. Click the Copilot icon, choose to sign in, and finish in the browser window that opens. Use the same account you verified in Step B, or Copilot will run on the wrong plan.
+
+4.  Open the Chat panel: **Ctrl+Alt+I** on Windows, **Control+Command+I** on a Mac. The speech-bubble icon near the top right does the same thing.
+
+5.  Find the mode picker at the bottom of the chat panel and switch it from **Ask** to **Agent** when you are ready to run a block. That picker is how you follow "Ask for questions, Agent for blocks" below.
+
+6.  Install two more things once, and you are done for the term. **Git** from [git-scm.com](https://git-scm.com), which is what the clone step uses to copy the workspace onto your machine, and **Python 3** from [python.org](https://www.python.org/downloads/), which the skills use to compute for real. On Windows, tick **Add Python to PATH** in the Python installer; if you miss it, the skills will not be able to find Python.
+
+Code suggestions still appear in grey as you type, in either mode. Press Tab to accept one. They do not spend credits.
 
 ## Make your monthly allowance last
 
@@ -100,7 +110,7 @@ Both free plans meter chat with "AI credits" that reset on the first of each mon
 
 - Start a new chat for each new topic. Long conversations re-read everything above, which spends credits faster.
 
-- Stay in "Ask" mode. Agent mode (where Copilot edits files on its own) costs many times more per request and is never needed in this course.
+- Ask for questions, Agent for blocks. Agent mode, where Copilot reads the workspace and runs things on its own, costs many times more per request than Ask does. That cost is the reason to aim it at the work that needs it: running an AI Block on Tier 2, which from Module 2 onward means code that has to actually run. Everything smaller, a concept question, a formula you want explained, a sentence you want checked, belongs in Ask.
 
 - If chat pauses for the month, that is the limit, not a bug. Code suggestions keep working, the credits return on the first, and you can use the free tier of another tool (Claude, ChatGPT, Gemini) for that AI Block. You do not need to buy credits.
 
