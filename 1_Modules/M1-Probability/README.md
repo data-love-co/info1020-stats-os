@@ -39,7 +39,7 @@ for the tree of 10,000 and the two posterior probabilities.
 
 This runs the course example by default: 2% base rate, 90% catch rate, 5% false-alarm rate. The
 output shows 180 true flags, 490 false flags, 670 flags in all, `P(condition given flagged) = .27`,
-and `P(condition given not flagged) = .00`, with each posterior shown once unrounded and then
+and `P(condition given not flagged) = < .01`, with each posterior shown once unrounded and then
 rounded to the course format.
 
 ```text
@@ -53,7 +53,7 @@ Decision tree for 10,000 cases
 - Total flagged: 670
 
 P(condition given flagged) = 180 / 670 = .2686567164179104477611940299 -> .27
-P(condition given not flagged) = 20 / 9,330 = .002143622722400857449088960343 -> .00
+P(condition given not flagged) = 20 / 9,330 = .002143622722400857449088960343 -> < .01
 ```
 
 ### Custom rates
@@ -61,15 +61,19 @@ P(condition given not flagged) = 20 / 9,330 = .002143622722400857449088960343 ->
 `python 0_System/scripts/base-rate-simulator.py --base-rate 3% --catch-rate 85% --false-alarm-rate 4%`
 
 The script accepts decimal rates such as `.03` or percentage strings such as `3%`. Counts are shown
-as raw counts, with no rounding.
+as raw counts, with no rounding. If a rate would split the tree into fractions of a case, the tree
+grows by a power of ten until every branch is whole, and says so, because half a flag is not
+something a manager can picture. When scenarios are compared, all of them use the same tree size
+so the counts can be read across rows.
 
 ### Side-by-side comparison
 
 ```text
-python 0_System/scripts/base-rate-simulator.py \
-  --compare "Higher base rate" 10% 90% 5% \
-  --compare "Lower base rate" .5% 90% 5%
+python 0_System/scripts/base-rate-simulator.py --compare "Higher base rate" 10% 90% 5% --compare "Lower base rate" .5% 90% 5%
 ```
+
+Keep it on one line. A backslash continues a command in bash but not in PowerShell, so a wrapped
+version fails on Windows.
 
 This prints the main scenario plus a comparison table so an instructor can show how the posterior
 moves when the base rate changes. The teaching point is the same as in class: when the condition is

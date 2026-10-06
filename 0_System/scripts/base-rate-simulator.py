@@ -5,10 +5,10 @@ base-rate-simulator.py: build a base-rate decision tree and posterior probabilit
 Run from the repo root:
     python 0_System/scripts/base-rate-simulator.py
     python 0_System/scripts/base-rate-simulator.py --base-rate 2% --catch-rate 90% --false-alarm-rate 5%
-    python 0_System/scripts/base-rate-simulator.py \
-        --compare "Fraud detector" 2% 90% 5% \
-        --compare "Higher base rate" 10% 90% 5% \
-        --compare "Lower base rate" .5% 90% 5%
+    python 0_System/scripts/base-rate-simulator.py --compare "Higher base rate" 10% 90% 5% --compare "Lower base rate" .5% 90% 5%
+
+Keep each command on one line. A backslash continues a line in bash but not in
+PowerShell, so a wrapped command fails on Windows.
 """
 
 import argparse
@@ -38,14 +38,27 @@ def format_count(value):
     return text
 
 
+def strip_leading_zero(text):
+    """.27 rather than 0.27: a probability cannot exceed 1, so the zero is noise."""
+    if text.startswith("0."):
+        return text[1:]
+    if text.startswith("-0."):
+        return "-" + text[2:]
+    return text
+
+
 def format_probability(value, places=2):
-    rounded = value.quantize(Decimal("1").scaleb(-places), rounding=ROUND_HALF_UP)
+    quantum = Decimal("1").scaleb(-places)
+    rounded = value.quantize(quantum, rounding=ROUND_HALF_UP)
+    # A small probability is not a zero one. Report the bound instead, the same
+    # way the course reports a p-value below .001 as an inequality.
+    if rounded == 0 and value > 0:
+        return "< " + strip_leading_zero(format(quantum, f".{places}f"))
+    if rounded == 1 and value < 1:
+        return "> " + strip_leading_zero(format(1 - quantum, f".{places}f"))
     text = format(rounded, f".{places}f")
     if abs(rounded) < 1:
-        if text.startswith("0"):
-            text = text[1:]
-        elif text.startswith("-0"):
-            text = "-" + text[2:]
+        text = strip_leading_zero(text)
     return text
 
 
@@ -54,10 +67,7 @@ def format_probability_unrounded(value):
     if "." in text:
         text = text.rstrip("0").rstrip(".")
     if abs(value) < 1:
-        if text.startswith("0"):
-            text = text[1:]
-        elif text.startswith("-0"):
-            text = "-" + text[2:]
+        text = strip_leading_zero(text)
     return text
 
 
@@ -69,11 +79,37 @@ def format_rate(value):
     return f"{text}%"
 
 
-def calculate_base_rate_tree(base_rate, catch_rate, false_alarm_rate, cases=10_000):
+def is_whole(*values):
+    return all(value == value.to_integral_value() for value in values)
+
+
+def whole_number_cases(base_rate, catch_rate, false_alarm_rate, cases):
+    """
+    Grow the tree by powers of ten until every branch is a whole number of cases.
+
+    The tree of 10,000 only teaches if the branches are countable things. A base
+    rate of .5% splits 10,000 into 497.5 false flags, and half a flag is not
+    something a manager can picture. Every rate here is a finite decimal, so
+    some power of ten always clears it.
+    """
+    for step in range(0, 13):
+        scaled = cases * (Decimal(10) ** step)
+        has = scaled * base_rate
+        without = scaled - has
+        if is_whole(has, without, has * catch_rate, without * false_alarm_rate):
+            return scaled
+    return cases
+
+
+def calculate_base_rate_tree(
+    base_rate, catch_rate, false_alarm_rate, cases=10_000, requested_cases=None
+):
     """
     Return raw tree counts and posterior probabilities for a base-rate problem.
 
-    Inputs are decimal rates from 0 to 1 inclusive. Counts are returned without rounding.
+    Inputs are decimal rates from 0 to 1 inclusive. The tree grows to the
+    smallest power-of-ten multiple of `cases` that keeps every branch whole, so
+    the counts stay countable. Counts are returned without rounding.
     """
     base_rate = Decimal(base_rate)
     catch_rate = Decimal(catch_rate)
@@ -85,6 +121,9 @@ def calculate_base_rate_tree(base_rate, catch_rate, false_alarm_rate, cases=10_0
     validate_rate("false_alarm_rate", false_alarm_rate)
     if cases <= 0:
         raise ValueError(f"cases must be positive; got {cases}")
+
+    requested_cases = Decimal(cases if requested_cases is None else requested_cases)
+    cases = whole_number_cases(base_rate, catch_rate, false_alarm_rate, cases)
 
     has_condition = cases * base_rate
     without_condition = cases - has_condition
@@ -107,6 +146,7 @@ def calculate_base_rate_tree(base_rate, catch_rate, false_alarm_rate, cases=10_0
 
     return {
         "cases": cases,
+        "requested_cases": requested_cases,
         "base_rate": base_rate,
         "catch_rate": catch_rate,
         "false_alarm_rate": false_alarm_rate,
@@ -133,6 +173,11 @@ def print_scenario(label, result):
         f"and it flags {format_rate(result['false_alarm_rate'])} of cases without the condition."
     )
     print()
+    if result["cases"] != result["requested_cases"]:
+        print(
+            f"Tree grown from {format_count(result['requested_cases'])} to "
+            f"{format_count(result['cases'])} cases so every branch is a whole number."
+        )
     print(f"Decision tree for {format_count(result['cases'])} cases")
     print(
         f"- Cases with the condition: {format_count(result['has_condition'])}\n"
@@ -242,31 +287,46 @@ def main():
     parser = build_parser()
     args = parser.parse_args()
 
-    try:
-        primary = calculate_base_rate_tree(
-            parse_rate(args.base_rate),
-            parse_rate(args.catch_rate),
-            parse_rate(args.false_alarm_rate),
-            args.cases,
-        )
-    except Exception as exc:
-        parser.error(str(exc))
-
-    print_scenario(args.label, primary)
-
-    scenarios = [(args.label, primary)]
+    specs = [(args.label, args.base_rate, args.catch_rate, args.false_alarm_rate)]
     if args.compare:
-        for label, base_rate, catch_rate, false_alarm_rate in args.compare:
-            try:
-                result = calculate_base_rate_tree(
-                    parse_rate(base_rate),
-                    parse_rate(catch_rate),
-                    parse_rate(false_alarm_rate),
-                    args.cases,
-                )
-            except Exception as exc:
-                parser.error(f"{label}: {exc}")
-            scenarios.append((label, result))
+        specs.extend(args.compare)
+
+    parsed = []
+    for label, base_rate, catch_rate, false_alarm_rate in specs:
+        try:
+            rates = (parse_rate(base_rate), parse_rate(catch_rate), parse_rate(false_alarm_rate))
+            validate_rate("base_rate", rates[0])
+            validate_rate("catch_rate", rates[1])
+            validate_rate("false_alarm_rate", rates[2])
+        except Exception as exc:
+            parser.error(f"{label}: {exc}")
+        parsed.append((label, rates))
+
+    if args.cases <= 0:
+        parser.error(f"cases must be positive; got {args.cases}")
+
+    # One tree size for every scenario on the run. A scenario that needs a
+    # bigger tree to stay whole drags the others up with it, because counts in
+    # the comparison table only mean anything if every row counts the same
+    # number of cases.
+    common_cases = max(
+        whole_number_cases(rates[0], rates[1], rates[2], Decimal(args.cases))
+        for _, rates in parsed
+    )
+
+    scenarios = []
+    for label, rates in parsed:
+        try:
+            result = calculate_base_rate_tree(
+                rates[0], rates[1], rates[2], common_cases, requested_cases=args.cases
+            )
+        except Exception as exc:
+            parser.error(f"{label}: {exc}")
+        scenarios.append((label, result))
+
+    print_scenario(scenarios[0][0], scenarios[0][1])
+
+    if len(scenarios) > 1:
         print()
         print("Scenario comparison")
         print("===================")
