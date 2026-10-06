@@ -588,6 +588,54 @@ critical values to three decimals. Show each value unrounded once, then rounded.
           </div>
         </details>
         <details class="prompt">
+          <summary><span class="pnum">3+</span>Build Module 3 as a working page (Agent mode)</summary>
+          <div class="pbody">
+            <p class="phint"><b>Agent mode only.</b> This one writes a file, so it needs GitHub Copilot in Agent mode in VS Code, or Claude Code. On a chat tool, use prompt 3 above instead. <b>Verify against:</b> $3,234.45 to $3,563.35; critical value 2.093 at df 19; survey 48. The page saves into your own 2_Outputs folder and opens by double-clicking, with no internet needed.</p>
+            <div class="ptop"><button class="copy" type="button">Copy prompt</button></div>
+            <pre><code>I am a business statistics student. Build AI Block 3 as a working page I can
+actually use, not a write-up.
+
+Make ONE self-contained HTML file: no build step, no frameworks, no external
+scripts or fonts, nothing loaded from the internet, so it opens by
+double-clicking and works offline. Save it to
+2_Outputs/.agents/M3/ci-calculator.html.
+
+What the page has to do:
+1. Mean interval (t). Boxes for n, the sample mean, the sample standard
+   deviation, and a confidence picker of 90, 95 and 99. Show as separate
+   labelled lines: the standard error, df, the critical value, the margin of
+   error, and the interval. Show each number unrounded once, then rounded.
+2. Proportion interval (z). Boxes for n and the count. Check n times p-hat and
+   n times (1 minus p-hat) against 10, and print that check BEFORE any
+   interval. If either is under 10, refuse to show an interval and print
+   &quot;not reportable at this n; survey more residents&quot; instead.
+3. Sample size solver. Boxes for the standard deviation, the target margin of
+   error, and the confidence level. Round UP always, and say on the page that
+   rounding down is the classic error.
+4. The interpretation sentence, built from whatever is in the boxes, labelled
+   on screen as a model sentence and not my manager sentence.
+5. Under it, the two wrong sentences, shown as wrong, with one line each on why
+   they are wrong.
+
+For the critical value, do not hardcode one number and do not load a library.
+Either compute the inverse t in JavaScript or embed a t table covering df 1 to
+200. Either way it has to give 2.093 at df 19, 2.131 at df 15, and 2.023 at
+df 39. Put those three on the page as a self-test so I can see it passing.
+
+Check all of this before you tell me it is done: n = 20, mean 3398.90, sd
+351.38 at 95% gives a standard error of $78.57, a critical value of 2.093, and
+an interval of $3,234.45 to $3,563.35. With sd 351.38 and a $100 margin at 95%,
+the sample size is 48. If any of those is off, fix the page rather than
+explaining the difference away.
+
+Round like this, because I am graded on it: probabilities and proportions to
+two decimals with no leading zero (.34); money to the cent; critical values to
+three decimals. Never round a value and then compute from the rounded one.
+
+Do not write my recommendation or my manager sentence, on the page or in chat.</code></pre>
+          </div>
+        </details>
+        <details class="prompt">
           <summary><span class="pnum">4</span>One-sample test readout (Module 4)</summary>
           <div class="pbody">
             <p class="phint"><b>Data:</b> DeniceToney_Balances.csv. <b>Verify against:</b> t = 1.90, p = .038, reject; two-tailed against $2,800: t = -1.88, p = .079.</p>
