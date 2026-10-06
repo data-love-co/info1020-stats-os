@@ -11,7 +11,7 @@ Method sheet: `4_Library/method/m1-*.md`. Verification targets:
 
 **Inputs you give the tool:** The three rates from tab 4: 2% of orders are fraudulent, the detector catches 90% of fraud, and it flags 5% of legitimate orders. No data file needed.
 
-**Data file:** none (three given rates) (in `4_Library/sample-data/`).
+**Data file:** none. The three rates are in the brief above.
 
 **Verify against:** P(fraud given flagged) = .27; 180 true flags, 490 false flags, 670 flags in all.
 
@@ -20,8 +20,8 @@ Method sheet: `4_Library/method/m1-*.md`. Verification targets:
 ## How to run it
 
 - With an agent that can read this folder: say **"run AI Block 1"** (skill `base-rate-explainer`).
-- With a chat tool: paste prompt 1 from `4_Library/portable-prompts/Portable-Prompts.md`
-  and upload the data file.
+- With a chat tool: paste prompt 1 from `4_Library/portable-prompts/Portable-Prompts.md`.
+  There is no file to upload; the three rates go in the prompt.
 
 Then fill `AI-Block-1-Template.md` and paste it into the So-What tab. The manager sentence
 is yours to write; the tool does not write it.

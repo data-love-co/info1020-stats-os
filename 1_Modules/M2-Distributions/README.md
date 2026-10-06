@@ -20,8 +20,8 @@ Method sheet: `4_Library/method/m2-*.md`. Verification targets:
 ## How to run it
 
 - With an agent that can read this folder: say **"run AI Block 2"** (skill `demand-simulator`).
-- With a chat tool: paste prompt 2 from `4_Library/portable-prompts/Portable-Prompts.md`
-  and upload the data file.
+- With a chat tool: paste prompt 2 from `4_Library/portable-prompts/Portable-Prompts.md`.
+  The walk-ins need no file; upload MtHighlands_SkierCounts.csv only for the optional second run.
 
 Then fill `AI-Block-2-Template.md` and paste it into the So-What tab. The manager sentence
 is yours to write; the tool does not write it.
