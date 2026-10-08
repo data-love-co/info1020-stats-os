@@ -8,6 +8,7 @@
 **Datasets students should have open:** their Lab 1A, 2A, and 3B workbooks, or the CSVs in
 `4_Library/sample-data/` (SummitGear_Data.csv, GreenValleyCommons_Residents.csv).
 **Daily Double:** The Manager Sentence, $500.
+**Tie-break:** Final Jeopardy, the ★ button in the banner. Rules and key below.
 
 > Fill in: review date, midterm date, class length, team size, prize. The timing below assumes
 > the Spring 2026 block (110 minutes, 25 questions). Scale it to the Fall class period.
@@ -34,6 +35,20 @@
   wager**.
 - Reveal the answer with **R** or the button. Read the "Check it in Excel" line aloud: the point
   of the game is that every number is checkable in their own workbook.
+
+**Tie-break: Final Jeopardy**
+
+Say this rule before the first cell is picked, so no one argues later.
+
+- If two or more teams are tied for first when the board is cleared, click **★ Final Jeopardy**.
+  The tied teams are pre-selected; untick anyone else.
+- Each playing team writes a wager, up to its score (or up to $500 if its score is below $500),
+  before the question is shown. Lock the wagers.
+- Show the question. Sixty seconds. Teams write one answer on paper and hold it up together.
+- Reveal the answer, then mark each team **Correct** or **Wrong**. The wager is added or
+  subtracted and the new score shows in the row.
+- Still tied (both right or both wrong with equal wagers): the team with fewer wrong answers
+  during the board wins. Keep a tally on paper, or run the spare question below as sudden death.
 
 **Rounding is graded, even here.** If a team says "zero point three four," stop and ask for it the
 course way: ".34". If they give a p-value style number with a leading zero, same. Money to the
@@ -111,6 +126,19 @@ Interpretation, the classic errors, and the decision sentence. The $500 is the D
 | 300 | P(fraud given flagged) = .27. Manager wants to auto-cancel flagged orders. Decision verb, evidence in business units, what it does not mean. | **Review, do not cancel.** Of 670 flags, about 490 are legitimate and 180 fraud: nearly three good customers turned away per fraud stopped. Does not mean the detector is bad (90% catch rate), does not mean every flag is legitimate. | Half credit for the right decision without the counts. Reject any sentence that leads with ".27" and no business units. |
 | 400 | P(more than 15) = .19, P(more than 17) = .08, P(more than 20) = .02. Fill the Module 2 skeleton and defend the staffing level. | Any level with its risk priced: "Plan for 15; .19 chance of exceeding, so expect a queue one hour in five." Or "Plan for 17; .08 chance, so open one more desk." The number prices the choice; it does not make it. | No credit for a level with no probability, or a probability with no action. |
 | 500 DD | Three-sentence So What / Now What memo to the Green Valley board: estimate with uncertainty, business takeaway, next step with a number. | Rubric: (a) point estimate and interval with n and level; (b) a takeaway a board member can act on, in business language; (c) survey 48 residents for a $100 margin and hold the proportion results until then. Model answer in the game. | Only the picking team answers, for their wager. Half credit for two of three. Reject formula-heavy memos and the "probability the mean is" sentence. Read the model aloud after revealing. |
+
+### Final Jeopardy (tie-break only)
+
+Category shown before wagers: Read the Table.
+
+| Question | Answer | Scoring note |
+|---|---|---|
+| SummitGear adds a riskier product line and the fraud rate rises from 2% to 5%. The detector is unchanged: 90% catch rate, 5% false-alarm rate. Build the tree of 10,000. P(fraud given flagged) now? | 500 fraudulent, 9,500 legitimate. True flags 450, false flags 475, flags in all 925. 450 / 925 = .4865, so **.49**. Up from .27 at a 2% base rate. | Accept .49, or 450 of 925. ".90" is the catch rate and is wrong. Written answers only; one per team. |
+
+**Spare question** (sudden death, or swap it into the `FINAL` object in `index.html`): Angela
+wants a $50 margin of error on mean monthly income at 95%, with sd $351.38. How many residents?
+Answer: (1.96 × 351.38 / 50)² = 189.7, rounded up to **190**. Accept 190 only; 189 is the
+rounding-down error.
 
 ---
 

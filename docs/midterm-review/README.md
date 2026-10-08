@@ -25,6 +25,11 @@ is the same. The question bank is new, and every number in it comes from the cou
    odd amount does not have to be entered by hand.
 6. Scores and played cells are saved in the browser, so an accidental refresh does not lose the
    game. **Reset Game** clears everything.
+7. **Final Jeopardy** (the ★ button in the banner) is the tie-breaker. It pre-selects the teams
+   tied for the lead, or everyone if there is no tie, and you can change who plays. Each playing
+   team wagers up to its score, or up to $500 if its score is below $500, before the question
+   appears. Teams write their answer on paper. Reveal the answer, then mark each team Correct or
+   Wrong and the wager is added or subtracted. **R** reveals, **Esc** returns to the board.
 
 The instructor's timing, the full answer key with scoring notes, and the wrap-up reminders are in
 `Run-of-Show-and-Answer-Key.md`.
@@ -78,6 +83,10 @@ All content is in the `QUESTIONS` object inside `index.html`. Each entry is keye
 to make any cell the Daily Double. Category names are in `CATEGORIES`. The shared scenario cards
 (`SUMMITGEAR`, `SG_TABLE`, `HIGHLANDS`, `GREENVALLEY`) are constants above the question bank, so a
 change to a scenario shows up in every cell that uses it.
+
+The Final Jeopardy question is the `FINAL` object just above the keyboard handler: `category`,
+`q`, and `a`. The shipped question is the fraud-flag tree at a 5% base rate (answer .49), chosen
+because the written answer is one checkable number. A spare is in the run-of-show.
 
 Keep the rounding policy when you edit a number: `4_Library/method/rounding-policy.md`.
 
