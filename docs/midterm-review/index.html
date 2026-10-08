@@ -775,14 +775,16 @@ const QUESTIONS = {
 
 // ================= State =================
 const STORAGE_KEY = "info1020-midterm-jeopardy-fall2026";
-const teams = [
-  { name: "Team 1", score: 0 },
-  { name: "Team 2", score: 0 },
-  { name: "Team 3", score: 0 },
-  { name: "Team 4", score: 0 },
-  { name: "Team 5", score: 0 },
-  { name: "Team 6", score: 0 }
+// Default team names. Click a name in the panel to change it; Reset Game restores these.
+const DEFAULT_TEAM_NAMES = [
+  "Team 1: Bayes Watch",
+  "Team 2: Margin of Terror",
+  "Team 3: Significant Others",
+  "Team 4: The Outliers",
+  "Team 5: Mode Squad",
+  "Team 6: Standard Errors"
 ];
+const teams = DEFAULT_TEAM_NAMES.map(name => ({ name: name, score: 0 }));
 const visited = new Set();
 let currentKey = null; // e.g. "3-2"
 let currentValue = 0;
@@ -802,7 +804,9 @@ function loadState() {
     const s = JSON.parse(raw);
     if (Array.isArray(s.teams) && s.teams.length === teams.length) {
       s.teams.forEach((t, i) => {
-        teams[i].name = String(t.name || teams[i].name).slice(0, 40);
+        // A save from before the teams had names holds "Team 1" style placeholders; replace those.
+        const saved = String(t.name || "").trim();
+        teams[i].name = (saved && saved !== `Team ${i + 1}`) ? saved.slice(0, 40) : DEFAULT_TEAM_NAMES[i];
         teams[i].score = Number.isFinite(Number(t.score)) ? Number(t.score) : 0;
       });
     }
@@ -873,7 +877,7 @@ function buildScorePanel() {
 }
 
 function renameTeam(idx, val) {
-  teams[idx].name = (val || `Team ${idx + 1}`).slice(0, 40);
+  teams[idx].name = (val.trim() || DEFAULT_TEAM_NAMES[idx]).slice(0, 40);
   saveState();
 }
 
@@ -1008,7 +1012,7 @@ function closeOverlay() {
 // ================= Reset =================
 function resetAll() {
   if (!confirm('Reset the whole game? This clears every score and every revealed question.')) return;
-  teams.forEach((t, i) => { t.score = 0; t.name = `Team ${i + 1}`; });
+  teams.forEach((t, i) => { t.score = 0; t.name = DEFAULT_TEAM_NAMES[i]; });
   visited.clear();
   try { localStorage.removeItem(STORAGE_KEY); } catch (e) { /* ignore */ }
   buildScorePanel();
