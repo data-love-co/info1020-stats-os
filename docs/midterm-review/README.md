@@ -20,8 +20,9 @@ game; the work has to be done fresh in a blank sheet. Lab values appear only as 
 scenario needs them (the skier mean and standard deviation, the SummitGear population mean and
 standard deviation, the first survey's n of 20).
 
-Every cell asks **one thing**. The comparison or caution that makes the teaching moment lives in
-the answer, not in the question.
+Every cell asks **one thing**, and every answer gives the number, the computation, and the Excel
+function. Nothing else. The scoring notes and the talking points for the room are in the
+run-of-show, not on screen.
 
 | Lab did | Game asks |
 |---|---|

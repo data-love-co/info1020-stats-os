@@ -853,8 +853,8 @@ const VALUES = [100, 200, 300, 400, 500];
 
 // Shared scenario cards. The scenarios are the course scenarios, but every computed answer is a
 // cut the labs did not make, so a lab workbook is no help: the work has to be done fresh.
-// Every cell asks one thing. The answer may add the comparison or the caution that makes the
-// teaching moment; the question does not.
+// Every cell asks one thing, and every answer gives the number, how it was computed, and the
+// Excel function. Nothing else.
 const SUMMITGEAR = `<div class="scenario-box">SummitGear Outfitters, the same 250 orders as Lab 1A, cut a new way: by sales channel and Rewards membership. 164 orders were online and 86 in the store. 85 were from Rewards members. 51 orders were both online and from a member.</div>`;
 
 const SG_TABLE = `<table class="ctable" aria-label="SummitGear orders by channel and membership">
@@ -874,117 +874,117 @@ const QUESTIONS = {
   // ========= Category 1: Know Your Rules =========
   "0-0": {
     q: "You are building a confidence interval for a <strong>mean</strong> and you do not know the population standard deviation. Which critical value do you use?",
-    a: "<strong>t</strong>, with df = n minus 1.<br><br>z (1.960 for 95%) is for the rare case where the population standard deviation is known, and for proportions. For a mean, that means almost never.<div class=\"excel-check\"><code>=T.INV.2T(.05, n-1)</code> for 95%. <code>=CONFIDENCE.T(.05, sd, n)</code> gives the margin of error in one call.</div>"
+    a: "<strong>t</strong>, with df = n minus 1.<br><br>z is only for a known population standard deviation.<div class=\"excel-check\"><code>=T.INV.2T(.05, n-1)</code> for 95%.</div>"
   },
   "0-1": {
     q: "Write the formula for the <strong>conditional probability</strong> P(B given A).",
-    a: "<strong>P(B given A) = P(A and B) / P(A)</strong><br><br>The denominator shrinks from all the rows to only the rows where A is true. Dividing by n instead of by the count of A is the most common Module 1 error.<div class=\"excel-check\"><code>=COUNTIFS(channel_range,\"Online\",member_range,\"Yes\") / COUNTIF(channel_range,\"Online\")</code></div>"
+    a: "<strong>P(B given A) = P(A and B) / P(A)</strong><br><br>The denominator is the count where A is true, not n.<div class=\"excel-check\"><code>=COUNTIFS(rangeA,\"Yes\",rangeB,\"Yes\") / COUNTIF(rangeA,\"Yes\")</code></div>"
   },
   "0-2": {
     q: "State the rule for <strong>P(A or B)</strong>.",
-    a: "<strong>P(A or B) = P(A) + P(B) minus P(A and B)</strong><br><br>The overlap sits inside both P(A) and P(B), so adding them counts it twice. Subtracting it once puts it back to one count."
+    a: "<strong>P(A or B) = P(A) + P(B) minus P(A and B)</strong><br><br>Subtract the overlap so it is counted once."
   },
   "0-3": {
     q: "If the sample size goes from <strong>40 to 160</strong>, what happens to the <strong>standard error of the sample mean</strong>?",
-    a: "<strong>It is cut in half.</strong><br><br>SE = sd / SQRT(n), and SQRT(160) is twice SQRT(40). The standard error is the spread of the sampling distribution: how far sample means typically land from the true mean, from one sample to the next. It is not the spread of the data.<div class=\"excel-check\"><code>=STDEV.S(range)/SQRT(n)</code></div>"
+    a: "<strong>It is cut in half.</strong><br><br>SE = sd / SQRT(n), and SQRT(160) is twice SQRT(40).<div class=\"excel-check\"><code>=STDEV.S(range)/SQRT(n)</code></div>"
   },
   "0-4": {
     q: "Write the complete formula for a <strong>confidence interval for a population mean</strong> when the population standard deviation is unknown, naming each symbol.",
-    a: "<strong>x̄ ± t* · (s / √n)</strong><br><br>x̄ = the sample mean, the point estimate<br>t* = the critical value from the t distribution with df = n minus 1<br>s = the sample standard deviation<br>n = the sample size<br>t* · (s / √n) = the margin of error<br><br>The df detail is required for full credit.<div class=\"excel-check\"><code>=CONFIDENCE.T(alpha, s, n)</code> is the margin of error. The interval is <code>AVERAGE(range)</code> minus and plus that.</div>"
+    a: "<strong>x̄ ± t* · (s / √n)</strong><br><br>x̄ = the sample mean<br>t* = the critical value from the t distribution with df = n minus 1<br>s = the sample standard deviation<br>n = the sample size<div class=\"excel-check\"><code>=CONFIDENCE.T(alpha, s, n)</code> is the margin of error, t* · (s / √n).</div>"
   },
 
   // ========= Category 2: Read the Table =========
   "1-0": {
     q: SUMMITGEAR + SG_TABLE + "What is <strong>P(online and member)</strong>?",
-    a: "<strong>.20</strong><br><br>51 / 250 = .204. A joint probability always divides by the grand total. Two decimals and no leading zero, because a probability cannot exceed 1.<div class=\"excel-check\"><code>=COUNTIFS(channel_range,\"Online\",member_range,\"Yes\") / 250</code></div>"
+    a: "<strong>.20</strong><br><br>51 / 250 = .204<div class=\"excel-check\"><code>=COUNTIFS(channel_range,\"Online\",member_range,\"Yes\") / 250</code></div>"
   },
   "1-1": {
     q: SUMMITGEAR + SG_TABLE + "What is <strong>P(member given online)</strong>?",
-    a: "<strong>.31</strong><br><br>51 / 164 = .311. The denominator is the online column, not the grand total.<br><br>For the record: P(member given in-store) = 34 / 86 = .40, and P(member) overall = .34. The channel shifts the membership rate, so the two are not independent, but the gap is nine points, not the twenty-nine-point gap between membership and spending in the lab.<div class=\"excel-check\"><code>=COUNTIFS(channel_range,\"Online\",member_range,\"Yes\") / COUNTIF(channel_range,\"Online\")</code></div>"
+    a: "<strong>.31</strong><br><br>51 / 164 = .311<div class=\"excel-check\"><code>=COUNTIFS(channel_range,\"Online\",member_range,\"Yes\") / COUNTIF(channel_range,\"Online\")</code></div>"
   },
   "1-2": {
     q: SUMMITGEAR + SG_TABLE + "What is <strong>P(online or member)</strong>?",
-    a: "<strong>.79</strong><br><br>(164 + 85 minus 51) / 250 = 198 / 250 = .792.<br><br>Adding .66 and .34 without subtracting the overlap gives 1.00, which would mean every order was online or from a member. The 52 in-store orders from non-members say otherwise.<div class=\"excel-check\"><code>=(COUNTIF(channel_range,\"Online\") + COUNTIF(member_range,\"Yes\") - COUNTIFS(channel_range,\"Online\",member_range,\"Yes\")) / 250</code></div>"
+    a: "<strong>.79</strong><br><br>(164 + 85 minus 51) / 250 = 198 / 250 = .792<div class=\"excel-check\"><code>=(COUNTIF(channel_range,\"Online\") + COUNTIF(member_range,\"Yes\") - COUNTIFS(channel_range,\"Online\",member_range,\"Yes\")) / 250</code></div>"
   },
   "1-3": {
     excel: true,
     q: "Open <strong>SummitGear_Data.csv</strong> in a blank workbook. Among <strong>in-store</strong> orders, what share had at least one item returned? That is, <strong>P(returned given in-store)</strong>, where returned means Items Returned is 1 or more.",
-    a: "<strong>.22</strong><br><br>19 of the 86 in-store orders had a return: 19 / 86 = .221.<br><br>For the record: P(returned given online) = 17 / 164 = .10. In-store orders come back about twice as often, which the lab's overall rate of .14 hid.<div class=\"excel-check\"><code>=COUNTIFS(channel_range,\"In-Store\",returned_range,\">=1\") / COUNTIF(channel_range,\"In-Store\")</code></div>"
+    a: "<strong>.22</strong><br><br>19 of the 86 in-store orders had a return: 19 / 86 = .221<div class=\"excel-check\"><code>=COUNTIFS(channel_range,\"In-Store\",returned_range,\">=1\") / COUNTIF(channel_range,\"In-Store\")</code></div>"
   },
   "1-4": {
     q: "SummitGear buys a <strong>new fraud detector</strong>. The fraud rate is still 2% of orders. The new detector catches <strong>95%</strong> of fraud and flags only <strong>1%</strong> of legitimate orders. What is <strong>P(fraud given flagged)</strong> with the new detector?",
-    a: "<strong>.66</strong><br><br>Tree of 10,000: 200 fraudulent, 9,800 legitimate.<br>True flags: 95% of 200 = <strong>190</strong>. False flags: 1% of 9,800 = <strong>98</strong>. Flags in all: 288.<br>190 / 288 = .6597, reported as .66. Up from .27 with the old detector.<br><br>The false-alarm cut did almost all of it: false flags fell from 490 to 98, while the better catch rate added only 10 true flags. When the condition is rare, the false-alarm rate is the lever."
+    a: "<strong>.66</strong><br><br>Tree of 10,000: 200 fraudulent, 9,800 legitimate.<br>True flags: 95% of 200 = 190. False flags: 1% of 9,800 = 98. Flags in all: 288.<br>190 / 288 = .6597"
   },
 
   // ========= Category 3: Pick the Distribution =========
   "2-0": {
     q: HIGHLANDS + "The registration desk's <strong>phone line</strong> averages <strong>8 calls per hour</strong>, with no fixed upper limit. Which distribution models the number of calls in an hour?",
-    a: "<strong>Poisson</strong>, with mean rate lambda = 8 per hour. Standard deviation = SQRT(8) = 2.83.<br><br>Poisson fits counts of events in a fixed window with no ceiling. A teammate who reaches for the binomial has to invent an n that does not exist.<div class=\"excel-check\"><code>=POISSON.DIST(8, 8, FALSE)</code> = .14 for exactly 8. <code>TRUE</code> for 8 or fewer.</div>"
+    a: "<strong>Poisson</strong>, with mean rate lambda = 8 per hour.<div class=\"excel-check\"><code>=POISSON.DIST(k, 8, FALSE)</code> for exactly k calls.</div>"
   },
   "2-1": {
     q: HIGHLANDS + "Highlands Ranch mails <strong>25 acceptance letters</strong> for a program. Each admitted student enrolls with probability <strong>.60</strong>, independently of the others. What is the <strong>expected number</strong> of students who enroll?",
-    a: "<strong>15.00</strong> students<br><br>This is a <strong>binomial</strong>: a fixed number of trials (25), each yes or no, the same p (.60) on every trial, independent. Expected value = n times p = 15.00. Standard deviation = SQRT(25 times .60 times .40) = 2.45.<div class=\"excel-check\"><code>=BINOM.DIST(15, 25, .6, FALSE)</code> = .16 for exactly 15. <code>=1-BINOM.DIST(17, 25, .6, TRUE)</code> = .15 for 18 or more.</div>"
+    a: "<strong>15.00</strong> students<br><br>Binomial, n = 25, p = .60. Expected value = n times p = 25 times .60.<div class=\"excel-check\"><code>=25*0.6</code></div>"
   },
   "2-2": {
     q: HIGHLANDS + "The resort's <strong>gondola</strong> stops for anywhere from <strong>3 to 15 minutes</strong>, and every length in that range is equally likely. What is <strong>P(a stop lasts under 5 minutes)</strong>?",
-    a: "<strong>.17</strong><br><br>This is a <strong>uniform</strong> distribution between a = 3 and b = 15. P(under 5) = (5 minus 3) / (15 minus 3) = 2 / 12 = .167, reported as .17.<br><br>For the record: P(over 10) = 5 / 12 = .42 and the mean stop is (3 + 15) / 2 = 9.00 minutes. No Excel function needed. The uniform is arithmetic."
+    a: "<strong>.17</strong><br><br>Uniform between 3 and 15: (5 minus 3) / (15 minus 3) = 2 / 12 = .167"
   },
   "2-3": {
     excel: true,
     q: HIGHLANDS + "During <strong>drop/add week</strong> the registration desk's rate doubles to <strong>25 walk-ins per hour</strong>, and the desk can handle <strong>30</strong>. What is <strong>P(more than 30 walk-ins in an hour)</strong>?",
-    a: "<strong>.14</strong> (unrounded .1367)<br><br>\"More than 30\" means 31 or more, so subtract P(30 or fewer) from 1. Say the boundary out loud before you type it: <code>POISSON.DIST(31, 25, TRUE)</code> in that formula gives P(more than 31) = .10, a different question.<br><br>For the record: P(more than 35) = .02, and the standard deviation at this rate is SQRT(25) = 5.00.<div class=\"excel-check\"><code>=1-POISSON.DIST(30, 25, TRUE)</code></div>"
+    a: "<strong>.14</strong><br><br>Poisson with lambda = 25. \"More than 30\" means 31 or more, so subtract P(30 or fewer) from 1: 1 minus .8633 = .1367<div class=\"excel-check\"><code>=1-POISSON.DIST(30, 25, TRUE)</code></div>"
   },
   "2-4": {
     excel: true,
     q: HIGHLANDS + "Skier counts at the resort: 229 days, mean <strong>747.39</strong>, standard deviation <strong>159.63</strong>, roughly bell shaped. What is the <strong>95th percentile</strong> of daily skier counts?",
-    a: "<strong>1,010 skiers</strong><br><br>The counts are a bell-shaped measurement, so the <strong>normal</strong> applies: NORM.INV(.95, 747.39, 159.63) = 1,009.96, a whole number because the data are counts. Staffing for 1,010 covers nineteen days in twenty.<br><br>For the record: P(fewer than 500 skiers) = NORM.DIST(500, 747.39, 159.63, TRUE) = .06, about one day in sixteen.<div class=\"excel-check\"><code>=NORM.INV(.95, 747.39, 159.63)</code></div>"
+    a: "<strong>1,010 skiers</strong><br><br>Normal with mean 747.39 and sd 159.63: NORM.INV(.95, 747.39, 159.63) = 1,009.96, rounded to a whole number because the data are counts.<div class=\"excel-check\"><code>=NORM.INV(.95, 747.39, 159.63)</code></div>"
   },
 
   // ========= Category 4: Mind the Margin =========
   "3-0": {
     q: "Treat SummitGear's 250 orders as the population (Lab 3A): mean <strong>$100.14</strong>, standard deviation <strong>$36.99</strong>. Lab 3A used samples of 40. For samples of <strong>100 orders</strong>, what is the <strong>standard error</strong> of the sample mean?",
-    a: "<strong>$3.70</strong><br><br>$36.99 / SQRT(100) = 3.6992. The standard error describes how far the mean of 100 orders typically lands from $100.14; it is not the spread of individual orders, which is $36.99.<br><br>For the record: the Central Limit Theorem makes the sampling distribution close to normal at n = 100, so P(sample mean over $105) = 1 minus NORM.DIST(105, 100.14, 3.70, TRUE) = .09.<div class=\"excel-check\"><code>=36.99/SQRT(100)</code></div>"
+    a: "<strong>$3.70</strong><br><br>$36.99 / SQRT(100) = 3.6992<div class=\"excel-check\"><code>=36.99/SQRT(100)</code></div>"
   },
   "3-1": {
     q: GREENVALLEY + "To save time, Angela surveys the <strong>20 residents who show up to Tuesday's community meeting</strong>. What is wrong with this sample?",
-    a: "<strong>It is a convenience sample with voluntary-response bias.</strong> Residents who attend meetings differ from those who do not: more engaged, more free time, possibly different incomes. The sample does not represent all residents.<br><br>The fix: draw a simple random sample of 20 from the full resident list, or stratify by building or unit type and sample within each."
+    a: "<strong>It is a convenience sample with voluntary-response bias.</strong> Residents who attend meetings differ from those who do not, so the sample does not represent all residents."
   },
   "3-2": {
     excel: true,
     q: GREENVALLEY48 + "Open the 48-resident file in a blank workbook. What is the <strong>standard error</strong> of the mean monthly income?",
-    a: "<strong>$49.91</strong> (unrounded 49.9086)<br><br>Mean = $3,429.25 (AVERAGE). sd = $345.78 (STDEV.S). SE = $345.78 / SQRT(48).<br><br>Compare $49.91 with 48 residents against $78.57 with 20: more than twice the sample, a standard error about a third smaller.<div class=\"excel-check\"><code>=STDEV.S(range)/SQRT(48)</code></div>"
+    a: "<strong>$49.91</strong><br><br>Mean $3,429.25 (AVERAGE). sd $345.78 (STDEV.S). SE = 345.78 / SQRT(48) = 49.9086<div class=\"excel-check\"><code>=STDEV.S(range)/SQRT(48)</code></div>"
   },
   "3-3": {
     excel: true,
     q: GREENVALLEY48 + "From the 48-resident file, build the <strong>95% confidence interval</strong> for the true mean monthly income. Round the endpoints the way the course rounds money.",
-    a: "<strong>$3,328.85 to $3,529.65</strong><br><br>t* = T.INV.2T(.05, 47) = 2.012. Margin of error = 2.012 times $49.9086 = $100.40. Multiply with the unrounded standard error; \"never round twice\" is graded.<br><br>Lab 3B said 48 residents would bring the margin to about $100, and the survey delivered $100.40, because the follow-up sd ($345.78) landed near the sd the plan assumed ($351.38).<div class=\"excel-check\"><code>=CONFIDENCE.T(.05, STDEV.S(range), 48)</code> gives the margin of error. <code>=AVERAGE(range)</code> minus and plus that gives the interval.</div>"
+    a: "<strong>$3,328.85 to $3,529.65</strong><br><br>t* = T.INV.2T(.05, 47) = 2.012. Margin of error = 2.012 times 49.9086 = $100.40. $3,429.25 minus and plus $100.40.<div class=\"excel-check\"><code>=CONFIDENCE.T(.05, STDEV.S(range), 48)</code> for the margin of error.</div>"
   },
   "3-4": {
     excel: true,
     q: GREENVALLEY48 + "In the 48-resident file, <strong>22 residents are men</strong>. Report the <strong>95% confidence interval</strong> for the share of residents who are men, if the condition allows it.",
-    a: "<strong>.32 to .60</strong><br><br>The condition passes this time: n times p-hat = 22 and n times (1 minus p-hat) = 26, both at least 10. p-hat = 22 / 48 = .46. Margin = 1.96 times SQRT(.46 times .54 / 48) = .14.<br><br>With 20 residents this was \"not yet\"; with 48 it is an answer, and a wide one. A team that answers \"not reportable\" has copied the lab instead of checking.<br><br>For the record: a $75 margin on mean income at 95%, with sd $345.78, needs (1.96 times 345.78 / 75)² = 81.7, rounded up to 82 residents.<div class=\"excel-check\"><code>=1.96*SQRT(22/48*(1-22/48)/48)</code> for the margin.</div>"
+    a: "<strong>.32 to .60</strong><br><br>Condition: 22 and 26, both at least 10, so the interval is reportable. p-hat = 22 / 48 = .46. Margin = 1.96 times SQRT(.46 times .54 / 48) = .14. .46 minus and plus .14.<div class=\"excel-check\"><code>=1.96*SQRT(22/48*(1-22/48)/48)</code> for the margin.</div>"
   },
 
   // ========= Category 5: The Manager Sentence =========
   "4-0": {
     q: "The follow-up survey of <strong>48 residents</strong> gives a 95% interval for mean monthly income of <strong>$3,328.85 to $3,529.65</strong>. Write the <strong>one correct interpretation sentence</strong> a manager could read aloud.",
-    a: "\"We are 95% confident that the true mean monthly income of Green Valley Commons residents is between $3,328.85 and $3,529.65, based on a sample of 48.\"<br><br>The confidence is in the method: 95 of 100 intervals built this way would capture the true mean. Accept any wording that puts the confidence on the procedure and names the parameter, the sample size, and the level."
+    a: "\"We are 95% confident that the true mean monthly income of Green Valley Commons residents is between $3,328.85 and $3,529.65, based on a sample of 48.\"<br><br>Any wording that puts the confidence on the method and names the parameter, the sample size, and the level."
   },
   "4-1": {
     q: "A classmate interprets that interval as <strong>\"95% of residents earn between $3,329 and $3,530.\"</strong> In one sentence, why is this wrong?",
-    a: "<strong>The interval is about the mean, a parameter, not about individual residents.</strong> Individuals vary far more (sd $345.78) than the mean does (SE $49.91), so most residents earn well outside that range.<br><br>The other classic wrong sentence is \"there is a 95% probability that the mean is in this range\": the true mean is a fixed number, so the 95% belongs to the procedure, not to this one interval. Catching the first sentence is a graded skill in Module 3."
+    a: "<strong>The interval is about the mean, not about individual residents.</strong> Individuals vary far more (sd $345.78) than the mean does (SE $49.91)."
   },
   "4-2": {
     q: "With the <strong>new fraud detector</strong>, P(fraud given flagged) = <strong>.66</strong>: of every 288 flags per 10,000 orders, 190 are fraud and 98 are legitimate customers. The finance manager says that is good enough to <strong>auto-cancel every flagged order</strong>. Write the <strong>manager sentence</strong> that answers that proposal.",
-    a: "Any wording with a decision verb, the evidence in business units, and what the number does not mean earns credit, and either decision can be defended:<br><br><strong>\"Hold flagged orders for a quick verification step rather than cancelling them.\"</strong> Auto-cancel would turn away 98 legitimate customers for every 10,000 orders, one in three flags, to stop 190 frauds. Or: <strong>\"Auto-cancel, and budget for 98 apology calls per 10,000 orders,\"</strong> if the fraud losses outweigh the lost customers.<br><br>What it does not mean: .66 is not the detector's catch rate (that is 95%), and it does not mean the 98 are careless shoppers. They are good customers the detector got wrong.<br><br>Half credit for a decision with no counts. No credit for a sentence that treats .66 as \"66% accurate.\""
+    a: "Either decision earns credit if the sentence has a decision verb, the counts, and what .66 does not mean.<br><br><strong>\"Hold flagged orders for a quick verification step rather than cancelling them:</strong> auto-cancel would turn away 98 legitimate customers per 10,000 orders to stop 190 frauds, and .66 is not the detector's catch rate.\"<br><br><strong>\"Auto-cancel, and budget for 98 apology calls per 10,000 orders,</strong> because the 190 frauds stopped outweigh them; .66 is not the detector's catch rate.\""
   },
   "4-3": {
     q: "Drop/add week at the registration desk, 25 walk-ins per hour on average: <strong>P(more than 25 in an hour) = .45</strong>, P(more than 30) = .14, P(more than 35) = .02. Fill in the Module 2 skeleton: <strong>\"Plan for [number] per hour; there is a [probability] chance of exceeding [threshold], so [action].\"</strong>",
-    a: "Any defensible level earns credit if the risk is priced next to it. Two examples:<br><br>\"Plan for 30 per hour; there is a .14 chance of exceeding that, so expect a queue about one hour in seven and post the wait time.\"<br><br>\"Plan for 35 per hour; there is a .02 chance of exceeding that, so open two more desks for the week and accept a queue about one hour in fifty.\"<br><br>Planning for the average (25) means a queue nearly every other hour. The number does not decide. It prices the choice. No credit for a staffing level with no probability next to it, or a probability with no action."
+    a: "Any level earns credit if its probability sits next to the action. Two examples:<br><br>\"Plan for 30 per hour; there is a .14 chance of exceeding that, so expect a queue about one hour in seven and post the wait time.\"<br><br>\"Plan for 35 per hour; there is a .02 chance of exceeding that, so open two more desks for the week.\""
   },
   "4-4": {
     q: "<strong>Daily Double, for your wager.</strong><br><br>Write the three-sentence <strong>\"So What / Now What\" memo</strong> to the Green Valley Commons board on the follow-up survey: (1) the estimate with its uncertainty, (2) a business takeaway in plain language, (3) a next step with a number in it.<br><br>The facts: 48 residents; mean monthly income <strong>$3,429.25</strong>; 95% interval <strong>$3,328.85 to $3,529.65</strong>, a margin of $100.40, which is the $100 target the first survey set; the share of men is now reportable at <strong>.46</strong> (95% interval .32 to .60); a $75 margin on income would need <strong>82 residents</strong>.",
-    a: "<strong>Full credit needs all three:</strong><ul class=\"rubric\"><li>(a) The point estimate and the interval, with n and the confidence level.</li><li>(b) A takeaway a board member can act on, in business language, with no unexplained jargon.</li><li>(c) A concrete next step with a number: act on the income figure now, or survey 82 residents for a $75 margin, or both.</li></ul><br><strong>One model, to read aloud after the team has answered:</strong><br>\"From 48 residents, mean monthly income is $3,429.25, and we are 95% confident the true mean is between $3,328.85 and $3,529.65. That is the $100 precision we planned for, so the board can set the rent band now using the lower bound, $3,329, as the conservative income figure. The share of men is about .46 but could be anywhere from .32 to .60, so I recommend acting on income now and adding 34 residents, to 82, before we build anything on the gender mix.\"<br><br>Reject formula-heavy memos and the \"probability that the mean is\" sentence. Half credit for two of the three parts.",
+    a: "<strong>Full credit needs all three:</strong><ul class=\"rubric\"><li>(1) The point estimate and the interval, with n and the confidence level.</li><li>(2) A takeaway a board member can act on, in business language.</li><li>(3) A next step with a number: act on the income figure now, or survey 82 residents for a $75 margin, or both.</li></ul><br><strong>One model:</strong><br>\"From 48 residents, mean monthly income is $3,429.25, and we are 95% confident the true mean is between $3,328.85 and $3,529.65. That is the $100 precision we planned for, so the board can set the rent band now using the lower bound, $3,329, as the conservative income figure. The share of men is about .46 but could be anywhere from .32 to .60, so I recommend acting on income now and adding 34 residents, to 82, before we build anything on the gender mix.\"",
     dailyDouble: true
   }
 };
@@ -1346,8 +1346,8 @@ function resetAll() {
 const FINAL = {
   category: "Read the Table",
   q: "SummitGear adds a riskier product line and the fraud rate rises from 2% to <strong>5%</strong> of orders. The detector is the original one: it catches <strong>90%</strong> of fraud and flags <strong>5%</strong> of legitimate orders. What is <strong>P(fraud given flagged)</strong> now?",
-  a: "<strong>.49</strong> (450 of 925 flagged orders)",
-  explain: "Tree of 10,000: 500 fraudulent, 9,500 legitimate. True flags: 90% of 500 = <strong>450</strong>. False flags: 5% of 9,500 = <strong>475</strong>. Flags in all: 925. 450 / 925 = .4865, reported as .49.<br><br>Up from .27 at a 2% base rate. Same detector, different base rate, different answer: that is the whole point of the tree. Accept .49, or 450 of 925. A team that writes .90 has given the catch rate, P(flag given fraud)."
+  a: "<strong>.49</strong>",
+  explain: "Tree of 10,000: 500 fraudulent, 9,500 legitimate. True flags: 90% of 500 = 450. False flags: 5% of 9,500 = 475. Flags in all: 925. 450 / 925 = .4865"
 };
 
 let finalOpen = false;

@@ -12,7 +12,7 @@ import math
 import os
 import statistics as st
 import sys
-from math import comb, erf, exp, factorial, lgamma, sqrt
+from math import erf, exp, factorial, lgamma, sqrt
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 DATA = os.path.join(ROOT, "4_Library", "sample-data")
@@ -93,10 +93,6 @@ def poisson_cdf(k, lam):
     return sum(exp(-lam) * lam ** i / factorial(i) for i in range(k + 1))
 
 
-def binom(k, n, p):
-    return comb(n, k) * p ** k * (1 - p) ** (n - k)
-
-
 checks = []
 
 
@@ -113,64 +109,53 @@ online = [r["Channel"] == "Online" for r in sg]
 member = [r["Rewards Member"] == "Yes" for r in sg]
 returned = [int(r["Items Returned"]) >= 1 for r in sg]
 both = sum(o and m for o, m in zip(online, member))
-check("$100 online and member count", both, 51, 0)
+check("table: online and member count", both, 51, 0)
+check("table: in-store and member count", sum((not o) and m for o, m in zip(online, member)), 34, 0)
+check("table: online count", sum(online), 164, 0)
+check("table: member count", sum(member), 85, 0)
 check("$100 P(online and member)", both / n, .20)
 check("$200 P(member given online)", both / sum(online), .31)
-store_member = sum((not o) and m for o, m in zip(online, member))
-check("$200 P(member given in-store)", store_member / (n - sum(online)), .40)
 check("$300 P(online or member)", (sum(online) + sum(member) - both) / n, .79)
 ret_store = sum(r and not o for r, o in zip(returned, online))
-ret_online = sum(r and o for r, o in zip(returned, online))
+check("$400 in-store orders with a return", ret_store, 19, 0)
 check("$400 P(returned given in-store)", ret_store / (n - sum(online)), .22)
-check("$400 P(returned given online)", ret_online / sum(online), .10)
 true_flags, false_flags = 200 * .95, 9800 * .01
 check("$500 true flags", true_flags, 190, 0)
 check("$500 false flags", false_flags, 98, 0)
 check("$500 P(fraud given flagged), new detector", true_flags / (true_flags + false_flags), .66)
 
 # ---------- Pick the Distribution ----------
-check("$100 Poisson sd at 8 per hour", sqrt(8), 2.83)
-check("$100 P(exactly 8)", exp(-8) * 8 ** 8 / factorial(8), .14)
 check("$200 binomial EV 25 at .60", 25 * .6, 15.00)
-check("$200 binomial sd", sqrt(25 * .6 * .4), 2.45)
-check("$200 P(exactly 15)", binom(15, 25, .6), .16)
-check("$200 P(18 or more)", sum(binom(k, 25, .6) for k in range(18, 26)), .15)
 check("$300 uniform 3 to 15: P(under 5)", (5 - 3) / 12, .17)
-check("$300 P(over 10)", (15 - 10) / 12, .42)
-check("$300 mean", (3 + 15) / 2, 9.00)
-check("$400 P(more than 30) at 25 per hour", 1 - poisson_cdf(30, 25), .14)
-check("$400 teammate's P(more than 31)", 1 - poisson_cdf(31, 25), .10)
-check("$400 P(more than 35)", 1 - poisson_cdf(35, 25), .02)
+check("$400 P(30 or fewer) at 25 per hour", poisson_cdf(30, 25), .8633, 4)
+check("$400 P(more than 30)", 1 - poisson_cdf(30, 25), .14)
 sk = [float(r["Skiers per day"]) for r in rows("MtHighlands_SkierCounts.csv")]
 mu, sd = st.mean(sk), st.stdev(sk)
 check("$500 skier mean (input)", mu, 747.39)
 check("$500 skier sd (input)", sd, 159.63)
-check("$500 P(fewer than 500)", phi((500 - mu) / sd), .06)
 check("$500 95th percentile", norm_inv(.95, mu, sd), 1010, 0)
 
 # ---------- Mind the Margin ----------
 tot = [float(r["Order Total ($)"]) for r in sg]
 pmu, psd = st.mean(tot), st.stdev(tot)
-se100 = psd / sqrt(100)
-check("$100 SE at n = 100", se100, 3.70)
-check("$100 P(sample mean over $105)", 1 - phi((105 - pmu) / se100), .09)
+check("$100 population mean (input)", pmu, 100.14)
+check("$100 population sd (input)", psd, 36.99)
+check("$100 SE at n = 100", psd / sqrt(100), 3.70)
 gv = rows("GreenValleyCommons_Residents48.csv")
 inc = [float(r["Monthly income ($)"]) for r in gv]
 n48 = len(inc)
 m48, s48 = st.mean(inc), st.stdev(inc)
 se48 = s48 / sqrt(n48)
 t95 = t_inv_2t(.05, n48 - 1)
-check("$300 mean income, 48 residents", m48, 3429.25)
+check("$300 n (input)", n48, 48, 0)
+check("$300 mean income", m48, 3429.25)
 check("$300 sd", s48, 345.78)
 check("$300 SE", se48, 49.91)
-check("$300 t* at df 47", t95, 2.012, 3)
+check("$400 t* at df 47", t95, 2.012, 3)
 me = t95 * se48
 check("$400 margin of error", me, 100.40)
 check("$400 95% low", m48 - me, 3328.85)
 check("$400 95% high", m48 + me, 3529.65)
-t90 = t_inv_2t(.10, n48 - 1)
-check("$400 90% low (for the record)", m48 - t90 * se48, 3345.51)
-check("$400 90% high (for the record)", m48 + t90 * se48, 3512.99)
 men = sum(r["Male"] == "y" for r in gv)
 check("$500 men of 48", men, 22, 0)
 ph = men / n48
@@ -179,10 +164,12 @@ check("$500 p-hat", ph, .46)
 check("$500 proportion margin", pme, .14)
 check("$500 proportion low", ph - pme, .32)
 check("$500 proportion high", ph + pme, .60)
-check("$500 n for a $75 margin", math.ceil((1.96 * 345.78 / 75) ** 2), 82, 0)
 
 # ---------- The Manager Sentence inputs ----------
 check("Manager $400 P(more than 25) at 25 per hour", 1 - poisson_cdf(25, 25), .45)
+check("Manager $400 P(more than 30)", 1 - poisson_cdf(30, 25), .14)
+check("Manager $400 P(more than 35)", 1 - poisson_cdf(35, 25), .02)
+check("Daily Double: n for a $75 margin with sd 345.78", math.ceil((1.96 * 345.78 / 75) ** 2), 82, 0)
 
 # ---------- Final Jeopardy ----------
 tf, ff = 500 * .90, 9500 * .05
