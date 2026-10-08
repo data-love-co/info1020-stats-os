@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INFO 1020 Midterm Review Jeopardy</title>
+<meta name="description" content="Midterm review game for INFO 1020 Analytics II, Fall 2026: probability, distributions, sampling, and confidence intervals, on the course datasets.">
+<style>
+  /* ================= Fonts and tokens ================= */
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Anton&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap');
+
+  :root {
+    --jeo-navy: #0b1d5c;
+    --jeo-navy-dark: #081445;
+    --jeo-navy-light: #1a2e7d;
+    --jeo-gold: #f4c430;
+    --jeo-gold-bright: #ffd84a;
+    --cream: #faf6ed;
+    --du-crimson: #BA0C2F;        /* DU Crimson */
+    --du-crimson-deep: #8a0a24;
+    --ink: #0a0f2c;
+    --muted: #6b7280;
+    --slate: #2b3558;
+    --card-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+    --inner-shadow: inset 0 0 0 3px rgba(244, 196, 48, 0.15);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; overflow: hidden; }
+
+  body {
+    font-family: 'Oswald', sans-serif;
+    background:
+      radial-gradient(ellipse at top, #122372 0%, #081445 60%, #050e2f 100%);
+    color: var(--cream);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  /* ================= Top banner ================= */
+  .banner {
+    background: linear-gradient(180deg, var(--du-crimson) 0%, var(--du-crimson-deep) 100%);
+    padding: 0.5rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 2px solid var(--jeo-gold);
+    flex-shrink: 0;
+    gap: 1rem;
+  }
+  .banner h1 {
+    font-family: 'Anton', sans-serif;
+    font-size: 1.35rem;
+    letter-spacing: 0.08em;
+    color: var(--cream);
+    text-transform: uppercase;
+  }
+  .banner .subtitle {
+    font-family: 'Libre Caslon Text', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--jeo-gold);
+    letter-spacing: 0.02em;
+  }
+  .banner-controls {
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  .btn {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 500;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.4rem 0.85rem;
+    border: 1px solid rgba(250, 246, 237, 0.4);
+    background: transparent;
+    color: var(--cream);
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+  .btn:hover {
+    background: rgba(244, 196, 48, 0.2);
+    border-color: var(--jeo-gold);
+    color: var(--jeo-gold-bright);
+  }
+
+  /* ================= Main layout ================= */
+  .main-area {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 0;
+    overflow: hidden;
+  }
+  @media (max-width: 820px) {
+    .main-area { grid-template-columns: 1fr; grid-template-rows: 1fr auto; }
+    .score-panel { border-left: none; border-top: 2px solid var(--jeo-gold); max-height: 38vh; }
+    html, body { overflow: auto; }
+  }
+
+  /* ================= Board ================= */
+  .board-wrap {
+    padding: 1rem 1rem 0.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .board {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: auto repeat(5, 1fr);
+    gap: 5px;
+    padding: 5px;
+    background: #000;
+    border: 2px solid var(--jeo-gold);
+    box-shadow: var(--card-shadow), var(--inner-shadow);
+  }
+
+  .category {
+    background: linear-gradient(180deg, var(--jeo-navy-light) 0%, var(--jeo-navy) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    text-align: center;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: clamp(0.8rem, 1.2vw, 1.15rem);
+    line-height: 1.1;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--cream);
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.4);
+    min-height: 80px;
+  }
+
+  .cell {
+    background: linear-gradient(180deg, var(--jeo-navy-light) 0%, var(--jeo-navy) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Anton', sans-serif;
+    font-size: clamp(1.4rem, 3.5vw, 2.75rem);
+    color: var(--jeo-gold);
+    text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.6);
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+    letter-spacing: 0.02em;
+    border: none;
+  }
+  .cell:hover:not(.played), .cell:focus-visible:not(.played) {
+    background: linear-gradient(180deg, #2d47a0 0%, #1a2e7d 100%);
+    transform: scale(0.98);
+    box-shadow: inset 0 0 0 2px var(--jeo-gold);
+    outline: none;
+  }
+  .cell.played {
+    background: #050e2f;
+    color: transparent;
+    cursor: default;
+  }
+
+  /* ================= Scoring panel ================= */
+  .score-panel {
+    background: rgba(8, 20, 69, 0.8);
+    border-left: 2px solid var(--jeo-gold);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    overflow-y: auto;
+  }
+  .score-panel h2 {
+    font-family: 'Anton', sans-serif;
+    font-size: 0.95rem;
+    letter-spacing: 0.08em;
+    color: var(--jeo-gold);
+    text-transform: uppercase;
+    margin-bottom: 0.35rem;
+    text-align: center;
+  }
+  .team {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(244, 196, 48, 0.25);
+    padding: 0.5rem;
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .team-name {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.8rem;
+    color: var(--cream);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    background: transparent;
+    border: none;
+    border-bottom: 1px dashed rgba(250, 246, 237, 0.2);
+    padding: 0.15rem 0.25rem;
+    width: 100%;
+    text-transform: uppercase;
+    outline: none;
+  }
+  .team-name:focus { border-bottom-color: var(--jeo-gold); }
+  .score-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .score {
+    font-family: 'Anton', sans-serif;
+    font-size: 1.35rem;
+    color: var(--jeo-gold-bright);
+    min-width: 70px;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.4);
+  }
+  .score.negative { color: #ff6b6b; }
+  .score-btns { display: flex; gap: 3px; flex-wrap: wrap; }
+  .score-btn {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.68rem;
+    padding: 0.15rem 0.3rem;
+    border: 1px solid rgba(244, 196, 48, 0.4);
+    background: transparent;
+    color: var(--cream);
+    cursor: pointer;
+    border-radius: 2px;
+    min-width: 34px;
+    transition: all 0.1s;
+  }
+  .score-btn:hover { background: var(--jeo-gold); color: var(--jeo-navy); }
+  .score-btn.minus:hover { background: var(--du-crimson); color: var(--cream); border-color: var(--du-crimson); }
+
+  /* ================= Full-screen question overlay ================= */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center, var(--jeo-navy-light) 0%, var(--jeo-navy-dark) 100%);
+    z-index: 100;
+    display: none;
+    flex-direction: column;
+    animation: fadeIn 0.3s ease-out;
+  }
+  .overlay.active { display: flex; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(1.05); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .overlay-topbar {
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--jeo-gold);
+    flex-shrink: 0;
+  }
+  .overlay-category {
+    font-family: 'Anton', sans-serif;
+    font-size: 1.1rem;
+    color: var(--cream);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .overlay-value {
+    font-family: 'Anton', sans-serif;
+    font-size: 2rem;
+    color: var(--jeo-gold);
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+  }
+
+  .overlay-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 4rem;
+    text-align: center;
+    overflow-y: auto;
+  }
+  @media (max-width: 820px) {
+    .overlay-content { padding: 1.25rem 1rem; justify-content: flex-start; }
+  }
+
+  .q-text, .a-text {
+    font-family: 'Libre Caslon Text', Georgia, serif;
+    font-size: clamp(1.25rem, 2.4vw, 2rem);
+    line-height: 1.45;
+    color: var(--cream);
+    max-width: 1100px;
+    letter-spacing: 0.01em;
+    user-select: text;
+  }
+  .q-text strong { color: var(--jeo-gold); }
+  .a-text {
+    display: none;
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 2px dashed var(--jeo-gold);
+    color: var(--jeo-gold);
+    font-weight: 400;
+    font-size: clamp(1.1rem, 2vw, 1.6rem);
+  }
+  .a-text.active { display: block; }
+  .a-label {
+    font-family: 'Anton', sans-serif;
+    font-size: 1rem;
+    color: var(--jeo-gold);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    opacity: 0.7;
+  }
+
+  /* Excel check line inside an answer */
+  .excel-check {
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    margin: 1.25rem auto 0;
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.03em;
+    color: var(--cream);
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(244, 196, 48, 0.5);
+    border-radius: 3px;
+    padding: 0.45rem 0.9rem;
+    text-align: left;
+  }
+  .excel-check::before {
+    content: "CHECK IT IN EXCEL";
+    display: block;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: var(--jeo-gold);
+    margin-bottom: 0.2rem;
+  }
+  .excel-check code {
+    font-family: ui-monospace, 'Cascadia Mono', Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    color: var(--jeo-gold-bright);
+  }
+
+  /* Rubric list inside an answer */
+  .rubric {
+    text-align: left;
+    display: inline-block;
+    margin: 0.5rem auto 0;
+    font-size: 0.95em;
+  }
+  .rubric li { margin: 0.25rem 0 0.25rem 1.2rem; }
+
+  /* Contingency table inside a question */
+  .ctable {
+    margin: 1.25rem auto;
+    border-collapse: collapse;
+    font-family: 'Oswald', sans-serif;
+    font-size: clamp(0.95rem, 1.6vw, 1.3rem);
+    letter-spacing: 0.02em;
+    color: var(--cream);
+    background: rgba(0, 0, 0, 0.25);
+  }
+  .ctable th, .ctable td {
+    border: 1px solid rgba(244, 196, 48, 0.55);
+    padding: 0.4rem 1rem;
+    text-align: center;
+  }
+  .ctable th { color: var(--jeo-gold); font-weight: 500; }
+  .ctable .tot { color: var(--jeo-gold-bright); font-weight: 700; }
+
+  .overlay-controls {
+    padding: 1.25rem 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    border-top: 2px solid var(--jeo-gold);
+    flex-shrink: 0;
+    background: rgba(0, 0, 0, 0.25);
+  }
+  .big-btn {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.8rem 2rem;
+    border: 2px solid var(--jeo-gold);
+    background: transparent;
+    color: var(--jeo-gold);
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+  .big-btn:hover {
+    background: var(--jeo-gold);
+    color: var(--jeo-navy);
+  }
+  .big-btn.primary {
+    background: var(--jeo-gold);
+    color: var(--jeo-navy);
+  }
+  .big-btn.primary:hover {
+    background: var(--jeo-gold-bright);
+  }
+  .big-btn.minus { border-color: #ff6b6b; color: #ff6b6b; }
+  .big-btn.minus:hover { background: var(--du-crimson); border-color: var(--du-crimson); color: var(--cream); }
+  .dd-award { display: none; gap: 0.6rem; align-items: center; }
+  .dd-award.active { display: flex; }
+  .dd-award .who {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--cream);
+    opacity: 0.8;
+  }
+
+  /* ================= Daily Double screen ================= */
+  .dd-splash {
+    display: none;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    animation: ddPulse 0.6s ease-out;
+    padding: 1rem;
+    overflow-y: auto;
+  }
+  .dd-splash.active { display: flex; }
+
+  @keyframes ddPulse {
+    0% { transform: scale(0.3) rotate(-10deg); opacity: 0; }
+    70% { transform: scale(1.1) rotate(2deg); }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
+  }
+
+  .dd-title {
+    font-family: 'Anton', sans-serif;
+    font-size: clamp(3rem, 9vw, 7rem);
+    color: var(--jeo-gold);
+    text-shadow:
+      4px 4px 0 var(--du-crimson),
+      8px 8px 0 rgba(0, 0, 0, 0.4);
+    letter-spacing: 0.1em;
+    line-height: 0.95;
+    text-transform: uppercase;
+  }
+  .dd-subtitle {
+    font-family: 'Libre Caslon Text', serif;
+    font-style: italic;
+    font-size: 1.3rem;
+    color: var(--cream);
+    margin-top: 2rem;
+    max-width: 700px;
+  }
+  .dd-wager {
+    margin-top: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  .dd-wager label {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--jeo-gold);
+  }
+  .dd-wager input {
+    font-family: 'Anton', sans-serif;
+    font-size: 2.5rem;
+    background: rgba(0, 0, 0, 0.3);
+    color: var(--jeo-gold);
+    border: 2px solid var(--jeo-gold);
+    padding: 0.4rem 1rem;
+    width: 250px;
+    text-align: center;
+    border-radius: 3px;
+    outline: none;
+  }
+  .dd-team-select {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    max-width: 600px;
+    margin-top: 1.5rem;
+  }
+  .dd-team-btn {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
+    border: 2px solid rgba(244, 196, 48, 0.4);
+    background: transparent;
+    color: var(--cream);
+    cursor: pointer;
+    border-radius: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .dd-team-btn.selected {
+    background: var(--jeo-gold);
+    color: var(--jeo-navy);
+    border-color: var(--jeo-gold);
+  }
+
+  /* ================= Scenario card ================= */
+  .scenario-box {
+    background: rgba(186, 12, 47, 0.15);
+    border-left: 4px solid var(--du-crimson);
+    padding: 1rem 1.25rem;
+    margin: 0 auto 1.5rem;
+    max-width: 1000px;
+    font-family: 'Libre Caslon Text', serif;
+    font-style: italic;
+    font-size: clamp(0.95rem, 1.5vw, 1.15rem);
+    color: var(--cream);
+    line-height: 1.5;
+    text-align: left;
+  }
+  .scenario-box::before {
+    content: "SCENARIO";
+    display: block;
+    font-family: 'Oswald', sans-serif;
+    font-style: normal;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    color: var(--jeo-gold);
+    margin-bottom: 0.4rem;
+  }
+
+  /* ================= Help footer ================= */
+  .kbd {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.7rem;
+    padding: 0.1rem 0.35rem;
+    background: rgba(244, 196, 48, 0.15);
+    border: 1px solid var(--jeo-gold);
+    border-radius: 2px;
+    color: var(--jeo-gold);
+    margin: 0 0.2rem;
+  }
+  .help {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.75rem;
+    color: rgba(250, 246, 237, 0.7);
+    letter-spacing: 0.05em;
+  }
+</style>
+</head>
+<body>
+
+<div class="banner">
+  <div>
+    <h1>INFO 1020 · Midterm Review Jeopardy</h1>
+    <div class="subtitle">Analytics II: Business Statistics and Analysis. Fall 2026. Modules 1 to 3.</div>
+  </div>
+  <div class="banner-controls">
+    <span class="help"><span class="kbd">ESC</span> Return to board</span>
+    <span class="help"><span class="kbd">R</span> Reveal answer</span>
+    <button class="btn" onclick="resetAll()">↺ Reset Game</button>
+  </div>
+</div>
+
+<div class="main-area">
+  <div class="board-wrap">
+    <div class="board" id="board" role="grid" aria-label="Jeopardy board"></div>
+  </div>
+
+  <div class="score-panel" id="scorePanel">
+    <h2>★ Teams ★</h2>
+    <!-- Teams rendered by JS -->
+  </div>
+</div>
+
+<!-- Question overlay -->
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="ovCategory">
+  <div class="overlay-topbar">
+    <div class="overlay-category" id="ovCategory"></div>
+    <div class="overlay-value" id="ovValue"></div>
+  </div>
+
+  <!-- Daily Double splash -->
+  <div class="dd-splash" id="ddSplash">
+    <div class="dd-title">Daily Double!</div>
+    <div class="dd-subtitle">Only the team that picked this cell answers. Select the team, then enter their wager: up to their current score, or up to $500 if their score is below $500.</div>
+    <div class="dd-team-select" id="ddTeamSelect"></div>
+    <div class="dd-wager">
+      <label for="ddWagerInput">Wager</label>
+      <input type="number" id="ddWagerInput" min="0" step="50" placeholder="0">
+    </div>
+    <button class="big-btn primary" style="margin-top: 2rem;" onclick="confirmWager()">Confirm and Show Question</button>
+  </div>
+
+  <!-- Regular question content -->
+  <div class="overlay-content" id="overlayContent">
+    <div class="q-text" id="qText"></div>
+    <div class="a-text" id="aText">
+      <div class="a-label">Answer</div>
+      <div id="aBody"></div>
+    </div>
+  </div>
+
+  <div class="overlay-controls" id="overlayControls">
+    <button class="big-btn" id="revealBtn" onclick="revealAnswer()">Reveal Answer</button>
+    <div class="dd-award" id="ddAward">
+      <span class="who" id="ddAwardWho"></span>
+      <button class="big-btn" id="ddAwardPlus" onclick="awardWager(1)">Award wager</button>
+      <button class="big-btn minus" id="ddAwardMinus" onclick="awardWager(-1)">Deduct wager</button>
+    </div>
+    <button class="big-btn primary" onclick="closeOverlay()">Return to Board</button>
+  </div>
+</div>
+
+<script>
+// ================= Game Data =================
+// Five categories, five values each. Keys are "categoryIndex-valueIndex", both 0-based.
+// Every number in an answer follows the course rounding policy
+// (4_Library/method/rounding-policy.md) and matches 4_Library/sample-data/README.md.
+const CATEGORIES = [
+  "Know Your Rules",
+  "Read the Table",
+  "Pick the Distribution",
+  "Mind the Margin",
+  "The Manager Sentence"
+];
+
+const VALUES = [100, 200, 300, 400, 500];
+
+// Shared scenario cards
+const SUMMITGEAR = `<div class="scenario-box">SummitGear Outfitters, 250 orders from one quarter (Lab 1A). 85 orders came from Rewards members. 122 orders were over $100. 66 orders were both.</div>`;
+
+const SG_TABLE = `<table class="ctable" aria-label="SummitGear orders by membership and order size">
+  <tr><th></th><th>Over $100</th><th>$100 or less</th><th class="tot">Total</th></tr>
+  <tr><th>Rewards member</th><td>66</td><td>19</td><td class="tot">85</td></tr>
+  <tr><th>Not a member</th><td>56</td><td>109</td><td class="tot">165</td></tr>
+  <tr><th class="tot">Total</th><td class="tot">122</td><td class="tot">128</td><td class="tot">250</td></tr>
+</table>`;
+
+const HIGHLANDS = `<div class="scenario-box">University of Highlands Ranch registration (Lab 2A) and the Mt. Highlands Ranch ski resort (Lab 2B).</div>`;
+
+const GREENVALLEY = `<div class="scenario-box">Angela Green manages Green Valley Commons (Lab 3B). She surveyed 20 residents: monthly income, miles to their doctor, age, and gender.</div>`;
+
+const QUESTIONS = {
+  // ========= Category 1: Know Your Rules =========
+  "0-0": {
+    q: "You are building a confidence interval for a <strong>mean</strong> and you do not know the population standard deviation. Which critical value do you use, and with how many degrees of freedom?",
+    a: "<strong>t</strong>, with df = n minus 1.<br><br>z (1.960 for 95%) is for the rare case where the population standard deviation is known, and for proportions. For a mean, that means almost never.<div class=\"excel-check\"><code>=T.INV.2T(.05, n-1)</code> for 95%. <code>=CONFIDENCE.T(.05, sd, n)</code> gives the margin of error in one call.</div>"
+  },
+  "0-1": {
+    q: "Write the formula for the <strong>conditional probability</strong> P(B given A). Then say what happens to the denominator compared with a plain probability.",
+    a: "<strong>P(B given A) = P(A and B) / P(A)</strong><br><br>The denominator shrinks from all the rows to only the rows where A is true. Dividing by n instead of by the count of A is the most common Module 1 error.<div class=\"excel-check\"><code>=COUNTIFS(member_range,\"Yes\",total_range,\">100\") / COUNTIF(member_range,\"Yes\")</code></div>"
+  },
+  "0-2": {
+    q: "State the rule for <strong>P(A or B)</strong>. In one sentence, why is the last term there?",
+    a: "<strong>P(A or B) = P(A) + P(B) minus P(A and B)</strong><br><br>The overlap sits inside both P(A) and P(B), so adding them counts it twice. Subtracting it once puts it back to one count."
+  },
+  "0-3": {
+    q: "Write the formula for the <strong>standard error of a sample mean</strong> and say what it measures. Then: if the sample size goes from 40 to 160, what happens to it?",
+    a: "<strong>SE = sd / SQRT(n)</strong><br><br>It is the spread of the sampling distribution: how far sample means typically land from the true mean, from one sample to the next. It is not the spread of the data.<br><br>Four times the sample size cuts the standard error in half, because SQRT(160) is twice SQRT(40).<div class=\"excel-check\"><code>=STDEV.S(range)/SQRT(n)</code></div>"
+  },
+  "0-4": {
+    q: "Write the complete formula for a <strong>confidence interval for a population mean</strong> when the population standard deviation is unknown. Name every symbol, including the degrees of freedom, and name the Excel function that gives the margin of error in one call.",
+    a: "<strong>x̄ ± t* · (s / √n)</strong><br><br>x̄ = the sample mean, the point estimate<br>t* = the critical value from the t distribution with df = n minus 1<br>s = the sample standard deviation<br>n = the sample size<br>t* · (s / √n) = the margin of error<br><br>The df detail is required for full credit.<div class=\"excel-check\"><code>=CONFIDENCE.T(alpha, s, n)</code> is the margin of error. The interval is <code>AVERAGE(range)</code> minus and plus that.</div>"
+  },
+
+  // ========= Category 2: Read the Table =========
+  "1-0": {
+    q: SUMMITGEAR + "What is <strong>P(Rewards member)</strong>? Report it the way the course rounds it.",
+    a: "<strong>.34</strong><br><br>85 / 250 = .34. Two decimals and no leading zero, because a probability cannot exceed 1.<div class=\"excel-check\"><code>=COUNTIF(member_range,\"Yes\") / 250</code></div>"
+  },
+  "1-1": {
+    q: SUMMITGEAR + SG_TABLE + "What is the <strong>joint probability</strong> that an order is from a Rewards member <strong>and</strong> is over $100? And the probability that it is from a member <strong>or</strong> over $100?",
+    a: "<strong>P(member and over $100) = .26</strong> (66 / 250 = .264)<br><strong>P(member or over $100) = .56</strong> ((85 + 122 minus 66) / 250 = 141 / 250 = .564)<br><br>Adding .34 and .49 without subtracting the overlap gives .83, which counts the 66 orders twice.<div class=\"excel-check\"><code>=COUNTIFS(member_range,\"Yes\",total_range,\">100\") / 250</code></div>"
+  },
+  "1-2": {
+    q: SUMMITGEAR + SG_TABLE + "Compute <strong>P(over $100 given member)</strong> and <strong>P(member given over $100)</strong>. Why are they different numbers?",
+    a: "<strong>P(over $100 given member) = .78</strong> (66 / 85 = .776)<br><strong>P(member given over $100) = .54</strong> (66 / 122 = .541)<br><br>Same 66 orders on top, different denominator underneath: the member row (85) against the over-$100 column (122). Reading the table in the wrong direction is the most common error in Module 1.<div class=\"excel-check\"><code>=COUNTIFS(member_range,\"Yes\",total_range,\">100\") / COUNTIF(member_range,\"Yes\")</code></div>"
+  },
+  "1-3": {
+    q: SUMMITGEAR + SG_TABLE + "Is spending over $100 <strong>independent</strong> of Rewards membership? Show the comparison, and say what it means for the marketing team.",
+    a: "<strong>No.</strong> P(over $100 given member) = .78, against P(over $100) = .49 for all orders. If the two were independent, those two rates would match. A gap of 29 points is large by any business standard.<br><br>For marketing: Rewards members are the better target for a high-ticket promotion. One caution: the table shows an association. It does not show that membership causes the spending.<br><br>Half credit for \"not independent\" without the two rates side by side."
+  },
+  "1-4": {
+    q: "SummitGear's fraud detector (Lab 1B): <strong>2%</strong> of orders are fraudulent, the detector catches <strong>90%</strong> of fraud, and it flags <strong>5%</strong> of legitimate orders. Build the tree of 10,000 and give <strong>P(fraud given flagged)</strong>.",
+    a: "<strong>P(fraud given flagged) = .27</strong><br><br>Tree of 10,000: 200 fraudulent, 9,800 legitimate.<br>Fraud caught: 90% of 200 = <strong>180 true flags</strong>.<br>Legitimate orders flagged anyway: 5% of 9,800 = <strong>490 false flags</strong>.<br>Flags in all: 670. 180 / 670 = .2687, reported as .27.<br><br>A flagged order is legitimate almost three times out of four. The 90% is P(flag given fraud), the detector's catch rate. It is not P(fraud given flag). Mixing those two up is the whole lesson of Lab 1B."
+  },
+
+  // ========= Category 3: Pick the Distribution =========
+  "2-0": {
+    q: HIGHLANDS + "The registration desk averages <strong>12.5 walk-ins per hour</strong>, with no fixed upper limit. Which distribution models the number of walk-ins in an hour, what is its parameter, and what is its standard deviation?",
+    a: "<strong>Poisson</strong>, with mean rate lambda = 12.5 per hour.<br><br>Standard deviation = SQRT(12.5) = <strong>3.54</strong>.<br><br>Poisson fits counts of events in a fixed window with no ceiling. A teammate who reaches for the binomial has to invent an n that does not exist.<div class=\"excel-check\"><code>=POISSON.DIST(k, 12.5, FALSE)</code> for exactly k. <code>TRUE</code> for k or fewer.</div>"
+  },
+  "2-1": {
+    q: HIGHLANDS + "Highlands Ranch admits <strong>15 students</strong> to a program. Each enrolls with probability <strong>.80</strong>, independently of the others. Name the distribution of the number who enroll, list at least two of the conditions it needs, and give the expected number who enroll.",
+    a: "<strong>Binomial</strong>, n = 15, p = .80.<br><br>Conditions: a fixed number of trials; each trial is yes or no; the same p on every trial; the trials are independent.<br><br>Expected value = n times p = <strong>12.00</strong> students. Standard deviation = SQRT(15 times .80 times .20) = <strong>1.55</strong>.<div class=\"excel-check\"><code>=BINOM.DIST(12, 15, .8, FALSE)</code> = .25 for exactly 12. <code>=1-BINOM.DIST(11, 15, .8, TRUE)</code> = .65 for 12 or more.</div>"
+  },
+  "2-2": {
+    q: HIGHLANDS + "At the ski resort, a lift stop can last anywhere from <strong>2 to 10 minutes</strong>, and every length in that range is equally likely. Name the distribution. What is <strong>P(a stop lasts under 5 minutes)</strong>, and what is the mean stop length?",
+    a: "<strong>Uniform</strong> (continuous), between a = 2 and b = 10.<br><br>P(under 5) = (5 minus 2) / (10 minus 2) = 3 / 8 = .375, reported as <strong>.38</strong>.<br>Mean = (2 + 10) / 2 = <strong>6.00</strong> minutes.<br><br>No Excel function needed. The uniform is arithmetic. For the record, P(over 4 minutes) = .75."
+  },
+  "2-3": {
+    q: HIGHLANDS + "Open your Lab 2A workbook or a blank sheet. With a mean of 12.5 walk-ins per hour, compute <strong>P(more than 15 walk-ins in an hour)</strong>. Give the Excel function and the value. A teammate typed <strong>=1-POISSON.DIST(16,12.5,TRUE)</strong>. What did they actually compute?",
+    a: "<strong>=1-POISSON.DIST(15,12.5,TRUE) = .19</strong> (unrounded .1940)<br><br>\"More than 15\" means 16 or more, so subtract P(15 or fewer) from 1.<br><br>The teammate computed P(more than 16) = .13, which understates the risk. The off-by-one is the classic Module 2 error, so say the boundary out loud before you type it.<br><br>For the record: P(exactly 8) = .06 and P(15 or fewer) = .81.<div class=\"excel-check\"><code>=1-POISSON.DIST(15, 12.5, TRUE)</code></div>"
+  },
+  "2-4": {
+    q: HIGHLANDS + "Skier counts at the resort: 229 days, mean <strong>747.39</strong>, standard deviation <strong>159.63</strong>, roughly bell shaped. Name the distribution and say why it fits. Then compute <strong>P(more than 800 skiers on a day)</strong> and the <strong>90th percentile</strong> of daily skiers.",
+    a: "<strong>Normal</strong>, mean 747.39, sd 159.63. It fits because a daily count is a bell-shaped measurement that lands on either side of the mean about equally often. It would break for something heavily skewed, or something that piles up at zero.<br><br>P(more than 800) = 1 minus NORM.DIST(800, 747.39, 159.63, TRUE) = <strong>.37</strong><br>90th percentile = NORM.INV(.9, 747.39, 159.63) = <strong>952 skiers</strong> (a whole number, because the data are counts).<br><br>For the manager: staff for about 950 skiers and the resort is covered nine days in ten.<div class=\"excel-check\"><code>=1-NORM.DIST(800, 747.39, 159.63, TRUE)</code> and <code>=NORM.INV(.9, 747.39, 159.63)</code></div>"
+  },
+
+  // ========= Category 4: Mind the Margin =========
+  "3-0": {
+    q: "Treat SummitGear's 250 orders as the population (Lab 3A): mean <strong>$100.14</strong>, standard deviation <strong>$36.99</strong>. For samples of <strong>40 orders</strong>, what is the standard error of the sample mean, and what does it describe?",
+    a: "<strong>SE = $36.99 / SQRT(40) = $5.85</strong><br><br>It describes how far the mean of 40 orders typically lands from the true mean. It is the spread of the sampling distribution, not the spread of individual orders, which is $36.99.<br><br>Bonus check: the Central Limit Theorem says that with n = 40 the sampling distribution is close to normal whatever shape the orders have, so P(sample mean over $110) = 1 minus NORM.DIST(110, 100.14, 5.85, TRUE) = .05."
+  },
+  "3-1": {
+    q: GREENVALLEY + "To save time, Angela surveys the <strong>20 residents who show up to Tuesday's community meeting</strong>. Name the problem with this sample in one sentence and recommend a specific fix.",
+    a: "<strong>A convenience sample with voluntary-response bias.</strong> Residents who attend meetings differ from those who do not: more engaged, more free time, possibly different incomes. The sample does not represent all residents.<br><br>Fix: draw a simple random sample of 20 from the full resident list, or stratify by building or unit type and sample within each. Any defensible random design drawn from the full resident population earns credit.<br><br>Half credit for naming the bias without a concrete fix."
+  },
+  "3-2": {
+    q: GREENVALLEY + "Open your Lab 3B workbook or GreenValleyCommons_Residents.csv. The 20 incomes have mean <strong>$3,398.90</strong> and standard deviation <strong>$351.38</strong>. Compute the <strong>standard error</strong> and the <strong>t critical value for 95% confidence</strong>. Name the Excel function for each.",
+    a: "<strong>SE = $351.38 / SQRT(20) = $78.57</strong> (unrounded 78.5717)<br><strong>t* = T.INV.2T(.05, 19) = 2.093</strong><br><br>Degrees of freedom = 20 minus 1 = 19. Critical values are reported to three decimals.<div class=\"excel-check\"><code>=STDEV.S(range)/SQRT(20)</code> and <code>=T.INV.2T(.05, 19)</code></div>"
+  },
+  "3-3": {
+    q: GREENVALLEY + "Now build the <strong>95% confidence interval</strong> for the true mean monthly income. Show the margin of error and both endpoints, rounded the way the course rounds money. Name the Excel function that gives the margin of error in one call.",
+    a: "<strong>Margin of error = 2.093 times $78.5717 = $164.45</strong><br><strong>95% interval: $3,234.45 to $3,563.35</strong><br><br>Money to the cent. Multiply with the unrounded standard error. Rounding SE to $78.57 first happens to land on the same cent here, but it will not always, and \"never round twice\" is graded.<br><br>For the record, the 90% interval is $3,263.04 to $3,534.76 (t* = 1.729). Less confidence, narrower interval.<div class=\"excel-check\"><code>=CONFIDENCE.T(.05, 351.38, 20)</code> gives the margin of error. <code>=AVERAGE(range)</code> minus and plus that gives the interval.</div>"
+  },
+  "3-4": {
+    q: GREENVALLEY + "Two more things from the survey. (1) <strong>8 of 20</strong> residents are men. Can you report a 95% interval for the share of men? Check the condition. (2) How many residents does Angela need for a <strong>$100 margin of error</strong> on mean income at 95%?",
+    a: "<strong>(1) Not reportable.</strong> The condition is n times p-hat and n times (1 minus p-hat) both at least 10. Here they are 8 and 12. The honest answer is \"not yet: survey more residents.\" Reporting the interval anyway is a graded error.<br><br><strong>(2) n = (1.96 times 351.38 / 100)² = 47.4, rounded up to 48.</strong> Always round a sample size up. 47 residents would miss the target margin.<br><br>For a $150 margin, 22 residents would do."
+  },
+
+  // ========= Category 5: The Manager Sentence =========
+  "4-0": {
+    q: "The 95% interval for mean monthly income at Green Valley Commons is <strong>$3,234.45 to $3,563.35</strong>, from 20 residents. Write the <strong>one correct interpretation sentence</strong> a manager could read aloud.",
+    a: "\"We are 95% confident that the true mean monthly income of Green Valley Commons residents is between $3,234.45 and $3,563.35, based on a sample of 20.\"<br><br>The confidence is in the method: 95 of 100 intervals built this way would capture the true mean. Accept any wording that puts the confidence on the procedure and names the parameter, the sample size, and the level."
+  },
+  "4-1": {
+    q: "Two classmates interpret the same interval. One writes <strong>\"95% of residents earn between $3,234 and $3,563.\"</strong> The other writes <strong>\"There is a 95% probability that the mean income is in this range.\"</strong> In one sentence each, why is each one wrong?",
+    a: "<strong>First:</strong> the interval is about the mean, a parameter, not about individual residents. Individuals vary far more (sd $351.38) than the mean does (SE $78.57).<br><br><strong>Second:</strong> the true mean is a fixed number, not a random one. It is either inside this interval or it is not. The 95% belongs to the procedure that produced the interval, not to this one interval.<br><br>Catching the first sentence is a graded skill in Module 3."
+  },
+  "4-2": {
+    q: "Back to the fraud flag: <strong>P(fraud given flagged) = .27</strong>. The finance manager wants to <strong>auto-cancel every flagged order</strong>. Give the manager sentence: a decision verb, the evidence in business units, and what the number does not mean.",
+    a: "Any wording that hits all three parts:<br><br><strong>Review flagged orders, do not cancel them.</strong> Of every 670 flags, about 490 are legitimate orders and 180 are fraud, so auto-cancelling would turn away nearly three legitimate customers for every fraud it stops.<br><br>What it does not mean: it does not mean the detector is bad (it still catches 90% of fraud), and it does not mean every flagged order is legitimate.<br><br>Half credit for the right decision without the counts."
+  },
+  "4-3": {
+    q: "The registration desk: <strong>P(more than 15 walk-ins in an hour) = .19</strong>, P(more than 17) = .08, P(more than 20) = .02. Fill in the Module 2 skeleton: <strong>\"Plan for [number] per hour; there is a [probability] chance of exceeding [threshold], so [action].\"</strong> Defend your staffing level.",
+    a: "Any defensible level earns credit if the risk is priced next to it. Two examples:<br><br>\"Plan for 15 per hour; there is a .19 chance of exceeding that, so expect a queue about one hour in five and post the wait time.\"<br><br>\"Plan for 17 per hour; there is a .08 chance of exceeding that, so open one more desk and accept a queue roughly one hour in twelve.\"<br><br>The number does not decide. It prices the choice. No credit for a staffing level with no probability next to it, or a probability with no action."
+  },
+  "4-4": {
+    q: "<strong>Daily Double, for your wager.</strong><br><br>Write a three-sentence \"So What / Now What\" memo to the Green Valley Commons board. The facts: mean monthly income from 20 residents is <strong>$3,398.90</strong>, 95% interval <strong>$3,234.45 to $3,563.35</strong>; the two proportion questions are <strong>not reportable</strong> at n = 20; a $100 margin needs <strong>48 residents</strong>. The memo must include (1) the estimate with its uncertainty, (2) a business takeaway in plain language, and (3) a next step with a number in it.",
+    a: "<strong>Full credit needs all three:</strong><ul class=\"rubric\"><li>(a) The point estimate and the interval, with n and the confidence level.</li><li>(b) A takeaway a board member can act on, in business language, with no unexplained jargon.</li><li>(c) A concrete next step: survey 48 residents for a $100 margin, and hold the proportion results until then.</li></ul><br><strong>One model, to read aloud after the team has answered:</strong><br>\"From 20 residents, mean monthly income is $3,398.90, and we are 95% confident the true mean is between $3,234.45 and $3,563.35. That range is tight enough to set a rent band now, but the sample is too small to say anything reliable about the share of residents who are men or who live within five miles of a doctor. I recommend surveying 48 residents, which brings the income margin to $100 and makes the proportion questions reportable.\"<br><br>Reject formula-heavy memos and the \"probability that the mean is\" sentence. Half credit for two of the three parts.",
+    dailyDouble: true
+  }
+};
+
+// ================= State =================
+const STORAGE_KEY = "info1020-midterm-jeopardy-fall2026";
+const teams = [
+  { name: "Team 1", score: 0 },
+  { name: "Team 2", score: 0 },
+  { name: "Team 3", score: 0 },
+  { name: "Team 4", score: 0 },
+  { name: "Team 5", score: 0 },
+  { name: "Team 6", score: 0 }
+];
+const visited = new Set();
+let currentKey = null; // e.g. "3-2"
+let currentValue = 0;
+let ddWager = 0;
+let ddTeam = -1;
+
+// Scores and played cells survive an accidental refresh in class.
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ teams: teams, visited: Array.from(visited) }));
+  } catch (e) { /* storage unavailable: the game still works for this page load */ }
+}
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const s = JSON.parse(raw);
+    if (Array.isArray(s.teams) && s.teams.length === teams.length) {
+      s.teams.forEach((t, i) => {
+        teams[i].name = String(t.name || teams[i].name).slice(0, 40);
+        teams[i].score = Number.isFinite(Number(t.score)) ? Number(t.score) : 0;
+      });
+    }
+    if (Array.isArray(s.visited)) s.visited.forEach(k => { if (QUESTIONS[k]) visited.add(k); });
+  } catch (e) { /* ignore a corrupt save */ }
+}
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[c]));
+}
+function money(n) {
+  return (n < 0 ? "-$" : "$") + Math.abs(n).toLocaleString("en-US");
+}
+
+// ================= Board rendering =================
+function buildBoard() {
+  const board = document.getElementById('board');
+  board.innerHTML = '';
+
+  CATEGORIES.forEach(cat => {
+    const div = document.createElement('div');
+    div.className = 'category';
+    div.setAttribute('role', 'columnheader');
+    div.textContent = cat;
+    board.appendChild(div);
+  });
+
+  VALUES.forEach((val, vIdx) => {
+    CATEGORIES.forEach((cat, cIdx) => {
+      const key = `${cIdx}-${vIdx}`;
+      const cell = document.createElement('button');
+      cell.type = 'button';
+      cell.className = 'cell';
+      cell.textContent = `$${val}`;
+      cell.dataset.key = key;
+      cell.dataset.value = val;
+      cell.setAttribute('aria-label', `${cat} for $${val}`);
+      if (visited.has(key)) {
+        cell.classList.add('played');
+        cell.setAttribute('aria-disabled', 'true');
+      }
+      cell.onclick = () => openCell(cIdx, vIdx);
+      board.appendChild(cell);
+    });
+  });
+}
+
+// ================= Score panel =================
+function buildScorePanel() {
+  const panel = document.getElementById('scorePanel');
+  panel.innerHTML = '<h2>★ Teams ★</h2>';
+  teams.forEach((t, idx) => {
+    const div = document.createElement('div');
+    div.className = 'team';
+    div.innerHTML = `
+      <input class="team-name" value="${escapeHtml(t.name)}" aria-label="Team ${idx + 1} name" onchange="renameTeam(${idx}, this.value)">
+      <div class="score-row">
+        <div class="score ${t.score < 0 ? 'negative' : ''}" id="score-${idx}">${money(t.score)}</div>
+      </div>
+      <div class="score-btns">
+        ${VALUES.map(v => `<button class="score-btn" onclick="adjust(${idx}, ${v})">+${v}</button>`).join('')}
+      </div>
+      <div class="score-btns">
+        ${VALUES.map(v => `<button class="score-btn minus" onclick="adjust(${idx}, ${-v})">−${v}</button>`).join('')}
+      </div>
+    `;
+    panel.appendChild(div);
+  });
+}
+
+function renameTeam(idx, val) {
+  teams[idx].name = (val || `Team ${idx + 1}`).slice(0, 40);
+  saveState();
+}
+
+function adjust(idx, delta) {
+  teams[idx].score += delta;
+  updateScoreDisplay(idx);
+  saveState();
+}
+
+function updateScoreDisplay(idx) {
+  const el = document.getElementById(`score-${idx}`);
+  el.textContent = money(teams[idx].score);
+  el.classList.toggle('negative', teams[idx].score < 0);
+}
+
+// ================= Cell to question flow =================
+function openCell(cIdx, vIdx) {
+  const key = `${cIdx}-${vIdx}`;
+  if (visited.has(key)) return;
+  currentKey = key;
+  currentValue = VALUES[vIdx];
+
+  const data = QUESTIONS[key];
+  document.getElementById('ovCategory').textContent = CATEGORIES[cIdx];
+  document.getElementById('ovValue').textContent = `$${currentValue}`;
+  document.getElementById('ddAward').classList.remove('active');
+
+  const overlay = document.getElementById('overlay');
+  overlay.classList.add('active');
+
+  if (data.dailyDouble) {
+    showDailyDoubleSplash();
+  } else {
+    showQuestion();
+  }
+}
+
+function showDailyDoubleSplash() {
+  document.getElementById('ddSplash').classList.add('active');
+  document.getElementById('overlayContent').style.display = 'none';
+  document.getElementById('overlayControls').style.display = 'none';
+
+  const sel = document.getElementById('ddTeamSelect');
+  sel.innerHTML = '';
+  teams.forEach((t, i) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'dd-team-btn';
+    b.textContent = `${t.name} (${money(t.score)})`;
+    b.onclick = () => selectDdTeam(i, b);
+    sel.appendChild(b);
+  });
+
+  document.getElementById('ddWagerInput').value = '';
+  ddTeam = -1;
+}
+
+function selectDdTeam(idx, btn) {
+  ddTeam = idx;
+  document.querySelectorAll('.dd-team-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  const maxWager = Math.max(teams[idx].score, 500);
+  const input = document.getElementById('ddWagerInput');
+  input.max = maxWager;
+  input.placeholder = `Max $${maxWager}`;
+  input.focus();
+}
+
+function confirmWager() {
+  if (ddTeam < 0) {
+    alert('Select the team answering first.');
+    return;
+  }
+  const val = parseInt(document.getElementById('ddWagerInput').value, 10);
+  if (isNaN(val) || val < 0) {
+    alert('Enter a wager of $0 or more.');
+    return;
+  }
+  const maxWager = Math.max(teams[ddTeam].score, 500);
+  if (val > maxWager) {
+    alert(`The wager cannot exceed $${maxWager}.`);
+    return;
+  }
+  ddWager = val;
+  currentValue = val;
+  document.getElementById('ovValue').textContent = `Wager: $${val}`;
+  document.getElementById('ddSplash').classList.remove('active');
+  document.getElementById('ddAwardWho').textContent = `${teams[ddTeam].name}: $${val}`;
+  document.getElementById('ddAward').classList.add('active');
+  showQuestion();
+}
+
+function awardWager(sign) {
+  if (ddTeam < 0 || !ddWager) return;
+  adjust(ddTeam, sign * ddWager);
+  document.getElementById('ddAward').classList.remove('active');
+}
+
+function showQuestion() {
+  const data = QUESTIONS[currentKey];
+  document.getElementById('qText').innerHTML = data.q;
+  document.getElementById('aBody').innerHTML = data.a;
+  document.getElementById('aText').classList.remove('active');
+  document.getElementById('revealBtn').style.display = '';
+  document.getElementById('overlayContent').style.display = '';
+  document.getElementById('overlayControls').style.display = '';
+  document.getElementById('overlayContent').scrollTop = 0;
+}
+
+function revealAnswer() {
+  document.getElementById('aText').classList.add('active');
+  document.getElementById('revealBtn').style.display = 'none';
+  const a = document.getElementById('aText');
+  if (a.scrollIntoView) a.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function closeOverlay() {
+  if (!currentKey) return;
+  visited.add(currentKey);
+  document.getElementById('overlay').classList.remove('active');
+  document.getElementById('ddSplash').classList.remove('active');
+  document.getElementById('ddAward').classList.remove('active');
+  document.getElementById('overlayContent').style.display = '';
+  document.getElementById('overlayControls').style.display = '';
+  currentKey = null;
+  ddTeam = -1;
+  ddWager = 0;
+  saveState();
+  buildBoard();
+}
+
+// ================= Reset =================
+function resetAll() {
+  if (!confirm('Reset the whole game? This clears every score and every revealed question.')) return;
+  teams.forEach((t, i) => { t.score = 0; t.name = `Team ${i + 1}`; });
+  visited.clear();
+  try { localStorage.removeItem(STORAGE_KEY); } catch (e) { /* ignore */ }
+  buildScorePanel();
+  buildBoard();
+}
+
+// ================= Keyboard =================
+document.addEventListener('keydown', (e) => {
+  const overlayOpen = document.getElementById('overlay').classList.contains('active');
+  if (!overlayOpen) return;
+  const typing = /^(INPUT|TEXTAREA)$/.test(document.activeElement && document.activeElement.tagName);
+  if (e.key === 'Escape') {
+    closeOverlay();
+  } else if ((e.key === 'r' || e.key === 'R') && !typing) {
+    const splashOpen = document.getElementById('ddSplash').classList.contains('active');
+    if (!splashOpen) revealAnswer();
+  }
+});
+
+// ================= Init =================
+loadState();
+buildBoard();
+buildScorePanel();
+</script>
+</body>
+</html>
