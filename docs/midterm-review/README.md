@@ -15,7 +15,8 @@ is the same. The question bank is new, and every number in it comes from the cou
 ## In the classroom
 
 1. Open the game and press **F11** (Windows) or **Ctrl+Cmd+F** (Mac) for full screen.
-2. Rename the teams by clicking a name in the right-hand panel.
+2. The six teams come pre-named: Bayes Watch, Margin of Terror, Significant Others, The
+   Outliers, Mode Squad, Standard Errors. Click a name in the right-hand panel to change it.
 3. Click a dollar cell to show a question. **R** or the button reveals the answer. **Esc** returns
    to the board and marks the cell played.
 4. Score with the +/− buttons after each question. Correct adds the value, wrong subtracts it.

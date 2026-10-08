@@ -17,7 +17,7 @@
 | Time | Segment |
 |---|---|
 | 0:00 to 0:05 | Welcome, intro slide, prize reveal |
-| 0:05 to 0:10 | Form teams (4 to 6 students each). Each team opens the game URL on one laptop and their lab workbooks on another |
+| 0:05 to 0:10 | Form six teams (five students each with a roster of 30). Teams are pre-named in the game: Bayes Watch, Margin of Terror, Significant Others, The Outliers, Mode Squad, Standard Errors. Each team opens the game URL on one laptop and their lab workbooks on another |
 | 0:10 to 0:15 | Walk through the rules and the Daily Double mechanic |
 | 0:15 to 1:35 | Gameplay. About 80 minutes for 25 questions, 3 to 4 minutes each |
 | 1:35 to 1:45 | Final scores, prize, photos |
