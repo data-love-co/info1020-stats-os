@@ -22,6 +22,9 @@ Method sheet: `4_Library/method/m4-*.md`. Verification targets:
 - With an agent that can read this folder: say **"run AI Block 4"** (skill `one-sample-readout`).
 - With a chat tool: paste prompt 4 from `4_Library/portable-prompts/Portable-Prompts.md`
   and upload the data file.
+- To build it as a page you can open and reuse, paste prompt 4+ from the guide into Copilot
+  Agent mode in VS Code with this folder open. It saves to
+  `2_Outputs/.agents/M4/test-readout.html`.
 
 Then fill `AI-Block-4-Template.md` and paste it into the So-What tab. The manager sentence
 is yours to write; the tool does not write it.

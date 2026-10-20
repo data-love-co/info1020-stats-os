@@ -673,6 +673,71 @@ critical values to three decimals. Show each value unrounded once, then rounded.
           </div>
         </details>
         <details class="prompt">
+          <summary><span class="pnum">4+</span>Build Module 4 as a working page (Agent mode)</summary>
+          <div class="pbody">
+            <p class="phint"><b>Agent mode only.</b> This one writes a file, so it needs GitHub Copilot in Agent mode in VS Code, or Claude Code. On a chat tool, use prompt 4 above instead, or add "Reply with the complete HTML in ONE code block, nothing else" to the end of this prompt, paste the result into Notepad or TextEdit, and save it as test-readout.html. <b>Verify against:</b> t = 1.90, p = .038, critical 1.753, reject; two-tailed against $2,800: t = -1.88, p = .079; shuttle: z = 1.12, p = .131, fail to reject. The page saves into your own 2_Outputs folder and opens by double-clicking, with no internet needed.</p>
+            <div class="ptop"><button class="copy" type="button">Copy prompt</button></div>
+            <pre><code>I am a business statistics student. Build AI Block 4 as a working page I can
+actually use, not a write-up, not a Python script, not a notebook.
+
+Make ONE self-contained HTML file: no build step, no frameworks, no external
+scripts or fonts, nothing loaded from the internet, so it opens by
+double-clicking and works offline. Save it to
+2_Outputs/.agents/M4/test-readout.html. Do not create any other file.
+
+What the page has to do:
+1. A mode switch: MEAN (t) or PROPORTION (z).
+2. Before anything else, three boxes I must fill in this order: the parameter
+   in words, the claimed value (H0), and the tail (LEFT, RIGHT, TWO) with a
+   one-line reason from the business question. The data boxes stay disabled
+   until the tail is chosen. The page must never pick a tail for me.
+3. Then alpha (.01, .05, .10) and the data: for MEAN either a pasted column of
+   numbers or n, mean and sd; for PROPORTION n and the count.
+4. PROPORTION mode prints the checks n x p0 and n x (1 minus p0) against 10
+   BEFORE any result, and refuses to show a result if either is under 10. The
+   standard error uses p0, not p-hat, and the page says so on screen.
+5. Output as the seven numbered steps, each on its own labelled line, with the
+   Excel function next to every computed value (AVERAGE, STDEV.S, T.INV,
+   T.INV.2T, T.DIST.RT, T.DIST.2T, NORM.S.INV, NORM.S.DIST): parameter; H0; Ha
+   with the tail; the statistic and df; alpha and the critical value; the
+   computed statistic and p-value; the decision in business language.
+6. Draw step 5: an inline SVG of the t or z curve with the rejection region
+   shaded and the computed statistic marked.
+7. For MEAN mode, the 95% confidence interval, with two sentences on why a
+   claimed value can sit inside a two-sided interval while a one-sided test
+   rejects it.
+8. A box titled "What this does NOT prove" and a one-line Type I error in
+   business terms. The strings "accept H0" and "proves" must never appear.
+9. A checklist titled "What your manager sentence must contain." Do not write
+   the sentence, on the page or in chat.
+
+For the critical values and p-values, implement the t distribution CDF and
+inverse and the standard normal CDF and inverse in JavaScript yourself. Do not
+hardcode one number and do not load a library. Put a self-test panel on the
+page that shows these passing: T.INV(.95, 15) = 1.753; T.INV.2T(.05, 15) =
+2.131; T.DIST.RT(1.90, 15) = .038; T.DIST.2T(1.88, 15) = .079;
+NORM.S.INV(.95) = 1.645.
+
+Check all of this before you tell me it is done. MEAN, right-tailed, H0 2500,
+alpha .05, n = 16, mean 2650.68, sd 317.11: SE $79.28, t = 1.90, critical
+1.753, p = .038, reject; the 95% interval is $2,481.70 to $2,819.66.
+Two-tailed against 2800: t = -1.88, critical 2.131, p = .079, fail to reject.
+PROPORTION, right-tailed, p0 .40, n = 48, count 23: checks 19.2 and 28.8,
+p-hat .48, SE .0707, z = 1.12, critical 1.645, p = .131, fail to reject. If
+any of those is off, fix the page rather than explaining the difference away.
+
+Round like this, because I am graded on it: probabilities, proportions and
+test statistics to two decimals with no leading zero (.34, t = 2.53); p-values
+to three decimals with no leading zero (p = .038), and p &lt; .001 below that;
+money to the cent; critical values to three decimals. Show each value
+unrounded once, then rounded. Never round a value and then compute from the
+rounded one.
+
+Do not ask me questions; use the assumptions above. Do not write my
+recommendation or my manager sentence.</code></pre>
+          </div>
+        </details>
+        <details class="prompt">
           <summary><span class="pnum">5</span>A/B test readout (Module 5)</summary>
           <div class="pbody">
             <p class="phint"><b>Data:</b> Streamly_ABTest_CX.csv, then Multitasking_Example14.csv in a new chat. <b>Verify against:</b> Streamly t = 2.53, p = .016, CI .16 to 1.44; multitasking is paired, t = 12.52, p &lt; .001.</p>
