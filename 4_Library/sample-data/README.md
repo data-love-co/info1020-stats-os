@@ -144,8 +144,8 @@ Career Services salaries, 4 paths, 20 each:
 
 | Quantity | Value |
 |---|---|
-| Group means | OR Analyst $81,375.21; Computer Analyst $79,496.78; Accountant $71,370.22; Financial Specialist $66,865.57 |
-| Grand mean | $75,716.16 |
+| Group means | OR Analyst $81,375.21; Computer Analyst $83,253.65; Accountant $71,370.22; Financial Specialist $66,865.57 |
+| Grand mean | $75,716.17 |
 | Largest sd / smallest sd | 2.19 (report it; the course treats it as borderline and proceeds) |
 | SSB, SSW | 3721172720, 1232181262 |
 | df between, within | 3, 76 |
@@ -153,7 +153,7 @@ Career Services salaries, 4 paths, 20 each:
 | **F** | **76.51** |
 | F* at .05 | 2.72 |
 | p | < .001 |
-| Tukey HSD (q = 3.7149 for k = 4, df = 76) | $3,344.70 |
+| Tukey HSD (q = 3.7149 for k = 4, df = 76) | $3,344.74 |
 | Pairs that differ | all except OR Analyst vs Computer Analyst (difference $1,878.43) |
 | Family-wise error of six t-tests at .05 | .26 (1 minus .95^6) |
 
