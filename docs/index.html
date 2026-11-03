@@ -514,6 +514,63 @@ critical values to three decimals. Show each value unrounded once, then rounded.
           </div>
         </details>
         <details class="prompt">
+          <summary><span class="pnum">1+</span>Build Module 1 as a working page (Agent mode)</summary>
+          <div class="pbody">
+            <p class="phint"><b>Agent mode only.</b> This one writes a file, so it needs GitHub Copilot in Agent mode in VS Code, or Claude Code. On a chat tool, use prompt 1 above instead, or add "Reply with the complete HTML in ONE code block, nothing else" to the end of this prompt, paste the result into Notepad or TextEdit, and save it as base-rate-explainer.html. <b>Verify against:</b> P(fraud given flagged) = .27 from 180 true flags and 490 false flags; from the SummitGear table P(member) = .34, P(over $100 given member) = .78, P(member given over $100) = .54. The page saves into your own 2_Outputs folder and opens by double-clicking, with no internet needed.</p>
+            <div class="ptop"><button class="copy" type="button">Copy prompt</button></div>
+            <pre><code>I am a business statistics student. Build AI Block 1 as a working page I can
+actually use, not a write-up, not a Python script, not a notebook.
+
+Make ONE self-contained HTML file: no build step, no frameworks, no external
+scripts or fonts, nothing loaded from the internet, so it opens by
+double-clicking and works offline. Save it to
+2_Outputs/.agents/M1/base-rate-explainer.html. Do not create any other file.
+
+What the page has to do:
+1. A base-rate panel. Boxes for the base rate, the catch rate and the
+   false-alarm rate, each accepting either .02 or 2%.
+2. The tree of 10,000 drawn as an inline SVG, with the four leaf counts on it.
+   Counts must stay whole numbers: if a rate would split the tree into
+   fractions of a case, grow the tree by powers of ten until every branch is
+   whole and say on screen that you did. Half a flag is not something a
+   manager can picture.
+3. P(condition given flagged) and P(condition given not flagged), each shown
+   unrounded once and then rounded. A probability that rounds to .00 but is
+   not zero must print as "&lt; .01", never as .00.
+4. Next to the result, print P(flagged given condition) and label it the catch
+   rate, so the two conditionals sit side by side. Say in one line which one
+   the vendor quotes and which one the business question asks.
+5. A table panel. I paste two columns, one row per order, and the page builds
+   the contingency table with the margins, then reports the marginal, joint,
+   union and both conditional probabilities, with the COUNTIF or COUNTIFS
+   pattern next to each.
+6. An independence check that compares the conditional rate with the overall
+   rate, states the gap in percentage points, and refuses to call anything
+   independent on the strength of a small gap alone.
+
+Put a self-test panel on the page showing these passing: 2% base rate, 90%
+catch rate, 5% false alarm gives 200 and 9,800, then 180 true flags and 490
+false flags, 670 flags in all, and P(condition given flagged) = .27; a .5%
+base rate grows the tree to 100,000 and still returns whole counts.
+
+Check all of this before you tell me it is done. From the SummitGear table of
+250 orders with 85 members, 122 orders over $100 and 66 that are both:
+P(member) = .34, P(over $100) = .49, P(member and over) = .26, P(member or
+over) = .56, P(over given member) = .78 and P(member given over) = .54. If any
+of those is off, fix the page rather than explaining the difference away.
+
+Round like this, because I am graded on it: probabilities, proportions and
+test statistics to two decimals with no leading zero (.34, t = 2.53); p-values
+to three decimals with no leading zero (p = .038), and p &lt; .001 below that;
+money to the cent; critical values to three decimals. Show each value
+unrounded once, then rounded. Never round a value and then compute from the
+rounded one.
+
+Do not ask me questions; use the assumptions above. Do not write my
+recommendation or my manager sentence.</code></pre>
+          </div>
+        </details>
+        <details class="prompt">
           <summary><span class="pnum">2</span>Demand-planning simulator (Module 2)</summary>
           <div class="pbody">
             <p class="phint"><b>Data:</b> No file needed for the walk-ins. <b>Verify against:</b> P(more than 15) = .19; sd = 3.54.</p>
@@ -546,6 +603,65 @@ Round like this, because I am graded on it: probabilities, proportions and test
 statistics to two decimals with no leading zero (.34, t = 2.53); p-values to three
 decimals with no leading zero (p = .038), and p &lt; .001 below that; money to the cent;
 critical values to three decimals. Show each value unrounded once, then rounded.</code></pre>
+          </div>
+        </details>
+        <details class="prompt">
+          <summary><span class="pnum">2+</span>Build Module 2 as a working page (Agent mode)</summary>
+          <div class="pbody">
+            <p class="phint"><b>Agent mode only.</b> This one writes a file, so it needs GitHub Copilot in Agent mode in VS Code, or Claude Code. On a chat tool, use prompt 2 above instead, or add "Reply with the complete HTML in ONE code block, nothing else" to the end of this prompt, paste the result into Notepad or TextEdit, and save it as demand-simulator.html. <b>Verify against:</b> P(more than 15 walk-ins) = .19; binomial P(exactly 12 of 15) = .25 and sd 1.55; P(more than 800 skiers) = .37 and the 90th percentile 952; uniform P(under 5) = .38. The page saves into your own 2_Outputs folder and opens by double-clicking, with no internet needed.</p>
+            <div class="ptop"><button class="copy" type="button">Copy prompt</button></div>
+            <pre><code>I am a business statistics student. Build AI Block 2 as a working page I can
+actually use, not a write-up, not a Python script, not a notebook.
+
+Make ONE self-contained HTML file: no build step, no frameworks, no external
+scripts or fonts, nothing loaded from the internet, so it opens by
+double-clicking and works offline. Save it to
+2_Outputs/.agents/M2/demand-simulator.html. Do not create any other file.
+
+What the page has to do:
+1. A distribution picker: Binomial, Poisson, Normal, Uniform. Before any
+   number appears I must name the distribution and type its parameters, and
+   give a one-line reason it fits. The page must never pick the distribution
+   for me.
+2. For the chosen distribution: the exact probability, the cumulative
+   probability, "more than k" computed as 1 minus the cumulative at k, and the
+   mean and standard deviation. Put the Excel function next to every value
+   (BINOM.DIST, POISSON.DIST, NORM.DIST, NORM.INV).
+3. Spell the boundary out in words next to any "more than" result: more than
+   15 means 16 or more, so subtract the cumulative at 15, not at 16. That
+   off-by-one is the error this module grades.
+4. A staffing panel for the Poisson case: I enter a capacity and the page
+   returns the probability of exceeding it, plus a short ladder of capacity
+   levels with the risk printed next to each, so the number prices the choice
+   rather than making it.
+5. A simulation: run a number of trials I choose, draw the result as an inline
+   SVG histogram, and overlay the theoretical shape. Label the simulated
+   figures as simulated everywhere they appear.
+6. Uniform mode is arithmetic, with no Excel function, and the page should say
+   so rather than inventing one.
+
+Implement the normal cumulative and its inverse in JavaScript yourself. Do not
+hardcode one value and do not load a library. Binomial and Poisson follow from
+the factorial formulas. Put a self-test panel on the page showing these
+passing: BINOM.DIST(12, 15, .8, FALSE) = .25; 1 - BINOM.DIST(11, 15, .8, TRUE)
+= .65; POISSON.DIST(8, 12.5, FALSE) = .06; 1 - POISSON.DIST(15, 12.5, TRUE) =
+.19; NORM.INV(.9, 747.39, 159.63) = 952.
+
+Check all of this before you tell me it is done. Binomial n = 15, p = .80: sd
+1.55. Poisson mean 12.5: P(15 or fewer) = .81 and sd 3.54. Normal with mean
+747.39 and sd 159.63: P(more than 800) = .37 and the 25th percentile is 640.
+Uniform between 2 and 10: P(under 5) = .38, P(over 4) = .75, mean 6.00. If any
+of those is off, fix the page rather than explaining the difference away.
+
+Round like this, because I am graded on it: probabilities, proportions and
+test statistics to two decimals with no leading zero (.34, t = 2.53); p-values
+to three decimals with no leading zero (p = .038), and p &lt; .001 below that;
+money to the cent; critical values to three decimals. Show each value
+unrounded once, then rounded. Never round a value and then compute from the
+rounded one.
+
+Do not ask me questions; use the assumptions above. Do not write my
+recommendation or my manager sentence.</code></pre>
           </div>
         </details>
         <details class="prompt">
@@ -782,6 +898,67 @@ critical values to three decimals. Show each value unrounded once, then rounded.
           </div>
         </details>
         <details class="prompt">
+          <summary><span class="pnum">5+</span>Build Module 5 as a working page (Agent mode)</summary>
+          <div class="pbody">
+            <p class="phint"><b>Agent mode only.</b> This one writes a file, so it needs GitHub Copilot in Agent mode in VS Code, or Claude Code. On a chat tool, use prompt 5 above instead, or add "Reply with the complete HTML in ONE code block, nothing else" to the end of this prompt, paste the result into Notepad or TextEdit, and save it as ab-test-readout.html. <b>Verify against:</b> Streamly t = 2.53 on conservative df 39, p = .016, Welch p = .014, interval .16 to 1.44; multitasking is paired, t = 12.52, p &lt; .001. The page saves into your own 2_Outputs folder and opens by double-clicking, with no internet needed.</p>
+            <div class="ptop"><button class="copy" type="button">Copy prompt</button></div>
+            <pre><code>I am a business statistics student. Build AI Block 5 as a working page I can
+actually use, not a write-up, not a Python script, not a notebook.
+
+Make ONE self-contained HTML file: no build step, no frameworks, no external
+scripts or fonts, nothing loaded from the internet, so it opens by
+double-clicking and works offline. Save it to
+2_Outputs/.agents/M5/ab-test-readout.html. Do not create any other file.
+
+What the page has to do:
+1. Step zero first, before anything else. I choose paired or independent and
+   type the reason in my own words. The data boxes stay disabled until I have.
+   The page must never decide this for me, because the design decides it, not
+   the data.
+2. Then the tail (LEFT, RIGHT, TWO) with a one-line reason from the business
+   question, also before the data unlocks.
+3. Paired mode: build the column of differences, then mean difference, sd of
+   the differences, standard error, t and df = n minus 1. Name T.TEST with
+   type 1.
+4. Independent mode: report the conservative path and the Excel path side by
+   side. Conservative df is the smaller n minus 1, which is the by-hand route.
+   Welch df is what T.TEST type 3 uses. Show both t, both df and both
+   p-values, and say plainly that both routes reach the same decision here.
+5. The confidence interval for the difference, with one line on why zero
+   sitting outside the interval matches a two-tailed rejection.
+6. A practical-significance panel. I enter the monthly volume, the value of
+   one unit and the cost of the change, and the page returns the payback at
+   the point estimate and the payback at the nearer end of the interval. Label
+   it clearly: statistically significant and worth the money are two different
+   questions, and the interval answers the second.
+7. A short note on why pairing is a design choice, framed as the shuffle test:
+   shuffle the pairs and the differences stop meaning anything.
+
+Implement the t distribution cumulative and its inverse, and the Welch degrees
+of freedom, in JavaScript yourself. Do not hardcode one value and do not load
+a library. Put a self-test panel on the page showing these passing:
+T.INV.2T(.05, 39) = 2.023 and T.DIST.2T(2.53, 39) = .016.
+
+Check all of this before you tell me it is done. Streamly, 40 per variant,
+independent: mean A 7.44, mean B 8.24, sd 1.60 and 1.21, difference .80,
+standard error .317, t = 2.53, conservative df 39, p = .016, Welch p = .014,
+and the 95% interval for the difference .16 to 1.44. Multitasking, 14
+students, paired: mean difference 28.14 seconds, sd 8.41, standard error 2.25,
+t = 12.52, p &lt; .001. If any of those is off, fix the page rather than
+explaining the difference away.
+
+Round like this, because I am graded on it: probabilities, proportions and
+test statistics to two decimals with no leading zero (.34, t = 2.53); p-values
+to three decimals with no leading zero (p = .038), and p &lt; .001 below that;
+money to the cent; critical values to three decimals. Show each value
+unrounded once, then rounded. Never round a value and then compute from the
+rounded one.
+
+Do not ask me questions; use the assumptions above. Do not write my
+recommendation or my manager sentence.</code></pre>
+          </div>
+        </details>
+        <details class="prompt">
           <summary><span class="pnum">6</span>Group-comparison readout (Module 6)</summary>
           <div class="pbody">
             <p class="phint"><b>Data:</b> CareerServices_Salaries.csv, then Clinic_WaitTimes.csv in a new chat. <b>Verify against:</b> Salaries F = 76.51, HSD $3,344.70; clinics F = .71, stop.</p>
@@ -817,6 +994,75 @@ Round like this, because I am graded on it: probabilities, proportions and test
 statistics to two decimals with no leading zero (.34, t = 2.53); p-values to three
 decimals with no leading zero (p = .038), and p &lt; .001 below that; money to the cent;
 critical values to three decimals. Show each value unrounded once, then rounded.</code></pre>
+          </div>
+        </details>
+        <details class="prompt">
+          <summary><span class="pnum">6+</span>Build Module 6 as a Tukey calculator (Agent mode)</summary>
+          <div class="pbody">
+            <p class="phint"><b>Agent mode only.</b> This one writes a file, so it needs GitHub Copilot in Agent mode in VS Code, or Claude Code. On a chat tool, use prompt 6 above instead, or add "Reply with the complete HTML in ONE code block, nothing else" to the end of this prompt, paste the result into Notepad or TextEdit, and save it as tukey-calculator.html. <b>Verify against:</b> salaries F = 76.51 against 2.72, spread ratio 2.19, and with q = 3.7149 an HSD of $3,344.74 where every pair differs except Computer Analyst against OR Analyst at $1,878.43; clinics F = .71, so the page must refuse Tukey. The page saves into your own 2_Outputs folder and opens by double-clicking, with no internet needed.</p>
+            <div class="ptop"><button class="copy" type="button">Copy prompt</button></div>
+            <pre><code>I am a business statistics student. Build AI Block 6 as a working page I can
+actually use, not a write-up, not a Python script, not a notebook.
+
+Make ONE self-contained HTML file: no build step, no frameworks, no external
+scripts or fonts, nothing loaded from the internet, so it opens by
+double-clicking and works offline. Save it to
+2_Outputs/.agents/M6/tukey-calculator.html. Do not create any other file.
+
+What the page has to do:
+1. An ANOVA panel first. I paste three or more columns, one per group. The
+   page returns k, each group's n, mean and sd, then the whole ANOVA table:
+   SS between, SS within, df between, df within, MS between, MS within, F, the
+   critical F and p. Put the Excel function next to each (F.INV.RT,
+   F.DIST.RT, SUMPRODUCT).
+2. A spread check: largest sd divided by smallest sd, against a rule of thumb
+   of 2. Print the ratio whatever it is. If it is over 2, say so and say that
+   equal group sizes make ANOVA forgiving, rather than hiding it or calling
+   the assumption met.
+3. The Tukey panel stays LOCKED until F is greater than the critical F. If the
+   ANOVA fails to reject, the page must refuse to run Tukey and say why in one
+   line: with no overall difference established there is nothing to follow up,
+   and running the comparisons anyway is the error this module grades.
+4. The q critical value is an input I type, not something the page invents.
+   Excel has no function for it; my workbook gives it in a grey cell. You may
+   include a small lookup table for k = 2 to 6 at alpha .05 as a convenience,
+   clearly labelled, but the typed value always wins and the page must never
+   guess a q it does not have.
+5. Tukey itself: HSD = q times the square root of (MS within divided by n) for
+   equal group sizes. If the groups are unequal, use the Tukey-Kramer form
+   with the square root of (MS within over 2, times the sum of 1 over each n),
+   and say on screen which form it used.
+6. Every pairwise difference in a table, largest first, each marked differs or
+   does not differ against the HSD, with the gap printed in the units of the
+   data.
+7. A family-wise error panel: for k groups, the number of pairs and the chance
+   of at least one false alarm at alpha .05, so the reason for ANOVA is on the
+   same screen as the follow-up.
+
+Implement the F distribution cumulative and its inverse in JavaScript
+yourself. Do not hardcode one value and do not load a library. Put a self-test
+panel on the page showing these passing: F.INV.RT(.05, 3, 76) = 2.72;
+F.INV.RT(.05, 2, 57) = 3.16; F.DIST.RT(.71, 2, 57) = .494.
+
+Check all of this before you tell me it is done. Career Services salaries, 4
+paths, 20 each: SS between 3721172720, SS within 1232181262, df 3 and 76, MS
+between 1240390907, MS within 16212911, F = 76.51 against a critical 2.72, p &lt;
+.001, and the spread ratio 2.19. With q = 3.7149 the HSD is $3,344.74, and
+every pair differs except Computer Analyst against OR Analyst, which is
+$1,878.43 apart. Atlas clinics, 3 states, 20 days each: F = .71 against a
+critical 3.16, p = .494, so the page must refuse Tukey. Six t-tests at alpha
+.05 carry a family-wise error of .26. If any of those is off, fix the page
+rather than explaining the difference away.
+
+Round like this, because I am graded on it: probabilities, proportions and
+test statistics to two decimals with no leading zero (.34, t = 2.53); p-values
+to three decimals with no leading zero (p = .038), and p &lt; .001 below that;
+money to the cent; critical values to three decimals. Show each value
+unrounded once, then rounded. Never round a value and then compute from the
+rounded one.
+
+Do not ask me questions; use the assumptions above. Do not write my
+recommendation or my manager sentence.</code></pre>
           </div>
         </details>
         <details class="prompt">
@@ -856,6 +1102,129 @@ Round like this, because I am graded on it: probabilities, proportions and test
 statistics to two decimals with no leading zero (.34, t = 2.53); p-values to three
 decimals with no leading zero (p = .038), and p &lt; .001 below that; money to the cent;
 critical values to three decimals. Show each value unrounded once, then rounded.</code></pre>
+          </div>
+        </details>
+        <details class="prompt">
+          <summary><span class="pnum">7+</span>Build Module 7 as a working page (Agent mode)</summary>
+          <div class="pbody">
+            <p class="phint"><b>Agent mode only.</b> This one writes a file, so it needs GitHub Copilot in Agent mode in VS Code, or Claude Code. On a chat tool, use prompt 7 above instead, or add "Reply with the complete HTML in ONE code block, nothing else" to the end of this prompt, paste the result into Notepad or TextEdit, and save it as segment-audit.html. <b>Verify against:</b> the M&amp;M bag chi-square = 12.05 on df 5, p = .034, rejecting at .05 and not at .01; the full 5 by 5 ski table has 20 expected counts under 5 and must be refused; combined to 3 by 2, chi-square = 9.42 on df 2, p = .009. The page saves into your own 2_Outputs folder and opens by double-clicking, with no internet needed.</p>
+            <div class="ptop"><button class="copy" type="button">Copy prompt</button></div>
+            <pre><code>I am a business statistics student. Build AI Block 7 as a working page I can
+actually use, not a write-up, not a Python script, not a notebook.
+
+Make ONE self-contained HTML file: no build step, no frameworks, no external
+scripts or fonts, nothing loaded from the internet, so it opens by
+double-clicking and works offline. Save it to
+2_Outputs/.agents/M7/segment-audit.html. Do not create any other file.
+
+What the page has to do:
+1. A raw-data mode. I paste two categorical columns, one row per guest, and
+   the page builds the contingency table with row totals, column totals and
+   the grand total. Show the COUNTIFS pattern that produces one cell.
+2. The expected counts in their own table, computed from the margins as row
+   total times column total divided by n, with every cell under 5 flagged.
+3. If any expected count is under 5 the page REFUSES to report a chi-square.
+   It says how many cells failed and tells me to combine categories on
+   business meaning first. Testing a table with small expected counts, or
+   quietly testing it anyway, is the error this module grades.
+4. A grouping tool: I assign each original category to a new combined
+   category, the page rebuilds the table and recomputes the expected counts,
+   and only unlocks the test when every expected count clears 5. Keep the
+   original table visible so I can see what was combined and defend it.
+5. The test: chi-square, df as (rows minus 1) times (columns minus 1), the
+   critical value, and p. Put CHISQ.INV.RT and CHISQ.DIST.RT next to them.
+6. A contributions table, cell by cell, largest first, naming the cell that
+   drives the statistic, because that cell is the finding.
+7. Row percentages alongside the counts, so the direction of the association
+   is readable without arithmetic.
+8. A goodness-of-fit mode: observed counts against a claimed mix, with df as
+   categories minus 1 and the same expected-count check.
+
+Implement the chi-square cumulative and its inverse in JavaScript yourself. Do
+not hardcode one value and do not load a library. Put a self-test panel on the
+page showing these passing: CHISQ.INV.RT(.05, 5) = 11.07; CHISQ.INV.RT(.01, 5)
+= 15.09; CHISQ.DIST.RT(12.05, 5) = .034; CHISQ.INV.RT(.05, 2) = 5.99.
+
+Check all of this before you tell me it is done. The M&amp;M bag, 200 pieces
+observed 38, 52, 40, 22, 18, 30 against a claimed mix of .24, .20, .16, .14,
+.13, .13: expected 48.00 for blue and 40.00 for green, contributions 2.08 and
+3.60, chi-square = 12.05 on df 5, p = .034, which rejects at .05 and fails to
+reject at .01. The ski resort survey of 73 guests: the full 5 by 5 table has
+20 of its 25 expected counts under 5, so the page must refuse it. Combined to
+3 by 2 with observed 23 and 15, 4 and 13, 13 and 5, the expected count for
+snowboarders using wellness is 9.32, chi-square = 9.42 on df 2 against a
+critical 5.99, p = .009. If any of those is off, fix the page rather than
+explaining the difference away.
+
+Round like this, because I am graded on it: probabilities, proportions and
+test statistics to two decimals with no leading zero (.34, t = 2.53); p-values
+to three decimals with no leading zero (p = .038), and p &lt; .001 below that;
+money to the cent; critical values to three decimals. Show each value
+unrounded once, then rounded. Never round a value and then compute from the
+rounded one.
+
+Do not ask me questions; use the assumptions above. Do not write my
+recommendation or my manager sentence.</code></pre>
+          </div>
+        </details>
+        <details class="prompt">
+          <summary><span class="pnum">P</span>Build a power calculator (Agent mode, extra)</summary>
+          <div class="pbody">
+            <p class="phint"><b>Agent mode only, and beyond the syllabus.</b> Power is background for INFO 1020, not graded material, so treat this as an extra rather than an AI Block. It writes a file, so it needs Copilot in Agent mode or Claude Code. <b>Verify against:</b> one-sample, right-tailed, alpha .05, n = 16, sd 317.11, an effect of 150.68 gives a critical mean near 2630.40 and power about .60. The page saves into your own 2_Outputs folder and opens by double-clicking, with no internet needed.</p>
+            <div class="ptop"><button class="copy" type="button">Copy prompt</button></div>
+            <pre><code>I am a business statistics student. Build me a power calculator as a working
+page I can actually use, not a write-up, not a Python script, not a notebook.
+
+Make ONE self-contained HTML file: no build step, no frameworks, no external
+scripts or fonts, nothing loaded from the internet, so it opens by
+double-clicking and works offline. Save it to
+2_Outputs/.agents/Extra/power-calculator.html. Do not create any other file.
+
+Put a line at the top of the page saying that power is background for INFO
+1020, not part of the graded material, and that the course tests and intervals
+are what the workbook asks for.
+
+What the page has to do:
+1. A test picker: one-sample mean, or two independent means.
+2. Boxes for alpha, the tail (LEFT, RIGHT, TWO), the sample size, the standard
+   deviation, and the effect I care about, entered in the units of the data,
+   such as dollars or minutes. Do not ask me for a standardised effect size
+   first; show it as a by-product once the units are in.
+3. The output: power, beta as 1 minus power, the critical value on the data
+   scale, and a plain sentence of the form "with n = 16 you would detect a
+   $150 difference about 60% of the time".
+4. A curve of power against sample size as an inline SVG, with my current n
+   marked, so the shape of the trade-off is visible.
+5. A reverse mode: I give a target power and the page returns the sample size
+   needed, rounded UP, with the same rounding-up warning the sample-size step
+   in Module 3 uses.
+6. A short panel connecting it to the course: a Type II error in business
+   terms, one line on why a failure to reject is not proof of H0, and one line
+   on why a bigger sample narrows an interval and raises power at the same
+   time.
+7. Use the normal approximation and say on the page that it is an
+   approximation, and that an exact treatment uses the noncentral t. Do not
+   pretend to more precision than the method has.
+
+Implement the standard normal cumulative and its inverse in JavaScript
+yourself. Do not hardcode one value and do not load a library. Put a self-test
+panel on the page showing these passing: NORM.S.INV(.95) = 1.645;
+NORM.S.INV(.975) = 1.960.
+
+Check this before you tell me it is done. One-sample, right-tailed, alpha .05,
+n = 16, sd 317.11, H0 2500 against a true mean of 2650.68, so an effect of
+150.68: the critical sample mean is about 2630.40 and the power is about .60.
+If that is off, fix the page rather than explaining the difference away.
+
+Round like this, because I am graded on it: probabilities, proportions and
+test statistics to two decimals with no leading zero (.34, t = 2.53); p-values
+to three decimals with no leading zero (p = .038), and p &lt; .001 below that;
+money to the cent; critical values to three decimals. Show each value
+unrounded once, then rounded. Never round a value and then compute from the
+rounded one.
+
+Do not ask me questions; use the assumptions above. Do not write my
+recommendation or my manager sentence.</code></pre>
           </div>
         </details>
       </div>

@@ -22,6 +22,9 @@ Method sheet: `4_Library/method/m2-*.md`. Verification targets:
 - With an agent that can read this folder: say **"run AI Block 2"** (skill `demand-simulator`).
 - With a chat tool: paste prompt 2 from `4_Library/portable-prompts/Portable-Prompts.md`.
   The walk-ins need no file; upload MtHighlands_SkierCounts.csv only for the optional second run.
+- To build it as a page you can open and reuse, paste prompt 2+ from the guide into Copilot
+  Agent mode in VS Code with this folder open. It saves to
+  `2_Outputs/.agents/M2/demand-simulator.html`.
 
 Then fill `AI-Block-2-Template.md` and paste it into the So-What tab. The manager sentence
 is yours to write; the tool does not write it.

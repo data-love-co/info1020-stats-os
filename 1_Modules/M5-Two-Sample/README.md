@@ -22,6 +22,9 @@ Method sheet: `4_Library/method/m5-*.md`. Verification targets:
 - With an agent that can read this folder: say **"run AI Block 5"** (skill `ab-test-readout`).
 - With a chat tool: paste prompt 5 from `4_Library/portable-prompts/Portable-Prompts.md`
   and upload the data file.
+- To build it as a page you can open and reuse, paste prompt 5+ from the guide into Copilot
+  Agent mode in VS Code with this folder open. It saves to
+  `2_Outputs/.agents/M5/ab-test-readout.html`.
 
 Then fill `AI-Block-5-Template.md` and paste it into the So-What tab. The manager sentence
 is yours to write; the tool does not write it.
