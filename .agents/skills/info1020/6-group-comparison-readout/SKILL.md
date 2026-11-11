@@ -12,7 +12,7 @@ description: >
 # group-comparison-readout: Module 6 AI Block
 
 The student has built the salary ANOVA by hand in tab 2 (F = 76.51), Tukey in tab 3 (HSD
-$3,344.70), and the clinics in tab 4 (F = .71, stop). You build the readout. They check you on
+$3,344.74), and the clinics in tab 4 (F = .71, stop). You build the readout. They check you on
 the salaries, then feed you the clinics to see whether you have the discipline to stop.
 
 ## Phase 0: inputs and the question
@@ -51,7 +51,7 @@ dollars. Decide: F = 76.51 > 2.72, p < .001, reject H0. **Follow-up warranted.**
 ## Phase 3: Tukey HSD, only when warranted
 
 HSD = q x SQRT(MSW / n) with q from the studentized range table (k = 4, df = 76: q = 3.7149).
-HSD = $3,344.70. Then every pair:
+HSD = $3,344.74. Then every pair:
 
 | Pair | Difference | Differs? |
 |---|---|---|
@@ -80,7 +80,7 @@ the spread check, the table, the decision, and Tukey only on a rejected H0.
 
 ## Phase 6: verify and cite
 
-Call `util_verify_and_cite` with target **salaries F = 76.51, p < .001, HSD $3,344.70, all pairs
+Call `util_verify_and_cite` with target **salaries F = 76.51, p < .001, HSD $3,344.74, all pairs
 differ except OR Analyst vs Computer Analyst; clinics F = .71, p = .494, no follow-up** and the
 classic errors to check: six t-tests, Tukey after a failed F, spread check hidden. Write to
 `2_Outputs/.agents/M6/Group-Comparison-Readout.md`.

@@ -13,7 +13,7 @@ Method sheet: `4_Library/method/m6-*.md`. Verification targets:
 
 **Data file:** CareerServices_Salaries.csv, Clinic_WaitTimes.csv (in `4_Library/sample-data/`).
 
-**Verify against:** Salaries: F = 76.51, p < .001, HSD $3,344.70, every pair differs except OR Analyst vs Computer Analyst. Clinics: F = .71, p = .494, no follow-up.
+**Verify against:** Salaries: F = 76.51, p < .001, HSD $3,344.74, every pair differs except OR Analyst vs Computer Analyst. Clinics: F = .71, p = .494, no follow-up.
 
 **The guardrail this block teaches:** Did it run one ANOVA or six t-tests? Did it run Tukey on the salaries and refuse to on the clinics? Did it report the spread ratio (2.19) instead of hiding it?
 
