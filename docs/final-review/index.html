@@ -1,0 +1,1582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INFO 1020 Final Review Jeopardy</title>
+<meta name="description" content="Final review game for INFO 1020 Analytics II, Fall 2026: one-sample and two-sample tests, ANOVA, and chi-square, in a fictional gym-chain scenario.">
+<style>
+  /* ================= Fonts and tokens ================= */
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Anton&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap');
+
+  :root {
+    --jeo-navy: #0b1d5c;
+    --jeo-navy-dark: #081445;
+    --jeo-navy-light: #1a2e7d;
+    --jeo-gold: #f4c430;
+    --jeo-gold-bright: #ffd84a;
+    --cream: #faf6ed;
+    --du-crimson: #BA0C2F;        /* DU Crimson */
+    --du-crimson-deep: #8a0a24;
+    --ink: #0a0f2c;
+    --muted: #6b7280;
+    --slate: #2b3558;
+    --card-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+    --inner-shadow: inset 0 0 0 3px rgba(244, 196, 48, 0.15);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; overflow: hidden; }
+
+  body {
+    font-family: 'Oswald', sans-serif;
+    background:
+      radial-gradient(ellipse at top, #122372 0%, #081445 60%, #050e2f 100%);
+    color: var(--cream);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  /* ================= Top banner ================= */
+  .banner {
+    background: linear-gradient(180deg, var(--du-crimson) 0%, var(--du-crimson-deep) 100%);
+    padding: 0.5rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 2px solid var(--jeo-gold);
+    flex-shrink: 0;
+    gap: 1rem;
+  }
+  .banner h1 {
+    font-family: 'Anton', sans-serif;
+    font-size: 1.35rem;
+    letter-spacing: 0.08em;
+    color: var(--cream);
+    text-transform: uppercase;
+  }
+  .banner .subtitle {
+    font-family: 'Libre Caslon Text', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--jeo-gold);
+    letter-spacing: 0.02em;
+  }
+  .banner-controls {
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  .btn {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 500;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.4rem 0.85rem;
+    border: 1px solid rgba(250, 246, 237, 0.4);
+    background: transparent;
+    color: var(--cream);
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+  .btn:hover {
+    background: rgba(244, 196, 48, 0.2);
+    border-color: var(--jeo-gold);
+    color: var(--jeo-gold-bright);
+  }
+
+  /* ================= Main layout ================= */
+  .main-area {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 0;
+    overflow: hidden;
+  }
+  @media (max-width: 820px) {
+    .main-area { grid-template-columns: 1fr; grid-template-rows: 1fr auto; }
+    .score-panel { border-left: none; border-top: 2px solid var(--jeo-gold); max-height: 38vh; }
+    html, body { overflow: auto; }
+  }
+
+  /* ================= Board ================= */
+  .board-wrap {
+    padding: 1rem 1rem 0.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .board {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: auto repeat(5, 1fr);
+    gap: 5px;
+    padding: 5px;
+    background: #000;
+    border: 2px solid var(--jeo-gold);
+    box-shadow: var(--card-shadow), var(--inner-shadow);
+  }
+
+  .category {
+    background: linear-gradient(180deg, var(--jeo-navy-light) 0%, var(--jeo-navy) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    text-align: center;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: clamp(0.8rem, 1.2vw, 1.15rem);
+    line-height: 1.1;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--cream);
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.4);
+    min-height: 80px;
+  }
+
+  .cell {
+    background: linear-gradient(180deg, var(--jeo-navy-light) 0%, var(--jeo-navy) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Anton', sans-serif;
+    font-size: clamp(1.4rem, 3.5vw, 2.75rem);
+    color: var(--jeo-gold);
+    text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.6);
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+    letter-spacing: 0.02em;
+    border: none;
+  }
+  .cell:hover:not(.played), .cell:focus-visible:not(.played) {
+    background: linear-gradient(180deg, #2d47a0 0%, #1a2e7d 100%);
+    transform: scale(0.98);
+    box-shadow: inset 0 0 0 2px var(--jeo-gold);
+    outline: none;
+  }
+  .cell.played {
+    background: #050e2f;
+    color: transparent;
+    cursor: default;
+  }
+
+  /* ================= Scoring panel ================= */
+  .score-panel {
+    background: rgba(8, 20, 69, 0.8);
+    border-left: 2px solid var(--jeo-gold);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    overflow-y: auto;
+  }
+  .score-panel h2 {
+    font-family: 'Anton', sans-serif;
+    font-size: 0.95rem;
+    letter-spacing: 0.08em;
+    color: var(--jeo-gold);
+    text-transform: uppercase;
+    margin-bottom: 0.35rem;
+    text-align: center;
+  }
+  .team {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(244, 196, 48, 0.25);
+    padding: 0.5rem;
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .team-name {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.8rem;
+    color: var(--cream);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    background: transparent;
+    border: none;
+    border-bottom: 1px dashed rgba(250, 246, 237, 0.2);
+    padding: 0.15rem 0.25rem;
+    width: 100%;
+    text-transform: uppercase;
+    outline: none;
+  }
+  .team-name:focus { border-bottom-color: var(--jeo-gold); }
+  .score-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .score {
+    font-family: 'Anton', sans-serif;
+    font-size: 1.35rem;
+    color: var(--jeo-gold-bright);
+    min-width: 70px;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.4);
+  }
+  .score.negative { color: #ff6b6b; }
+  .score-btns { display: flex; gap: 3px; flex-wrap: wrap; }
+  .score-btn {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.68rem;
+    padding: 0.15rem 0.3rem;
+    border: 1px solid rgba(244, 196, 48, 0.4);
+    background: transparent;
+    color: var(--cream);
+    cursor: pointer;
+    border-radius: 2px;
+    min-width: 34px;
+    transition: all 0.1s;
+  }
+  .score-btn:hover { background: var(--jeo-gold); color: var(--jeo-navy); }
+  .score-btn.minus:hover { background: var(--du-crimson); color: var(--cream); border-color: var(--du-crimson); }
+
+  /* ================= Countdown timer (all teams answer within the limit) ================= */
+  .timer {
+    display: none;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .timer.active { display: flex; }
+  .timer-text {
+    font-family: 'Anton', sans-serif;
+    font-size: 2rem;
+    color: var(--cream);
+    min-width: 4.2ch;
+    text-align: center;
+    letter-spacing: 0.04em;
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+  }
+  .timer-text.low { color: #ff6b6b; animation: tick 1s steps(2, start) infinite; }
+  .timer-text.done { color: #ff6b6b; animation: none; }
+  @keyframes tick { 50% { opacity: 0.35; } }
+  .timer-label {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--jeo-gold);
+    text-align: right;
+    line-height: 1.2;
+  }
+
+  /* ================= All-play award row (after reveal) ================= */
+  .allplay {
+    display: none;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    width: 100%;
+  }
+  .allplay.active { display: flex; }
+  .allplay .who {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--jeo-gold);
+    margin-right: 0.3rem;
+  }
+  .chip {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0.4rem 0.8rem;
+    border: 2px solid rgba(244, 196, 48, 0.45);
+    background: transparent;
+    color: var(--cream);
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.15s;
+  }
+  .chip:hover { border-color: var(--jeo-gold); }
+  .chip.on { background: var(--jeo-gold); color: var(--jeo-navy); border-color: var(--jeo-gold); }
+  .chip.on::before { content: "✓ "; }
+
+  /* ================= Full-screen question overlay ================= */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center, var(--jeo-navy-light) 0%, var(--jeo-navy-dark) 100%);
+    z-index: 100;
+    display: none;
+    flex-direction: column;
+    animation: fadeIn 0.3s ease-out;
+  }
+  .overlay.active { display: flex; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(1.05); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .overlay-topbar {
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--jeo-gold);
+    flex-shrink: 0;
+  }
+  .overlay-category {
+    font-family: 'Anton', sans-serif;
+    font-size: 1.1rem;
+    color: var(--cream);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .overlay-value {
+    font-family: 'Anton', sans-serif;
+    font-size: 2rem;
+    color: var(--jeo-gold);
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+  }
+
+  .overlay-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 4rem;
+    text-align: center;
+    overflow-y: auto;
+  }
+  @media (max-width: 820px) {
+    .overlay-content { padding: 1.25rem 1rem; justify-content: flex-start; }
+    .overlay-topbar { padding: 0.6rem 1rem; gap: 0.5rem; flex-wrap: wrap; }
+    .overlay-category { font-size: 0.85rem; }
+    .overlay-value { font-size: 1.4rem; }
+    .timer { gap: 0.4rem; order: 3; width: 100%; justify-content: center; }
+    .timer-label { display: none; }
+    .timer-text { font-size: 1.5rem; }
+    .timer .btn { padding: 0.3rem 0.55rem; font-size: 0.68rem; }
+  }
+
+  .q-text, .a-text {
+    font-family: 'Libre Caslon Text', Georgia, serif;
+    font-size: clamp(1.25rem, 2.4vw, 2rem);
+    line-height: 1.45;
+    color: var(--cream);
+    max-width: 1100px;
+    letter-spacing: 0.01em;
+    user-select: text;
+  }
+  .q-text strong { color: var(--jeo-gold); }
+  /* Keep wide Excel output tables from stretching the question past a phone screen:
+     the text block stays within its column and the table scrolls inside .tscroll. */
+  .q-text, .a-text { max-width: min(1100px, 100%); }
+  .a-text {
+    display: none;
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 2px dashed var(--jeo-gold);
+    color: var(--jeo-gold);
+    font-weight: 400;
+    font-size: clamp(1.1rem, 2vw, 1.6rem);
+  }
+  .a-text.active { display: block; }
+  .a-label {
+    font-family: 'Anton', sans-serif;
+    font-size: 1rem;
+    color: var(--jeo-gold);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    opacity: 0.7;
+  }
+
+  /* Excel check line inside an answer */
+  .excel-check {
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    margin: 1.25rem auto 0;
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.03em;
+    color: var(--cream);
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(244, 196, 48, 0.5);
+    border-radius: 3px;
+    padding: 0.45rem 0.9rem;
+    text-align: left;
+  }
+  .excel-check::before {
+    content: "CHECK IT IN EXCEL";
+    display: block;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: var(--jeo-gold);
+    margin-bottom: 0.2rem;
+  }
+  .excel-check code {
+    font-family: ui-monospace, 'Cascadia Mono', Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    color: var(--jeo-gold-bright);
+  }
+
+  /* Rubric list inside an answer */
+  .rubric {
+    text-align: left;
+    display: inline-block;
+    margin: 0.5rem auto 0;
+    font-size: 0.95em;
+  }
+  .rubric li { margin: 0.25rem 0 0.25rem 1.2rem; }
+
+  /* Contingency table inside a question */
+  .ctable {
+    margin: 1.25rem auto;
+    border-collapse: collapse;
+    font-family: 'Oswald', sans-serif;
+    font-size: clamp(0.95rem, 1.6vw, 1.3rem);
+    letter-spacing: 0.02em;
+    color: var(--cream);
+    background: rgba(0, 0, 0, 0.25);
+  }
+  .ctable th, .ctable td {
+    border: 1px solid rgba(244, 196, 48, 0.55);
+    padding: 0.4rem 1rem;
+    text-align: center;
+  }
+  .ctable th { color: var(--jeo-gold); font-weight: 500; }
+  .ctable .tot { color: var(--jeo-gold-bright); font-weight: 700; }
+  .tscroll { max-width: 100%; overflow-x: auto; }
+
+  /* Multiple-choice options inside a question */
+  .options {
+    list-style: upper-alpha;
+    text-align: left;
+    width: fit-content;
+    max-width: 100%;
+    margin: 1rem auto 0;
+    padding-left: 2.2rem;
+  }
+  .options li { margin: 0.35rem 0; padding-left: 0.3rem; }
+  .options li::marker { color: var(--jeo-gold); font-weight: 700; }
+
+  .overlay-controls {
+    padding: 1.25rem 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    border-top: 2px solid var(--jeo-gold);
+    flex-shrink: 0;
+    background: rgba(0, 0, 0, 0.25);
+  }
+  .big-btn {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.8rem 2rem;
+    border: 2px solid var(--jeo-gold);
+    background: transparent;
+    color: var(--jeo-gold);
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+  .big-btn:hover {
+    background: var(--jeo-gold);
+    color: var(--jeo-navy);
+  }
+  .big-btn.primary {
+    background: var(--jeo-gold);
+    color: var(--jeo-navy);
+  }
+  .big-btn.primary:hover {
+    background: var(--jeo-gold-bright);
+  }
+  .big-btn.minus { border-color: #ff6b6b; color: #ff6b6b; }
+  .big-btn.minus:hover { background: var(--du-crimson); border-color: var(--du-crimson); color: var(--cream); }
+  .dd-award { display: none; gap: 0.6rem; align-items: center; }
+  .dd-award.active { display: flex; }
+  .dd-award .who {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--cream);
+    opacity: 0.8;
+  }
+
+  /* ================= Daily Double screen ================= */
+  .dd-splash {
+    display: none;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    animation: ddPulse 0.6s ease-out;
+    padding: 1rem;
+    overflow-y: auto;
+  }
+  .dd-splash.active { display: flex; }
+
+  @keyframes ddPulse {
+    0% { transform: scale(0.3) rotate(-10deg); opacity: 0; }
+    70% { transform: scale(1.1) rotate(2deg); }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
+  }
+
+  .dd-title {
+    font-family: 'Anton', sans-serif;
+    font-size: clamp(3rem, 9vw, 7rem);
+    color: var(--jeo-gold);
+    text-shadow:
+      4px 4px 0 var(--du-crimson),
+      8px 8px 0 rgba(0, 0, 0, 0.4);
+    letter-spacing: 0.1em;
+    line-height: 0.95;
+    text-transform: uppercase;
+  }
+  .dd-subtitle {
+    font-family: 'Libre Caslon Text', serif;
+    font-style: italic;
+    font-size: 1.3rem;
+    color: var(--cream);
+    margin-top: 2rem;
+    max-width: 700px;
+  }
+  .dd-wager {
+    margin-top: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  .dd-wager label {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--jeo-gold);
+  }
+  .dd-wager input {
+    font-family: 'Anton', sans-serif;
+    font-size: 2.5rem;
+    background: rgba(0, 0, 0, 0.3);
+    color: var(--jeo-gold);
+    border: 2px solid var(--jeo-gold);
+    padding: 0.4rem 1rem;
+    width: 250px;
+    text-align: center;
+    border-radius: 3px;
+    outline: none;
+  }
+  .dd-team-select {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    max-width: 600px;
+    margin-top: 1.5rem;
+  }
+  .dd-team-btn {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
+    border: 2px solid rgba(244, 196, 48, 0.4);
+    background: transparent;
+    color: var(--cream);
+    cursor: pointer;
+    border-radius: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .dd-team-btn.selected {
+    background: var(--jeo-gold);
+    color: var(--jeo-navy);
+    border-color: var(--jeo-gold);
+  }
+
+  /* ================= Final Jeopardy (tie-break) ================= */
+  .final-panel { display: none; flex: 1; flex-direction: column; min-height: 0; }
+  .final-panel.active { display: flex; }
+  .final-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .final-title {
+    font-family: 'Anton', sans-serif;
+    font-size: clamp(2.2rem, 6vw, 4.5rem);
+    color: var(--jeo-gold);
+    text-shadow: 3px 3px 0 var(--du-crimson), 6px 6px 0 rgba(0, 0, 0, 0.4);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  .final-category {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--cream);
+    margin-top: 0.75rem;
+  }
+  .final-help {
+    font-family: 'Libre Caslon Text', serif;
+    font-style: italic;
+    color: var(--cream);
+    max-width: 760px;
+    margin: 1.25rem 0;
+    line-height: 1.5;
+  }
+  .final-body.compact .final-title { font-size: clamp(1.6rem, 3.5vw, 2.6rem); }
+  .final-body.compact .final-category { font-size: 0.9rem; margin-top: 0.4rem; }
+  .final-body .q-text { margin-top: 1rem; font-size: clamp(1.1rem, 1.9vw, 1.55rem); }
+  .final-body .a-text { margin-top: 1rem; padding-top: 0.9rem; }
+  .final-body .a-text .a-label { margin-bottom: 0.4rem; }
+  .final-explain {
+    font-family: 'Libre Caslon Text', Georgia, serif;
+    font-size: clamp(0.95rem, 1.5vw, 1.25rem);
+    line-height: 1.45;
+    color: var(--jeo-gold);
+    max-width: 1000px;
+    margin-top: 0.25rem;
+  }
+  .final-body.compact .final-rows { margin: 0.75rem 0; }
+  .final-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: min(760px, 100%);
+    margin: 1.25rem 0;
+  }
+  .final-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 0.75rem;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(244, 196, 48, 0.3);
+    border-radius: 3px;
+    padding: 0.5rem 0.9rem;
+    font-family: 'Oswald', sans-serif;
+    letter-spacing: 0.04em;
+    text-align: left;
+  }
+  .final-row.out { opacity: 0.45; }
+  .final-row .name { text-transform: uppercase; font-size: 0.95rem; color: var(--cream); }
+  .final-row .name small { display: block; color: var(--jeo-gold); font-size: 0.75rem; letter-spacing: 0.08em; }
+  .final-row input[type=number] {
+    font-family: 'Anton', sans-serif;
+    font-size: 1.3rem;
+    width: 140px;
+    background: rgba(0, 0, 0, 0.3);
+    color: var(--jeo-gold);
+    border: 2px solid var(--jeo-gold);
+    border-radius: 3px;
+    padding: 0.2rem 0.5rem;
+    text-align: center;
+    outline: none;
+  }
+  .final-row input[type=number]:disabled { opacity: 0.5; }
+  .final-row .toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--cream);
+    cursor: pointer;
+  }
+  .final-row .toggle input { width: 18px; height: 18px; accent-color: var(--jeo-gold); }
+  .final-row .judge { display: flex; gap: 0.4rem; }
+  .final-row .result { font-family: 'Anton', sans-serif; font-size: 1.2rem; color: var(--jeo-gold-bright); }
+  .final-row .result.neg { color: #ff6b6b; }
+  .final-controls {
+    padding: 1.25rem 2rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    border-top: 2px solid var(--jeo-gold);
+    background: rgba(0, 0, 0, 0.25);
+    flex-shrink: 0;
+  }
+  @media (max-width: 820px) {
+    .final-body { padding: 1rem; }
+    .final-row { grid-template-columns: 1fr; }
+  }
+
+  /* ================= Scenario card ================= */
+  .scenario-box {
+    background: rgba(186, 12, 47, 0.15);
+    border-left: 4px solid var(--du-crimson);
+    padding: 1rem 1.25rem;
+    margin: 0 auto 1.5rem;
+    max-width: 1000px;
+    font-family: 'Libre Caslon Text', serif;
+    font-style: italic;
+    font-size: clamp(0.95rem, 1.5vw, 1.15rem);
+    color: var(--cream);
+    line-height: 1.5;
+    text-align: left;
+  }
+  .scenario-box::before {
+    content: "SCENARIO";
+    display: block;
+    font-family: 'Oswald', sans-serif;
+    font-style: normal;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    color: var(--jeo-gold);
+    margin-bottom: 0.4rem;
+  }
+
+  /* ================= Help footer ================= */
+  .kbd {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.7rem;
+    padding: 0.1rem 0.35rem;
+    background: rgba(244, 196, 48, 0.15);
+    border: 1px solid var(--jeo-gold);
+    border-radius: 2px;
+    color: var(--jeo-gold);
+    margin: 0 0.2rem;
+  }
+  .help {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.75rem;
+    color: rgba(250, 246, 237, 0.7);
+    letter-spacing: 0.05em;
+  }
+</style>
+</head>
+<body>
+
+<div class="banner">
+  <div>
+    <h1>INFO 1020 · Final Review Jeopardy</h1>
+    <div class="subtitle">Analytics II: Business Statistics and Analysis. Fall 2026. Modules 4 to 7.</div>
+  </div>
+  <div class="banner-controls">
+    <span class="help"><span class="kbd">ESC</span> Return to board</span>
+    <span class="help"><span class="kbd">R</span> Reveal answer</span>
+    <button class="btn" onclick="openFinal()">★ Final Jeopardy</button>
+    <button class="btn" onclick="resetAll()">↺ Reset Game</button>
+  </div>
+</div>
+
+<div class="main-area">
+  <div class="board-wrap">
+    <div class="board" id="board" role="grid" aria-label="Jeopardy board"></div>
+  </div>
+
+  <div class="score-panel" id="scorePanel">
+    <h2>★ Teams ★</h2>
+    <!-- Teams rendered by JS -->
+  </div>
+</div>
+
+<!-- Question overlay -->
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="ovCategory">
+  <div class="overlay-topbar">
+    <div class="overlay-category" id="ovCategory"></div>
+    <div class="timer" id="timer" aria-live="polite">
+      <div class="timer-label" id="timerLabel">Time to answer</div>
+      <div class="timer-text" id="timerText">0:00</div>
+      <button class="btn" id="timerBtn" onclick="timerToggle()">Pause</button>
+      <button class="btn" onclick="timerAdd(30)">+30s</button>
+    </div>
+    <div class="overlay-value" id="ovValue"></div>
+  </div>
+
+  <!-- Daily Double splash -->
+  <div class="dd-splash" id="ddSplash">
+    <div class="dd-title">Daily Double!</div>
+    <div class="dd-subtitle">Only the team that picked this cell answers. Select the team, then enter their wager: up to their current score, or up to $500 if their score is below $500.</div>
+    <div class="dd-team-select" id="ddTeamSelect"></div>
+    <div class="dd-wager">
+      <label for="ddWagerInput">Wager</label>
+      <input type="number" id="ddWagerInput" min="0" step="50" placeholder="0">
+    </div>
+    <button class="big-btn primary" style="margin-top: 2rem;" onclick="confirmWager()">Confirm and Show Question</button>
+  </div>
+
+  <!-- Regular question content -->
+  <div class="overlay-content" id="overlayContent">
+    <div class="q-text" id="qText"></div>
+    <div class="a-text" id="aText">
+      <div class="a-label">Answer</div>
+      <div id="aBody"></div>
+    </div>
+  </div>
+
+  <div class="overlay-controls" id="overlayControls">
+    <div class="allplay" id="allPlay">
+      <span class="who">Got it right (click to award):</span>
+      <span id="allPlayChips"></span>
+    </div>
+    <button class="big-btn" id="revealBtn" onclick="revealAnswer()">Reveal Answer</button>
+    <div class="dd-award" id="ddAward">
+      <span class="who" id="ddAwardWho"></span>
+      <button class="big-btn" id="ddAwardPlus" onclick="awardWager(1)">Award wager</button>
+      <button class="big-btn minus" id="ddAwardMinus" onclick="awardWager(-1)">Deduct wager</button>
+    </div>
+    <button class="big-btn primary" onclick="closeOverlay()">Return to Board</button>
+  </div>
+
+  <!-- Final Jeopardy (tie-break) -->
+  <div class="final-panel" id="finalPanel">
+    <div class="final-body" id="finalBody"></div>
+    <div class="final-controls" id="finalControls"></div>
+  </div>
+</div>
+
+<script>
+// ================= Game Data =================
+// Five categories, five values each. Keys are "categoryIndex-valueIndex", both 0-based.
+// Every number in an answer follows the course rounding policy
+// (4_Library/method/rounding-policy.md) and is recomputed by check-game-values.py.
+const CATEGORIES = [
+  "Pick Your Test",
+  "Reject or Not?",
+  "ANOVA-thing Goes",
+  "Chi Another Day",
+  "So What? Now What?"
+];
+
+const VALUES = [100, 200, 300, 400, 500];
+
+// Shared scenario cards. Fourteener Fitness is a fictional gym chain; every number a team needs is
+// on the screen, so no data file is opened. Every cell asks one thing, and every answer gives the
+// result, how it was computed, and the Excel function. Nothing else: scoring notes are in
+// Run-of-Show-and-Answer-Key.md.
+const GYM = `<div class="scenario-box">Fourteener Fitness is a Colorado gym chain with 4 locations: Golden, Boulder, Fort Collins and Colorado Springs. The company and its numbers are fictional. You are the analytics intern. alpha = .05 unless the cell says otherwise.</div>`;
+
+const VISITS_OUTPUT = `<div class="tscroll"><table class="ctable" aria-label="Excel output: two-sample t-test, morning and evening members">
+  <tr><th>t-Test: Two-Sample Assuming Unequal Variances</th><th>Morning</th><th>Evening</th></tr>
+  <tr><th>Mean (visits per month)</th><td>11.80</td><td>10.10</td></tr>
+  <tr><th>Variance</th><td>20.3</td><td>19.0</td></tr>
+  <tr><th>Observations</th><td>45</td><td>48</td></tr>
+  <tr><th>df</th><td>90</td><td></td></tr>
+  <tr><th>t Stat</th><td>1.85</td><td></td></tr>
+  <tr><th>P(T&lt;=t) one-tail</th><td>0.034</td><td></td></tr>
+  <tr><th>t Critical one-tail</th><td>1.662</td><td></td></tr>
+  <tr><th>P(T&lt;=t) two-tail</th><td>0.068</td><td></td></tr>
+  <tr><th>t Critical two-tail</th><td>1.987</td><td></td></tr>
+</table></div>`;
+
+const SATISFACTION = `<div class="tscroll"><table class="ctable" aria-label="Member satisfaction by location">
+  <tr><th>Location</th><th>n</th><th>Mean</th><th>Std dev</th></tr>
+  <tr><th>Golden</th><td>12</td><td>8.10</td><td>1.30</td></tr>
+  <tr><th>Boulder</th><td>12</td><td>7.90</td><td>1.25</td></tr>
+  <tr><th>Fort Collins</th><td>12</td><td>7.70</td><td>1.40</td></tr>
+  <tr><th>Colorado Springs</th><td>12</td><td>6.10</td><td>1.35</td></tr>
+</table></div><div class="tscroll"><table class="ctable" aria-label="Excel output: ANOVA single factor, satisfaction by location">
+  <tr><th>Source of Variation</th><th>SS</th><th>df</th><th>MS</th><th>F</th><th>P-value</th><th>F crit</th></tr>
+  <tr><th>Between Groups</th><td>30.12</td><td>3</td><td>10.04</td><td>5.71</td><td>0.0022</td><td>2.816</td></tr>
+  <tr><th>Within Groups</th><td>77.39</td><td>44</td><td>1.76</td><td></td><td></td><td></td></tr>
+  <tr><th class="tot">Total</th><td class="tot">107.51</td><td class="tot">47</td><td></td><td></td><td></td><td></td></tr>
+</table></div>`;
+
+const BOOKINGS = `<div class="tscroll"><table class="ctable" aria-label="Class bookings against last year's mix">
+  <tr><th>Class type</th><th>Benchmark share</th><th>This year (400 bookings)</th></tr>
+  <tr><th>Yoga</th><td>40%</td><td>138</td></tr>
+  <tr><th>Spin</th><td>30%</td><td>128</td></tr>
+  <tr><th>Strength</th><td>20%</td><td>92</td></tr>
+  <tr><th>Climbing</th><td>10%</td><td>42</td></tr>
+</table></div>`;
+
+function options(a, b, c, d) {
+  return `<ol class="options"><li>${a}</li><li>${b}</li><li>${c}</li><li>${d}</li></ol>`;
+}
+
+const QUESTIONS = {
+  // ========= Category 1: Pick Your Test =========
+  "0-0": {
+    q: GYM + "The same 30 members: weekly visits for the 4 weeks before the new app and the 4 weeks after. Which test answers whether visits changed?" +
+      options("Chi-square goodness of fit", "Two-sample t-test", "Paired t-test", "One-way ANOVA"),
+    a: "<strong>C. Paired t-test</strong><br><br>The same members are measured twice, so every before value is linked to an after value."
+  },
+  "0-1": {
+    q: GYM + "50 new members saw signup page A. 50 different new members saw page B. Which test answers whether average first-month spend differs?" +
+      options("One-way ANOVA", "Chi-square test of independence", "Paired t-test", "Two-sample t-test"),
+    a: "<strong>D. Two-sample t-test</strong><br><br>Different people in each group, so nothing links a row in A to a row in B."
+  },
+  "0-2": {
+    q: GYM + "Satisfaction scores (1 to 10) from 12 members at each of the 4 locations. Which test answers whether average satisfaction differs by location?" +
+      options("Chi-square goodness of fit", "Two-sample t-test", "One-way ANOVA", "Paired t-test"),
+    a: "<strong>C. One-way ANOVA</strong><br><br>4 means compared in one test, so the false-alarm rate stays at .05."
+  },
+  "0-3": {
+    q: GYM + "Last year, class bookings split 40% yoga, 30% spin, 20% strength, 10% climbing. Which test answers whether this year's mix of 400 bookings has moved off that split?" +
+      options("Chi-square test of independence", "Two-sample t-test", "One-way ANOVA", "Chi-square goodness of fit"),
+    a: "<strong>D. Chi-square goodness of fit</strong><br><br>1 categorical variable, counts against a benchmark set of shares."
+  },
+  "0-4": {
+    excel: true,
+    q: GYM + "<strong>Excel.</strong> Page A: n = 50, mean $62.40, s = $18.20. Page B: n = 50, mean $71.10, s = $20.50. Using <strong>df = 49</strong> (the smaller n minus 1), what is the <strong>two-tailed p-value</strong> for the difference in average first-month spend?",
+    a: "<strong>p = .029</strong><br><br>SE = SQRT(18.20^2 / 50 + 20.50^2 / 50) = $3.88. t = (71.10 minus 62.40) / 3.8768 = 2.24. Two-tailed, df = 49 as the question sets.<div class=\"excel-check\"><code>=T.DIST.2T(8.70/SQRT(18.2^2/50+20.5^2/50), 49)</code></div>"
+  },
+
+  // ========= Category 2: Reject or Not? =========
+  "1-0": {
+    q: GYM + "Excel prints P(T&lt;=t) two-tail = <strong>4.7E-06</strong>. How do you write that p-value in a memo?" +
+      options("p = 4.7E-06", "p = .000", "p &lt; .001", "p = 0"),
+    a: "<strong>C. p &lt; .001</strong><br><br>Three decimals, no leading zero, and an inequality once the value is below .001."
+  },
+  "1-1": {
+    q: GYM + VISITS_OUTPUT + "Marketing asks whether morning and evening members visit a <strong>different</strong> number of times per month. From the output, what is the decision at alpha = .05?" +
+      options("Reject H0: the t Stat (1.85) beats the one-tail critical value", "Fail to reject H0: the means differ by less than 2 visits", "Reject H0: the one-tail p-value (.034) is below .05", "Fail to reject H0: the two-tail p-value (.068) is above .05"),
+    a: "<strong>D. Fail to reject H0: the two-tail p-value (.068) is above .05</strong><br><br>\"Different\" is a two-tailed question, so read the two-tail line."
+  },
+  "1-2": {
+    q: GYM + VISITS_OUTPUT + "Same output. A 95% confidence interval for mu(morning) minus mu(evening) must:" +
+      options("Contain 0", "Be impossible to judge here", "Lie entirely above 0", "Lie entirely below 0"),
+    a: "<strong>A. Contain 0</strong><br><br>The two-tailed test at .05 failed to reject, and a 95% interval always agrees with a two-tailed test at .05, so 0 is inside it."
+  },
+  "1-3": {
+    q: GYM + "A different test returns <strong>p = .011</strong>. Which statement about that p-value is correct?" +
+      options("There is a 1.1% chance that H0 is true", "There is a 98.9% chance the gap is important", "A gap this large is rare (1.1%) if H0 is true", "The 2 group means differ by exactly 1.1%"),
+    a: "<strong>C. A gap this large is rare (1.1%) if H0 is true</strong><br><br>The p-value assumes H0 is true and asks how surprising the data are."
+  },
+  "1-4": {
+    excel: true,
+    q: GYM + VISITS_OUTPUT + "<strong>Excel.</strong> From the output: difference = 1.70 visits, SE = 0.92, df = 90. What is the <strong>95% confidence interval</strong> for mu(morning) minus mu(evening)?",
+    a: "<strong>-0.13 to 3.53 visits</strong><br><br>t* = T.INV.2T(.05, 90) = 1.987. Margin = 1.987 times 0.92 = 1.83. 1.70 minus and plus 1.83.<div class=\"excel-check\"><code>=1.70-T.INV.2T(0.05,90)*0.92</code> and <code>=1.70+T.INV.2T(0.05,90)*0.92</code></div>"
+  },
+
+  // ========= Category 3: ANOVA-thing Goes =========
+  "2-0": {
+    q: GYM + SATISFACTION + "For this ANOVA, the alternative hypothesis is:" +
+      options("All 4 location means are equal", "Golden has the highest mean", "At least 1 location mean differs", "All 4 location means differ"),
+    a: "<strong>C. At least 1 location mean differs</strong><br><br>\"All equal\" is H0. Ha is never \"all means differ\"."
+  },
+  "2-1": {
+    q: GYM + SATISFACTION + "F = 5.71 is above F crit = 2.816, and p = .002. What can you conclude?" +
+      options("Colorado Springs is significantly below Golden", "Location explains 5.71% of member satisfaction", "Each location differs from every other location", "The 4 locations do not all share the same mean"),
+    a: "<strong>D. The 4 locations do not all share the same mean</strong><br><br>The F test says the means are not all equal. It does not say which ones differ."
+  },
+  "2-2": {
+    q: GYM + SATISFACTION + "The ANOVA rejected H0. What is the right next step to find <strong>which</strong> locations differ?" +
+      options("Pick the location with the lowest mean", "Run 6 separate two-sample t-tests", "Run a Tukey HSD post hoc test", "Rerun the ANOVA with alpha = .01"),
+    a: "<strong>C. Run a Tukey HSD post hoc test</strong><br><br>Tukey compares every pair and holds the overall false-alarm rate at .05."
+  },
+  "2-3": {
+    q: GYM + SATISFACTION + "Tukey outcome: Colorado Springs differs from each of the other 3 locations. No other pair differs. Which So What is right?" +
+      options("Location matters: Colorado Springs is the low one", "All 4 of the locations differ from one another", "Golden is the best location in the whole chain", "Location has no effect on member satisfaction"),
+    a: "<strong>A. Location matters: Colorado Springs is the low one</strong><br><br>No difference was detected among Golden, Boulder and Fort Collins, so none of them is named the best."
+  },
+  "2-4": {
+    excel: true,
+    q: GYM + "<strong>Excel.</strong> Monthly spend by membership tier (Basic, Plus, Premium), 10 members each: SS between = 1,840 and SS within = 9,720. What is the <strong>p-value</strong> for the one-way ANOVA?",
+    a: "<strong>p = .096</strong><br><br>df = 2 and 27. MSTr = 1,840 / 2 = 920. MSE = 9,720 / 27 = 360. F = 920 / 360 = 2.56.<div class=\"excel-check\"><code>=F.DIST.RT((1840/2)/(9720/27), 2, 27)</code></div>"
+  },
+
+  // ========= Category 4: Chi Another Day =========
+  "3-0": {
+    q: GYM + BOOKINGS + "How many degrees of freedom does this goodness-of-fit test have?" +
+      options("9", "3", "4", "399"),
+    a: "<strong>B. 3</strong><br><br>Categories minus 1: 4 minus 1."
+  },
+  "3-1": {
+    q: GYM + BOOKINGS + "Under last year's mix, how many of the 400 bookings do we <strong>expect</strong> to be yoga? Write the number.",
+    a: "<strong>160.00</strong><br><br>Expected = share times n = .40 times 400.<div class=\"excel-check\"><code>=0.40*400</code></div>"
+  },
+  "3-2": {
+    q: GYM + "Next year a 5th class type, Pilates, is expected to be 1% of bookings. With 400 bookings, its expected count is 4. What should you do?" +
+      options("Run the test as is: 4 is close enough", "Switch to a one-way ANOVA instead", "Combine Pilates with a related class type", "Lower alpha to .01 to make up for it"),
+    a: "<strong>C. Combine Pilates with a related class type</strong><br><br>Every expected count must be at least 5. Combine categories on business meaning."
+  },
+  "3-3": {
+    q: GYM + BOOKINGS + "Chi-square = 5.46 on 3 df, p = .141. Which conclusion is right?" +
+      options("The mix is proven to be the same as last year", "The mix has changed: 5.46 is a large chi-square", "The mix has changed: yoga is below expected", "The mix has not been shown to differ from last year"),
+    a: "<strong>D. The mix has not been shown to differ from last year</strong><br><br>p = .141 is above .05, and 5.46 is below the critical value 7.815, so fail to reject H0.<div class=\"excel-check\"><code>=CHISQ.INV.RT(0.05, 3)</code></div>"
+  },
+  "3-4": {
+    excel: true,
+    q: GYM + "<strong>Excel.</strong> Colorado Springs only, 200 bookings: yoga 58, spin 74, strength 42, climbing 26. Same benchmark (40%, 30%, 20%, 10%). What is the <strong>chi-square statistic</strong>?",
+    a: "<strong>11.22</strong><br><br>Expected = share times 200: 80.00, 60.00, 40.00, 20.00. (O minus E)^2 / E for each class: 6.05 + 3.27 + 0.10 + 1.80.<div class=\"excel-check\"><code>=SUMPRODUCT((O_range-E_range)^2/E_range)</code></div>"
+  },
+
+  // ========= Category 5: So What? Now What? =========
+  "4-0": {
+    q: GYM + "The app test fails to reject H0. Which statement is right?" +
+      options("We found no evidence that the app changed visits", "We proved that the app increased member visits", "We proved that the app has no effect on visits", "We should rerun the test until it rejects H0"),
+    a: "<strong>A. We found no evidence that the app changed visits</strong><br><br>Failing to reject is not proof of no effect."
+  },
+  "4-1": {
+    q: GYM + "The app test failed to reject, so the gym dropped the app. A year later, better data shows the app truly raises visits. Which error was made?" +
+      options("Sampling bias", "Rounding error", "Type II error", "Type I error"),
+    a: "<strong>C. Type II error</strong><br><br>A real effect was missed."
+  },
+  "4-2": {
+    q: GYM + "With 20,000 members in the test, page B raises average spend by $0.40 a month, p = .003. What is the right read?" +
+      options("Not significant, because the sample is too big", "Significant, so roll out page B at any cost", "Not significant, because $0.40 is a small gap", "Significant, but $0.40 may be too small to matter"),
+    a: "<strong>D. Significant, but $0.40 may be too small to matter</strong><br><br>Huge samples make tiny gaps significant. Whether $0.40 is worth acting on is a business call."
+  },
+  "4-3": {
+    q: GYM + "Colorado Springs is the 1 location below the others (ANOVA rejected, Tukey confirmed). Which Now What fits the evidence best?" +
+      options("Give Golden a bonus for being the top location", "Investigate Colorado Springs before changing the rest", "Do nothing: the gap is probably just chance", "Overhaul the member experience at all 4 gyms"),
+    a: "<strong>B. Investigate Colorado Springs before changing the rest</strong><br><br>The evidence points at 1 location. No difference was detected among the other 3."
+  },
+  "4-4": {
+    seconds: 180,
+    q: GYM + "<strong>Daily Double, for your wager.</strong><br><br>The same 30 members averaged <strong>0.9 more visits per week</strong> after the app launched (paired t = 3.10, p = .004, 95% interval 0.31 to 1.49). Write the <strong>What, So What, Now What</strong> memo for the VP of Member Experience, ending with 1 question you would investigate next.",
+    a: "<strong>Full credit needs at least 3 of the 4 parts:</strong><ul class=\"rubric\"><li>What: the decision, reject H0.</li><li>So What: the gain with its interval, in visits per week.</li><li>Now What: an action the evidence supports.</li><li>Next question, with the reason it matters.</li></ul><br><strong>One model:</strong><br>\"We reject the null hypothesis: visits rose after the app launched. Members came in about 0.9 more times per week, and we are 95% confident the true gain is between 0.31 and 1.49 visits. Keep the app and promote it to members who have not downloaded it. Next, does the gain hold after the first month, or is it a novelty bump? That decides whether to keep paying for new app features.\"",
+    dailyDouble: true
+  }
+};
+
+// ================= State =================
+const STORAGE_KEY = "info1020-final-jeopardy-fall2026";
+// Default team names. Click a name in the panel to change it; Reset Game restores these.
+const DEFAULT_TEAM_NAMES = [
+  "Team 1: Bayes Watch",
+  "Team 2: Margin of Terror",
+  "Team 3: Significant Others",
+  "Team 4: The Outliers",
+  "Team 5: Mode Squad",
+  "Team 6: Standard Errors"
+];
+const teams = DEFAULT_TEAM_NAMES.map(name => ({ name: name, score: 0 }));
+const visited = new Set();
+let currentKey = null; // e.g. "3-2"
+let currentValue = 0;
+let ddWager = 0;
+let ddTeam = -1;
+
+// Scores and played cells survive an accidental refresh in class.
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ teams: teams, visited: Array.from(visited) }));
+  } catch (e) { /* storage unavailable: the game still works for this page load */ }
+}
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const s = JSON.parse(raw);
+    if (Array.isArray(s.teams) && s.teams.length === teams.length) {
+      s.teams.forEach((t, i) => {
+        // A save from before the teams had names holds "Team 1" style placeholders; replace those.
+        const saved = String(t.name || "").trim();
+        teams[i].name = (saved && saved !== `Team ${i + 1}`) ? saved.slice(0, 40) : DEFAULT_TEAM_NAMES[i];
+        teams[i].score = Number.isFinite(Number(t.score)) ? Number(t.score) : 0;
+      });
+    }
+    if (Array.isArray(s.visited)) s.visited.forEach(k => { if (QUESTIONS[k]) visited.add(k); });
+  } catch (e) { /* ignore a corrupt save */ }
+}
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[c]));
+}
+function money(n) {
+  return (n < 0 ? "-$" : "$") + Math.abs(n).toLocaleString("en-US");
+}
+
+// ================= Board rendering =================
+function buildBoard() {
+  const board = document.getElementById('board');
+  board.innerHTML = '';
+
+  CATEGORIES.forEach(cat => {
+    const div = document.createElement('div');
+    div.className = 'category';
+    div.setAttribute('role', 'columnheader');
+    div.textContent = cat;
+    board.appendChild(div);
+  });
+
+  VALUES.forEach((val, vIdx) => {
+    CATEGORIES.forEach((cat, cIdx) => {
+      const key = `${cIdx}-${vIdx}`;
+      const cell = document.createElement('button');
+      cell.type = 'button';
+      cell.className = 'cell';
+      cell.textContent = `$${val}`;
+      cell.dataset.key = key;
+      cell.dataset.value = val;
+      cell.setAttribute('aria-label', `${cat} for $${val}`);
+      if (visited.has(key)) {
+        cell.classList.add('played');
+        cell.setAttribute('aria-disabled', 'true');
+      }
+      cell.onclick = () => openCell(cIdx, vIdx);
+      board.appendChild(cell);
+    });
+  });
+}
+
+// ================= Score panel =================
+function buildScorePanel() {
+  const panel = document.getElementById('scorePanel');
+  panel.innerHTML = '<h2>★ Teams ★</h2>';
+  teams.forEach((t, idx) => {
+    const div = document.createElement('div');
+    div.className = 'team';
+    div.innerHTML = `
+      <input class="team-name" value="${escapeHtml(t.name)}" aria-label="Team ${idx + 1} name" onchange="renameTeam(${idx}, this.value)">
+      <div class="score-row">
+        <div class="score ${t.score < 0 ? 'negative' : ''}" id="score-${idx}">${money(t.score)}</div>
+      </div>
+      <div class="score-btns">
+        ${VALUES.map(v => `<button class="score-btn" onclick="adjust(${idx}, ${v})">+${v}</button>`).join('')}
+      </div>
+      <div class="score-btns">
+        ${VALUES.map(v => `<button class="score-btn minus" onclick="adjust(${idx}, ${-v})">−${v}</button>`).join('')}
+      </div>
+    `;
+    panel.appendChild(div);
+  });
+}
+
+function renameTeam(idx, val) {
+  teams[idx].name = (val.trim() || DEFAULT_TEAM_NAMES[idx]).slice(0, 40);
+  saveState();
+}
+
+function adjust(idx, delta) {
+  teams[idx].score += delta;
+  updateScoreDisplay(idx);
+  saveState();
+}
+
+function updateScoreDisplay(idx) {
+  const el = document.getElementById(`score-${idx}`);
+  el.textContent = money(teams[idx].score);
+  el.classList.toggle('negative', teams[idx].score < 0);
+}
+
+// ================= Cell to question flow =================
+function openCell(cIdx, vIdx) {
+  const key = `${cIdx}-${vIdx}`;
+  if (visited.has(key)) return;
+  currentKey = key;
+  currentValue = VALUES[vIdx];
+
+  const data = QUESTIONS[key];
+  document.getElementById('ovCategory').textContent = CATEGORIES[cIdx];
+  document.getElementById('ovValue').textContent = `$${currentValue}`;
+  document.getElementById('ddAward').classList.remove('active');
+
+  const overlay = document.getElementById('overlay');
+  overlay.classList.add('active');
+
+  if (data.dailyDouble) {
+    showDailyDoubleSplash();
+  } else {
+    showQuestion();
+  }
+}
+
+function showDailyDoubleSplash() {
+  document.getElementById('ddSplash').classList.add('active');
+  document.getElementById('overlayContent').style.display = 'none';
+  document.getElementById('overlayControls').style.display = 'none';
+
+  const sel = document.getElementById('ddTeamSelect');
+  sel.innerHTML = '';
+  teams.forEach((t, i) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'dd-team-btn';
+    b.textContent = `${t.name} (${money(t.score)})`;
+    b.onclick = () => selectDdTeam(i, b);
+    sel.appendChild(b);
+  });
+
+  document.getElementById('ddWagerInput').value = '';
+  ddTeam = -1;
+}
+
+function selectDdTeam(idx, btn) {
+  ddTeam = idx;
+  document.querySelectorAll('.dd-team-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  const maxWager = Math.max(teams[idx].score, 500);
+  const input = document.getElementById('ddWagerInput');
+  input.max = maxWager;
+  input.placeholder = `Max $${maxWager}`;
+  input.focus();
+}
+
+function confirmWager() {
+  if (ddTeam < 0) {
+    alert('Select the team answering first.');
+    return;
+  }
+  const val = parseInt(document.getElementById('ddWagerInput').value, 10);
+  if (isNaN(val) || val < 0) {
+    alert('Enter a wager of $0 or more.');
+    return;
+  }
+  const maxWager = Math.max(teams[ddTeam].score, 500);
+  if (val > maxWager) {
+    alert(`The wager cannot exceed $${maxWager}.`);
+    return;
+  }
+  ddWager = val;
+  currentValue = val;
+  document.getElementById('ovValue').textContent = `Wager: $${val}`;
+  document.getElementById('ddSplash').classList.remove('active');
+  document.getElementById('ddAwardWho').textContent = `${teams[ddTeam].name}: $${val}`;
+  document.getElementById('ddAward').classList.add('active');
+  showQuestion();
+}
+
+function awardWager(sign) {
+  if (ddTeam < 0 || !ddWager) return;
+  adjust(ddTeam, sign * ddWager);
+  document.getElementById('ddAward').classList.remove('active');
+}
+
+// ================= Countdown timer =================
+// Every team answers every question within the limit for its value. Cells flagged
+// excel: true get one extra minute for Excel, so the four Excel cells run 3 minutes.
+// A cell can set its own clock with seconds: (the Daily Double memo uses 3 minutes).
+const TIME_LIMITS = { 100: 30, 200: 45, 300: 60, 400: 60, 500: 120 };
+const EXCEL_EXTRA = 60;
+let timerRemaining = 0;
+let timerId = null;
+
+function timerSecondsFor(key) {
+  const data = QUESTIONS[key];
+  const base = VALUES[parseInt(key.split('-')[1], 10)];
+  if (data && data.seconds) return data.seconds;
+  return (TIME_LIMITS[base] || 60) + (data && data.excel ? EXCEL_EXTRA : 0);
+}
+
+function timerRender() {
+  const el = document.getElementById('timerText');
+  const m = Math.floor(timerRemaining / 60);
+  const s = timerRemaining % 60;
+  el.textContent = `${m}:${s < 10 ? '0' : ''}${s}`;
+  el.classList.toggle('low', timerRemaining > 0 && timerRemaining <= 10);
+  el.classList.toggle('done', timerRemaining === 0);
+  document.getElementById('timerBtn').textContent = timerId ? 'Pause' : (timerRemaining > 0 ? 'Resume' : 'Time');
+}
+
+function timerTick() {
+  if (timerRemaining > 0) timerRemaining -= 1;
+  if (timerRemaining === 0 && timerId) { clearInterval(timerId); timerId = null; }
+  timerRender();
+}
+
+function timerStart(seconds, label) {
+  timerStop();
+  timerRemaining = seconds;
+  document.getElementById('timerLabel').textContent = label || 'Time to answer';
+  document.getElementById('timer').classList.add('active');
+  timerId = setInterval(timerTick, 1000);
+  timerRender();
+}
+
+function timerStop() {
+  if (timerId) { clearInterval(timerId); timerId = null; }
+  timerRender();
+}
+
+function timerHide() {
+  timerStop();
+  document.getElementById('timer').classList.remove('active');
+}
+
+function timerToggle() {
+  if (timerId) { timerStop(); return; }
+  if (timerRemaining > 0) { timerId = setInterval(timerTick, 1000); timerRender(); }
+}
+
+function timerAdd(seconds) {
+  timerRemaining += seconds;
+  if (!timerId) timerId = setInterval(timerTick, 1000);
+  timerRender();
+}
+
+// ================= All-play award row =================
+// After the reveal, click each team that got it right. Each click adds the cell value;
+// clicking again takes it back. Wrong answers cost nothing.
+const awarded = new Set();
+
+function buildAllPlay() {
+  const wrap = document.getElementById('allPlayChips');
+  wrap.innerHTML = '';
+  teams.forEach((t, i) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'chip' + (awarded.has(i) ? ' on' : '');
+    b.textContent = t.name;
+    b.onclick = () => toggleAward(i, b);
+    wrap.appendChild(b);
+  });
+}
+
+function toggleAward(idx, btn) {
+  if (!currentKey) return;
+  const value = VALUES[parseInt(currentKey.split('-')[1], 10)];
+  if (awarded.has(idx)) {
+    awarded.delete(idx);
+    adjust(idx, -value);
+    btn.classList.remove('on');
+  } else {
+    awarded.add(idx);
+    adjust(idx, value);
+    btn.classList.add('on');
+  }
+}
+
+function showQuestion() {
+  const data = QUESTIONS[currentKey];
+  document.getElementById('qText').innerHTML = data.q;
+  document.getElementById('aBody').innerHTML = data.a;
+  document.getElementById('aText').classList.remove('active');
+  document.getElementById('revealBtn').style.display = '';
+  document.getElementById('overlayContent').style.display = '';
+  document.getElementById('overlayControls').style.display = '';
+  document.getElementById('overlayContent').scrollTop = 0;
+  awarded.clear();
+  document.getElementById('allPlay').classList.remove('active');
+  timerStart(timerSecondsFor(currentKey), data.excel ? 'Time to answer, plus 1 min for Excel' : 'Time to answer');
+}
+
+function revealAnswer() {
+  if (!currentKey) return;
+  timerStop();
+  document.getElementById('aText').classList.add('active');
+  document.getElementById('revealBtn').style.display = 'none';
+  if (!QUESTIONS[currentKey].dailyDouble) {
+    buildAllPlay();
+    document.getElementById('allPlay').classList.add('active');
+  }
+  const a = document.getElementById('aText');
+  if (a.scrollIntoView) a.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function closeOverlay() {
+  if (!currentKey) return;
+  visited.add(currentKey);
+  timerHide();
+  document.getElementById('overlay').classList.remove('active');
+  document.getElementById('ddSplash').classList.remove('active');
+  document.getElementById('ddAward').classList.remove('active');
+  document.getElementById('allPlay').classList.remove('active');
+  document.getElementById('overlayContent').style.display = '';
+  document.getElementById('overlayControls').style.display = '';
+  awarded.clear();
+  currentKey = null;
+  ddTeam = -1;
+  ddWager = 0;
+  saveState();
+  buildBoard();
+}
+
+// ================= Reset =================
+function resetAll() {
+  if (!confirm('Reset the whole game? This clears every score and every revealed question.')) return;
+  teams.forEach((t, i) => { t.score = 0; t.name = DEFAULT_TEAM_NAMES[i]; });
+  visited.clear();
+  try { localStorage.removeItem(STORAGE_KEY); } catch (e) { /* ignore */ }
+  buildScorePanel();
+  buildBoard();
+}
+
+// ================= Final Jeopardy (tie-break) =================
+// Opened from the banner button, not from the board. Teams tied for the lead are
+// pre-selected; wagers are locked before the question appears; teams write their
+// answer on paper; each team is then marked correct or wrong and the wager applied.
+const FINAL = {
+  category: "Reject or Not?",
+  q: "Marketing's 95% confidence interval for mu(page B) minus mu(page A), average first-month spend, is <strong>$0.91 to $16.49</strong>. What is the <strong>margin of error</strong>?",
+  a: "<strong>$7.79</strong>",
+  explain: "Half the width of the interval: ($16.49 minus $0.91) / 2 = $7.79.<div class=\"excel-check\"><code>=(16.49-0.91)/2</code></div>"
+};
+
+let finalOpen = false;
+let finalStage = 'wager'; // 'wager', 'question', 'answer'
+const finalPlaying = new Set();
+const finalWagers = {};
+const finalResults = {};
+
+function finalMaxWager(idx) {
+  return Math.max(teams[idx].score, 500);
+}
+
+function openFinal() {
+  finalOpen = true;
+  finalStage = 'wager';
+  finalPlaying.clear();
+  Object.keys(finalWagers).forEach(k => delete finalWagers[k]);
+  Object.keys(finalResults).forEach(k => delete finalResults[k]);
+
+  // Pre-select the teams tied for the lead; everyone if there is no tie.
+  const top = Math.max(...teams.map(t => t.score));
+  const tied = teams.map((t, i) => i).filter(i => teams[i].score === top);
+  (tied.length >= 2 ? tied : teams.map((t, i) => i)).forEach(i => finalPlaying.add(i));
+
+  document.getElementById('ovCategory').textContent = 'Final Jeopardy';
+  document.getElementById('ovValue').textContent = 'Tie-break';
+  document.getElementById('ddSplash').classList.remove('active');
+  document.getElementById('ddAward').classList.remove('active');
+  document.getElementById('overlayContent').style.display = 'none';
+  document.getElementById('overlayControls').style.display = 'none';
+  document.getElementById('finalPanel').classList.add('active');
+  document.getElementById('overlay').classList.add('active');
+  timerHide();
+  renderFinal();
+}
+
+function finalRowsHtml() {
+  return teams.map((t, i) => {
+    const playing = finalPlaying.has(i);
+    const name = escapeHtml(t.name);
+    if (finalStage === 'wager') {
+      return `<div class="final-row ${playing ? '' : 'out'}" id="final-row-${i}">
+        <label class="toggle"><input type="checkbox" ${playing ? 'checked' : ''} onchange="finalToggle(${i}, this.checked)"> Playing</label>
+        <div class="name">${name}<small>Score ${money(t.score)} · max wager $${finalMaxWager(i)}</small></div>
+        <input type="number" min="0" max="${finalMaxWager(i)}" step="50" placeholder="Wager" aria-label="Wager for ${name}" value="${finalWagers[i] !== undefined ? finalWagers[i] : ''}" ${playing ? '' : 'disabled'} oninput="finalWagers[${i}] = this.value">
+      </div>`;
+    }
+    if (!playing) return '';
+    const w = finalWagers[i];
+    if (finalStage === 'question') {
+      return `<div class="final-row"><div class="name">${name}</div><div></div><div class="result">Wager $${w}</div></div>`;
+    }
+    const r = finalResults[i];
+    const judge = r === undefined
+      ? `<div class="judge"><button class="big-btn" onclick="finalJudge(${i}, 1)">Correct +$${w}</button><button class="big-btn minus" onclick="finalJudge(${i}, -1)">Wrong −$${w}</button></div>`
+      : `<div class="result ${r < 0 ? 'neg' : ''}">${r < 0 ? '−' : '+'}$${w} → ${money(t.score)}</div>`;
+    return `<div class="final-row"><div class="name">${name}<small>Wager $${w}</small></div><div></div>${judge}</div>`;
+  }).join('');
+}
+
+function renderFinal() {
+  const body = document.getElementById('finalBody');
+  const controls = document.getElementById('finalControls');
+  const head = `<div class="final-title">Final Jeopardy</div><div class="final-category">Category: ${escapeHtml(FINAL.category)}</div>`;
+  body.classList.toggle('compact', finalStage !== 'wager');
+
+  if (finalStage === 'wager') {
+    body.innerHTML = head +
+      `<p class="final-help">Only the teams marked Playing take part; the teams tied for the lead are already selected. Each team wagers up to its score, or up to $500 if its score is below $500. Lock the wagers before anyone sees the question.</p>` +
+      `<div class="final-rows">${finalRowsHtml()}</div>`;
+    controls.innerHTML =
+      `<button class="big-btn primary" onclick="finalLockWagers()">Lock Wagers and Show the Question</button>` +
+      `<button class="big-btn" onclick="closeFinal()">Return to Board</button>`;
+  } else if (finalStage === 'question') {
+    body.innerHTML = head +
+      `<div class="q-text">${FINAL.q}</div>` +
+      `<p class="final-help">Teams write their answer on paper. Sixty seconds, then reveal.</p>` +
+      `<div class="final-rows">${finalRowsHtml()}</div>`;
+    controls.innerHTML =
+      `<button class="big-btn" onclick="finalRevealAnswer()">Reveal Answer</button>` +
+      `<button class="big-btn primary" onclick="closeFinal()">Return to Board</button>`;
+  } else {
+    // Short answer, then the judging rows, then the explanation, so the buttons stay on screen.
+    body.innerHTML = head +
+      `<div class="q-text">${FINAL.q}</div>` +
+      `<div class="a-text active"><div class="a-label">Answer</div><div>${FINAL.a}</div></div>` +
+      `<div class="final-rows">${finalRowsHtml()}</div>` +
+      `<div class="final-explain">${FINAL.explain}</div>`;
+    controls.innerHTML =
+      `<button class="big-btn primary" onclick="closeFinal()">Return to Board</button>`;
+  }
+  body.scrollTop = 0;
+}
+
+function finalToggle(idx, on) {
+  if (on) finalPlaying.add(idx); else finalPlaying.delete(idx);
+  const row = document.getElementById(`final-row-${idx}`);
+  if (row) {
+    row.classList.toggle('out', !on);
+    const input = row.querySelector('input[type=number]');
+    if (input) input.disabled = !on;
+  }
+}
+
+function finalLockWagers() {
+  if (finalPlaying.size === 0) {
+    alert('Mark at least one team as Playing.');
+    return;
+  }
+  for (const i of finalPlaying) {
+    const v = parseInt(finalWagers[i], 10);
+    if (isNaN(v) || v < 0) {
+      alert(`Enter a wager of $0 or more for ${teams[i].name}.`);
+      return;
+    }
+    if (v > finalMaxWager(i)) {
+      alert(`${teams[i].name} can wager at most $${finalMaxWager(i)}.`);
+      return;
+    }
+    finalWagers[i] = v;
+  }
+  finalStage = 'question';
+  renderFinal();
+  timerStart(60, 'Write your answer');
+}
+
+function finalRevealAnswer() {
+  if (finalStage !== 'question') return;
+  timerStop();
+  finalStage = 'answer';
+  renderFinal();
+}
+
+function finalJudge(idx, sign) {
+  if (finalResults[idx] !== undefined) return;
+  finalResults[idx] = sign;
+  adjust(idx, sign * finalWagers[idx]);
+  renderFinal();
+}
+
+function closeFinal() {
+  finalOpen = false;
+  timerHide();
+  document.getElementById('finalPanel').classList.remove('active');
+  document.getElementById('overlay').classList.remove('active');
+  document.getElementById('overlayContent').style.display = '';
+  document.getElementById('overlayControls').style.display = '';
+  saveState();
+}
+
+// ================= Keyboard =================
+document.addEventListener('keydown', (e) => {
+  const overlayOpen = document.getElementById('overlay').classList.contains('active');
+  if (!overlayOpen) return;
+  const typing = /^(INPUT|TEXTAREA)$/.test(document.activeElement && document.activeElement.tagName);
+  if (e.key === 'Escape') {
+    if (finalOpen) closeFinal(); else closeOverlay();
+  } else if ((e.key === 'r' || e.key === 'R') && !typing) {
+    if (finalOpen) { finalRevealAnswer(); return; }
+    const splashOpen = document.getElementById('ddSplash').classList.contains('active');
+    if (!splashOpen) revealAnswer();
+  }
+});
+
+// ================= Init =================
+loadState();
+buildBoard();
+buildScorePanel();
+</script>
+</body>
+</html>

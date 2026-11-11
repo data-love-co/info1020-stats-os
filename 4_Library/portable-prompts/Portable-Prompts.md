@@ -272,7 +272,7 @@ Do this in order, and do NOT run pairwise t-tests at any point:
 [ROUNDING BLOCK]
 ```
 
-Verify: salaries F = 76.51, p < .001, HSD $3,344.70, every pair differs except OR Analyst vs
+Verify: salaries F = 76.51, p < .001, HSD $3,344.74, every pair differs except OR Analyst vs
 Computer Analyst; clinics F = .71, p = .494, no follow-up. The classic errors: six t-tests, Tukey
 after a failed F, the spread check hidden.
 

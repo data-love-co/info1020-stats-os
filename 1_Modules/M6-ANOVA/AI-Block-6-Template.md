@@ -10,7 +10,7 @@ OUTPUT (the part that matters)
 [paste the tool's result: the numbers, the assumption it stated, and its explanation]
 
 MY VERIFICATION
-Target from my workbook: Salaries: F = 76.51, p < .001, HSD $3,344.70, every pair differs except OR Analyst vs Computer Analyst. Clinics: F = .71, p = .494, no follow-up
+Target from my workbook: Salaries: F = 76.51, p < .001, HSD $3,344.74, every pair differs except OR Analyst vs Computer Analyst. Clinics: F = .71, p = .494, no follow-up
 Tool's value: [what it produced]
 Match? [yes / no, and what was wrong if no: t vs z, tail, pooled vs Welch, rounding, condition]
 One thing I checked that it got right or wrong: [one sentence]
