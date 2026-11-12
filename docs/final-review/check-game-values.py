@@ -195,11 +195,11 @@ p = t_dist_2t(t, min(nA, nB) - 1)
 check("Pick $500 difference", mB - mA, 8.70)
 check("Pick $500 SE", se, 3.88)
 check("Pick $500 t", t, 2.24)
-check("Pick $500 two-tailed p, df 49", p, .029, 3)
-answers.update({"Pick $500 p": .029, "Pick $500 SE": 3.88, "Pick $500 t": 2.24})
-check("Key: one-tailed p (no-credit answer)", p / 2, .015, 3)
+check("Pick $500 two-tailed p-value, df 49", p, .029, 3)
+answers.update({"Pick $500 p-value": .029, "Pick $500 SE": 3.88, "Pick $500 t": 2.24})
+check("Key: one-tailed p-value (no-credit answer)", p / 2, .015, 3)
 check("Key: larger s over smaller s", sB / sA, 1.13)
-check("Key: pooled t-test p with df 98 (half-credit answer)", t_dist_2t(t, nA + nB - 2), .027, 3)
+check("Key: pooled t-test p-value with df 98 (half-credit answer)", t_dist_2t(t, nA + nB - 2), .027, 3)
 
 # ---------- Reject or Not?: the morning and evening output table ----------
 v1, v2 = 20.3 / 45, 19.0 / 48
@@ -244,7 +244,7 @@ check("ANOVA table: MS between", msb, 10.04)
 check("ANOVA table: MS within", msw, 1.76)
 check("ANOVA table: F", F, 5.71)
 check("ANOVA table: P-value as printed", f_dist_rt(F, df_b, df_w), .0022, 4)
-check("ANOVA $200: p", f_dist_rt(F, df_b, df_w), .002, 3)
+check("ANOVA $200: p-value", f_dist_rt(F, df_b, df_w), .002, 3)
 check("ANOVA table: F crit", invert_tail(lambda f: f_dist_rt(f, df_b, df_w), .05), 2.816, 3)
 q_crit = qtukey(.05, k, df_w)
 hsd = q_crit * sqrt(msw / n_g)
@@ -269,10 +269,10 @@ check("ANOVA $500 MSTr (whole dollars)", ssb2 / dfb2, 920, 0)
 check("ANOVA $500 MSE (whole dollars)", ssw2 / dfw2, 360, 0)
 F2 = (ssb2 / dfb2) / (ssw2 / dfw2)
 check("ANOVA $500 F", F2, 2.56)
-check("ANOVA $500 p", f_dist_rt(F2, dfb2, dfw2), .096, 3)
+check("ANOVA $500 p-value", f_dist_rt(F2, dfb2, dfw2), .096, 3)
 f_crit2 = invert_tail(lambda f: f_dist_rt(f, dfb2, dfw2), .05)
 check("Spare question: F crit for df 2 and 27", f_crit2, 3.354, 3)
-answers.update({"ANOVA $500 p": .096, "ANOVA $500 F": 2.56, "ANOVA $500 MSTr": 920,
+answers.update({"ANOVA $500 p-value": .096, "ANOVA $500 F": 2.56, "ANOVA $500 MSTr": 920,
                 "ANOVA $500 MSE": 360, "Spare F crit": 3.354})
 
 # ---------- Chi Another Day: bookings against last year's mix ----------
@@ -284,7 +284,7 @@ exp400 = [s * 400 for s in shares]
 check("Chi $200 expected yoga", exp400[0], 160.00)
 chi1 = sum((o - e) ** 2 / e for o, e in zip(obs, exp400))
 check("Chi $400 chi-square", chi1, 5.46)
-check("Chi $400 p", chisq_dist_rt(chi1, 3), .141, 3)
+check("Chi $400 p-value", chisq_dist_rt(chi1, 3), .141, 3)
 crit3 = invert_tail(lambda x: chisq_dist_rt(x, 3), .05)
 check("Chi $400 critical value", crit3, 7.815, 3)
 check("Chi $300 Pilates expected count", .01 * 400, 4, 0)
@@ -298,13 +298,13 @@ for name, c, want in zip(["yoga", "spin", "strength", "climbing"], parts, [6.05,
     check(f"Chi $500 contribution {name}", c, want)
 chi2 = sum(parts)
 check("Chi $500 chi-square", chi2, 11.22)
-check("Chi $500 p (run-of-show)", chisq_dist_rt(chi2, 3), .011, 3)
+check("Chi $500 p-value (run-of-show)", chisq_dist_rt(chi2, 3), .011, 3)
 answers.update({"Chi $200 expected": 160, "Chi $400 critical": 7.815, "Chi $500 chi-square": 11.22,
-                "Chi $500 p": .011})
+                "Chi $500 p-value": .011})
 
 # ---------- So What? Now What? Daily Double: paired app test ----------
 dbar, t_dd, n_dd = 0.9, 3.10, 30
-check("DD p, two-tailed, df 29", t_dist_2t(t_dd, n_dd - 1), .004, 3)
+check("DD p-value, two-tailed, df 29", t_dist_2t(t_dd, n_dd - 1), .004, 3)
 se_dd = dbar / t_dd
 t29 = invert_tail(lambda x: t_dist_2t(x, n_dd - 1), .05)
 check("DD interval low", dbar - t29 * se_dd, 0.31)

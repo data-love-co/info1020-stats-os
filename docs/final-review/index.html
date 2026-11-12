@@ -165,10 +165,16 @@
     box-shadow: inset 0 0 0 2px var(--jeo-gold);
     outline: none;
   }
+  /* A played cell stays dark with a faint value, and can still be reopened */
   .cell.played {
     background: #050e2f;
-    color: transparent;
-    cursor: default;
+    color: rgba(244, 196, 48, 0.28);
+    text-shadow: none;
+  }
+  .cell.played:hover, .cell.played:focus-visible {
+    color: rgba(244, 196, 48, 0.6);
+    box-shadow: inset 0 0 0 2px rgba(244, 196, 48, 0.4);
+    outline: none;
   }
 
   /* ================= Scoring panel ================= */
@@ -977,14 +983,14 @@ const QUESTIONS = {
   "0-4": {
     excel: true,
     q: GYM + "<strong>Excel.</strong> Page A: n = 50, mean $62.40, s = $18.20. Page B: n = 50, mean $71.10, s = $20.50. Using <strong>df = 49</strong> (the smaller n minus 1), what is the <strong>two-tailed p-value</strong> for the difference in average first-month spend?",
-    a: "<strong>p = .029</strong><br><br>SE = SQRT(18.20^2 / 50 + 20.50^2 / 50) = $3.88. t = (71.10 minus 62.40) / 3.8768 = 2.24. Two-tailed, df = 49 as the question sets.<div class=\"excel-check\"><code>=T.DIST.2T(8.70/SQRT(18.2^2/50+20.5^2/50), 49)</code></div>"
+    a: "<strong>p-value = .029</strong><br><br>SE = SQRT(18.20^2 / 50 + 20.50^2 / 50) = $3.88. t = (71.10 minus 62.40) / 3.8768 = 2.24. Two-tailed, df = 49 as the question sets.<div class=\"excel-check\"><code>=T.DIST.2T(8.70/SQRT(18.2^2/50+20.5^2/50), 49)</code></div>"
   },
 
   // ========= Category 2: Reject or Not? =========
   "1-0": {
     q: GYM + "Excel prints P(T&lt;=t) two-tail = <strong>4.7E-06</strong>. How do you write that p-value in a memo?" +
-      options("p = 4.7E-06", "p = .000", "p &lt; .001", "p = 0"),
-    a: "<strong>C. p &lt; .001</strong><br><br>Three decimals, no leading zero, and an inequality once the value is below .001."
+      options("p-value = 4.7E-06", "p-value = .000", "p-value &lt; .001", "p-value = 0"),
+    a: "<strong>C. p-value &lt; .001</strong><br><br>Three decimals, no leading zero, and an inequality once the value is below .001."
   },
   "1-1": {
     q: split(GYM + VISITS_OUTPUT, "Marketing asks whether morning and evening members visit a <strong>different</strong> number of times per month. From the output, what is the decision at alpha = .05?" +
@@ -997,7 +1003,7 @@ const QUESTIONS = {
     a: "<strong>A. Contain 0</strong><br><br>The two-tailed test at .05 failed to reject, and a 95% interval always agrees with a two-tailed test at .05, so 0 is inside it."
   },
   "1-3": {
-    q: GYM + "A different test returns <strong>p = .011</strong>. Which statement about that p-value is correct?" +
+    q: GYM + "A different test returns <strong>p-value = .011</strong>. Which statement about that p-value is correct?" +
       options("There is a 1.1% chance that H0 is true", "There is a 98.9% chance the gap is important", "A gap this large is rare (1.1%) if H0 is true", "The 2 group means differ by exactly 1.1%"),
     a: "<strong>C. A gap this large is rare (1.1%) if H0 is true</strong><br><br>The p-value assumes H0 is true and asks how surprising the data are."
   },
@@ -1014,7 +1020,7 @@ const QUESTIONS = {
     a: "<strong>C. At least 1 location mean differs</strong><br><br>\"All equal\" is H0. Ha is never \"all means differ\"."
   },
   "2-1": {
-    q: split(GYM + SATISFACTION, "F = 5.71 is above F crit = 2.816, and p = .002. What can you conclude?" +
+    q: split(GYM + SATISFACTION, "F = 5.71 is above F crit = 2.816, and p-value = .002. What can you conclude?" +
       options("Colorado Springs is significantly below Golden", "Location explains 5.71% of member satisfaction", "Each location differs from every other location", "The 4 locations do not all share the same mean")),
     a: "<strong>D. The 4 locations do not all share the same mean</strong><br><br>The F test says the means are not all equal. It does not say which ones differ."
   },
@@ -1031,7 +1037,7 @@ const QUESTIONS = {
   "2-4": {
     excel: true,
     q: GYM + "<strong>Excel.</strong> Monthly spend by membership tier (Basic, Plus, Premium), 10 members each: SS between = 1,840 and SS within = 9,720. What is the <strong>p-value</strong> for the one-way ANOVA?",
-    a: "<strong>p = .096</strong><br><br>df = 2 and 27. MSTr = 1,840 / 2 = 920. MSE = 9,720 / 27 = 360. F = 920 / 360 = 2.56.<div class=\"excel-check\"><code>=F.DIST.RT((1840/2)/(9720/27), 2, 27)</code></div>"
+    a: "<strong>p-value = .096</strong><br><br>df = 2 and 27. MSTr = 1,840 / 2 = 920. MSE = 9,720 / 27 = 360. F = 920 / 360 = 2.56.<div class=\"excel-check\"><code>=F.DIST.RT((1840/2)/(9720/27), 2, 27)</code></div>"
   },
 
   // ========= Category 4: Chi Another Day =========
@@ -1050,9 +1056,9 @@ const QUESTIONS = {
     a: "<strong>C. Combine Pilates with a related class type</strong><br><br>Every expected count must be at least 5. Combine categories on business meaning."
   },
   "3-3": {
-    q: split(GYM + BOOKINGS, "Chi-square = 5.46 on 3 df, p = .141. Which conclusion is right?" +
+    q: split(GYM + BOOKINGS, "Chi-square = 5.46 on 3 df, p-value = .141. Which conclusion is right?" +
       options("The mix is proven to be the same as last year", "The mix has changed: 5.46 is a large chi-square", "The mix has changed: yoga is below expected", "The mix has not been shown to differ from last year")),
-    a: "<strong>D. The mix has not been shown to differ from last year</strong><br><br>p = .141 is above .05, and 5.46 is below the critical value 7.815, so fail to reject H0.<div class=\"excel-check\"><code>=CHISQ.INV.RT(0.05, 3)</code></div>"
+    a: "<strong>D. The mix has not been shown to differ from last year</strong><br><br>p-value = .141 is above .05, and 5.46 is below the critical value 7.815, so fail to reject H0.<div class=\"excel-check\"><code>=CHISQ.INV.RT(0.05, 3)</code></div>"
   },
   "3-4": {
     excel: true,
@@ -1072,7 +1078,7 @@ const QUESTIONS = {
     a: "<strong>C. Type II error</strong><br><br>A real effect was missed."
   },
   "4-2": {
-    q: GYM + "With 20,000 members in the test, page B raises average spend by $0.40 a month, p = .003. What is the right read?" +
+    q: GYM + "With 20,000 members in the test, page B raises average spend by $0.40 a month, p-value = .003. What is the right read?" +
       options("Not significant, because the sample is too big", "Significant, so roll out page B at any cost", "Not significant, because $0.40 is a small gap", "Significant, but $0.40 may be too small to matter"),
     a: "<strong>D. Significant, but $0.40 may be too small to matter</strong><br><br>Huge samples make tiny gaps significant. Whether $0.40 is worth acting on is a business call."
   },
@@ -1083,7 +1089,7 @@ const QUESTIONS = {
   },
   "4-4": {
     seconds: 360,
-    q: GYM + "<strong>Daily Double, for your wager.</strong><br><br>The same 30 members averaged <strong>0.9 more visits per week</strong> after the app launched (paired t = 3.10, p = .004, 95% interval 0.31 to 1.49). Write the <strong>\"What?\", \"So What?\", \"Now What?\"</strong> memo for the VP of Member Experience, ending with 1 question you would investigate next.",
+    q: GYM + "<strong>Daily Double, for your wager.</strong><br><br>The same 30 members averaged <strong>0.9 more visits per week</strong> after the app launched (paired t = 3.10, p-value = .004, 95% interval 0.31 to 1.49). Write the <strong>\"What?\", \"So What?\", \"Now What?\"</strong> memo for the VP of Member Experience, ending with 1 question you would investigate next.",
     a: "<strong>Full credit needs at least 3 of the 4 parts:</strong><ul class=\"rubric\"><li>What: the decision, reject H0.</li><li>So What: the gain with its interval, in visits per week.</li><li>Now What: an action the evidence supports.</li><li>Next question, with the reason it matters.</li></ul><br><strong>One model:</strong><br>\"We reject the null hypothesis: visits rose after the app launched. Members came in about 0.9 more times per week, and we are 95% confident the true gain is between 0.31 and 1.49 visits. Keep the app and promote it to members who have not downloaded it. Next, does the gain hold after the first month, or is it a novelty bump? That decides whether to keep paying for new app features.\"",
     dailyDouble: true
   }
@@ -1161,7 +1167,7 @@ function buildBoard() {
       cell.setAttribute('aria-label', `${cat} for $${val}`);
       if (visited.has(key)) {
         cell.classList.add('played');
-        cell.setAttribute('aria-disabled', 'true');
+        cell.setAttribute('aria-label', `${cat} for $${val}, already played`);
       }
       cell.onclick = () => openCell(cIdx, vIdx);
       board.appendChild(cell);
@@ -1212,7 +1218,7 @@ function updateScoreDisplay(idx) {
 // ================= Cell to question flow =================
 function openCell(cIdx, vIdx) {
   const key = `${cIdx}-${vIdx}`;
-  if (visited.has(key)) return;
+  // A played cell reopens like a new one. Earlier awards stay; correct with the side panel.
   currentKey = key;
   currentValue = VALUES[vIdx];
 
