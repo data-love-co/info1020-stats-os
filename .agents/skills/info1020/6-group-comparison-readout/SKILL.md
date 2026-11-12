@@ -51,7 +51,9 @@ dollars. Decide: F = 76.51 > 2.72, p < .001, reject H0. **Follow-up warranted.**
 ## Phase 3: Tukey HSD, only when warranted
 
 HSD = q x SQRT(MSW / n) with q from the studentized range table (k = 4, df = 76: q = 3.7149).
-HSD = $3,344.74. Then every pair:
+HSD = $3,344.74. If the student used the online q-table, it rounds df = 76 down to df = 60 and
+gives q = 3.74, HSD = $3,367.34: that also earns full credit and matches, because every pair
+result is the same. Then every pair:
 
 | Pair | Difference | Differs? |
 |---|---|---|
@@ -80,7 +82,8 @@ the spread check, the table, the decision, and Tukey only on a rejected H0.
 
 ## Phase 6: verify and cite
 
-Call `util_verify_and_cite` with target **salaries F = 76.51, p < .001, HSD $3,344.74, all pairs
+Call `util_verify_and_cite` with target **salaries F = 76.51, p < .001, HSD $3,344.74 (or $3,367.34
+with q = 3.74 from the df = 60 row), all pairs
 differ except OR Analyst vs Computer Analyst; clinics F = .71, p = .494, no follow-up** and the
 classic errors to check: six t-tests, Tukey after a failed F, spread check hidden. Write to
 `2_Outputs/.agents/M6/Group-Comparison-Readout.md`.
