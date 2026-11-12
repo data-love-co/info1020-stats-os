@@ -11,7 +11,7 @@ is net new, so the old tabs will not help. Every cell asks one thing, and every 
 result, the computation, and the Excel function.
 **Scenario:** Fourteener Fitness, a fictional Colorado gym chain with 4 locations (Golden,
 Boulder, Fort Collins, Colorado Springs). Read the card on screen once before the first cell.
-**Daily Double:** So What? Now What?, $500.
+**Daily Double:** "So What? Now What?", $500.
 **Tie-break:** Final Jeopardy, the ★ button in the banner. Rules and key below.
 
 > Fill in: [class length], [prize list], [extra-credit rule], [final exam date]. The clocks are
@@ -141,7 +141,7 @@ Reading an ANOVA and what comes after it. Both tables are shown on the $100 to $
 | 100 | The alternative hypothesis for this ANOVA is: | **C. At least 1 location mean differs.** | Letter only. |
 | 200 | F = 5.71 above F crit 2.816, p = .002. What can you conclude? | **D. The 4 locations do not all share the same mean.** | Letter only. F does not say which ones differ. |
 | 300 | ANOVA rejected H0. The right next step to find which locations differ? | **C. Run a Tukey HSD post hoc test.** | Letter only. |
-| 400 | Tukey: Colorado Springs differs from each of the other 3; no other pair differs. Which So What is right? | **A. Location matters: Colorado Springs is the low one.** No difference detected among the other 3. | Letter only. Checked: HSD = 1.45 (q = 3.776 for 4 groups, df 44); Colorado Springs gaps are 1.60 to 2.00, the others 0.40 or less. |
+| 400 | Tukey: Colorado Springs differs from each of the other 3; no other pair differs. Which "So What?" is right? | **A. Location matters: Colorado Springs is the low one.** No difference detected among the other 3. | Letter only. Checked: HSD = 1.45 (q = 3.776 for 4 groups, df 44); Colorado Springs gaps are 1.60 to 2.00, the others 0.40 or less. |
 | 500 | **Excel.** Spend by tier (Basic, Plus, Premium), 10 each: SS between 1,840, SS within 9,720. The ANOVA p-value. | **p = .096.** df 2 and 27, MSTr 920, MSE 360, F = 2.56. `=F.DIST.RT((1840/2)/(9720/27),2,27)` | Accept .096 only. Talking point after scoring: fail to reject, so no Tukey. A post hoc test after a failed F is fishing. |
 
 ### 4. Chi Another Day
@@ -172,8 +172,8 @@ Interpretation in business language. The $500 is the Daily Double.
 | 100 | The app test fails to reject H0. Which statement is right? | **A. We found no evidence that the app changed visits.** | Letter only. |
 | 200 | Failed to reject, dropped the app; better data later shows it raises visits. Which error? | **C. Type II error.** A real effect was missed. | Letter only. Type I is a false alarm. |
 | 300 | 20,000 members, page B raises spend $0.40 a month, p = .003. The right read? | **D. Significant, but $0.40 may be too small to matter.** | Letter only. |
-| 400 | Colorado Springs is the 1 location below the others. Which Now What fits best? | **B. Investigate Colorado Springs before changing the rest.** | Letter only. No winner to reward, no reason to change all 4. |
-| 500 DD | 30 members, 0.9 more visits per week after the app (paired t = 3.10, p = .004, 95% interval 0.31 to 1.49). What, So What, Now What memo for the VP of Member Experience, ending with 1 question to investigate next. | 4 parts: What (reject H0), So What with the numbers, Now What, next question with a reason. Model in the game. | Only the picking team answers, for its wager. Award the wager for at least 3 of 4 parts, as on the exam essays. |
+| 400 | Colorado Springs is the 1 location below the others. Which "Now What?" fits best? | **B. Investigate Colorado Springs before changing the rest.** | Letter only. No winner to reward, no reason to change all 4. |
+| 500 DD | 30 members, 0.9 more visits per week after the app (paired t = 3.10, p = .004, 95% interval 0.31 to 1.49). "What?", "So What?", "Now What?" memo for the VP of Member Experience, ending with 1 question to investigate next. | 4 parts: "What?" (reject H0), "So What?" with the numbers, "Now What?", next question with a reason. Model in the game. | Only the picking team answers, for its wager. Award the wager for at least 3 of 4 parts, as on the exam essays. |
 
 ### Final Jeopardy (tie-break only)
 

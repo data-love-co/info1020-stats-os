@@ -1024,7 +1024,7 @@ const QUESTIONS = {
     a: "<strong>C. Run a Tukey HSD post hoc test</strong><br><br>Tukey compares every pair and holds the overall false-alarm rate at .05."
   },
   "2-3": {
-    q: split(GYM + SATISFACTION, "Tukey outcome: Colorado Springs differs from each of the other 3 locations. No other pair differs. Which So What is right?" +
+    q: split(GYM + SATISFACTION, "Tukey outcome: Colorado Springs differs from each of the other 3 locations. No other pair differs. Which \"So What?\" is right?" +
       options("Location matters: Colorado Springs is the low one", "All 4 of the locations differ from one another", "Golden is the best location in the whole chain", "Location has no effect on member satisfaction")),
     a: "<strong>A. Location matters: Colorado Springs is the low one</strong><br><br>No difference was detected among Golden, Boulder and Fort Collins, so none of them is named the best."
   },
@@ -1077,13 +1077,13 @@ const QUESTIONS = {
     a: "<strong>D. Significant, but $0.40 may be too small to matter</strong><br><br>Huge samples make tiny gaps significant. Whether $0.40 is worth acting on is a business call."
   },
   "4-3": {
-    q: GYM + "Colorado Springs is the 1 location below the others (ANOVA rejected, Tukey confirmed). Which Now What fits the evidence best?" +
+    q: GYM + "Colorado Springs is the 1 location below the others (ANOVA rejected, Tukey confirmed). Which \"Now What?\" fits the evidence best?" +
       options("Give Golden a bonus for being the top location", "Investigate Colorado Springs before changing the rest", "Do nothing: the gap is probably just chance", "Overhaul the member experience at all 4 gyms"),
     a: "<strong>B. Investigate Colorado Springs before changing the rest</strong><br><br>The evidence points at 1 location. No difference was detected among the other 3."
   },
   "4-4": {
     seconds: 360,
-    q: GYM + "<strong>Daily Double, for your wager.</strong><br><br>The same 30 members averaged <strong>0.9 more visits per week</strong> after the app launched (paired t = 3.10, p = .004, 95% interval 0.31 to 1.49). Write the <strong>What, So What, Now What</strong> memo for the VP of Member Experience, ending with 1 question you would investigate next.",
+    q: GYM + "<strong>Daily Double, for your wager.</strong><br><br>The same 30 members averaged <strong>0.9 more visits per week</strong> after the app launched (paired t = 3.10, p = .004, 95% interval 0.31 to 1.49). Write the <strong>\"What?\", \"So What?\", \"Now What?\"</strong> memo for the VP of Member Experience, ending with 1 question you would investigate next.",
     a: "<strong>Full credit needs at least 3 of the 4 parts:</strong><ul class=\"rubric\"><li>What: the decision, reject H0.</li><li>So What: the gain with its interval, in visits per week.</li><li>Now What: an action the evidence supports.</li><li>Next question, with the reason it matters.</li></ul><br><strong>One model:</strong><br>\"We reject the null hypothesis: visits rose after the app launched. Members came in about 0.9 more times per week, and we are 95% confident the true gain is between 0.31 and 1.49 visits. Keep the app and promote it to members who have not downloaded it. Next, does the gain hold after the first month, or is it a novelty bump? That decides whether to keep paying for new app features.\"",
     dailyDouble: true
   }

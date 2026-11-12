@@ -21,7 +21,7 @@ that way:
   A, B, C or D when the clock ends, and the cell is done in about two minutes.
 - **Four $500 cells use Excel**, and every number a team needs is on the screen. There is **no
   data file to open**: one laptop per team with a blank workbook is enough.
-- **The fifth $500 is the Daily Double**: a What, So What, Now What memo in the shape of the exam
+- **The fifth $500 is the Daily Double**: a "What?", "So What?", "Now What?" memo in the shape of the exam
   essays.
 
 The scenario is **Fourteener Fitness**, a fictional Colorado gym chain with 4 locations (Golden,
@@ -56,7 +56,7 @@ python docs/final-review/check-game-values.py
    the answer: click each team that got it right and the cell value is added (click again to
    undo). A wrong answer costs nothing, so every team has a reason to try. The +/− buttons in the
    side panel still work for corrections. **Esc** returns to the board and marks the cell played.
-6. The **$500 cell in So What? Now What?** is the Daily Double, the one cell only the picking team
+6. The **$500 cell in "So What? Now What?"** is the Daily Double, the one cell only the picking team
    answers. The game asks for that team and their wager, then shows **Award wager** and **Deduct
    wager** buttons.
 7. Scores and played cells are saved in the browser, so an accidental refresh does not lose the
