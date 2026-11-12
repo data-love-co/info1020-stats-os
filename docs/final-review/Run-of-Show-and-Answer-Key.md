@@ -73,7 +73,7 @@ Say this rule before the first cell is picked, so no one argues later.
   during the board wins. Keep a tally on paper, or run the spare question below as sudden death.
 
 **Rounding is graded, even here.** If a team writes "0.029", ask for it the course way: ".029".
-p-values to three decimals with no leading zero and p < .001 below that, test statistics to two,
+p-values to three decimals with no leading zero and p-value < .001 below that, test statistics to two,
 critical values to three, money to the cent.
 
 ---
@@ -93,7 +93,7 @@ Step zero. Read the design, name the test.
 | 200 | 50 new members saw page A, 50 different new members saw page B. Which test answers whether average first-month spend differs? | **D. Two-sample t-test.** Different people in each group. | Letter only. Point out that equal group sizes do not make it paired. |
 | 300 | Satisfaction (1 to 10), 12 members at each of 4 locations. Which test answers whether average satisfaction differs by location? | **C. One-way ANOVA.** 4 means in one test. | Letter only. Talking point: 6 separate t-tests would push the false-alarm chance to about .26 (1 minus .95^6). |
 | 400 | Last year 40% yoga, 30% spin, 20% strength, 10% climbing. Which test answers whether this year's 400 bookings moved off that split? | **D. Chi-square goodness of fit.** 1 categorical variable against benchmark shares. | Letter only. Independence needs 2 categorical variables. |
-| 500 | **Excel.** Page A: n = 50, mean $62.40, s = $18.20. Page B: n = 50, mean $71.10, s = $20.50. Two-tailed p-value with df = 49. | **p = .029.** SE = $3.88, t = 2.24. `=T.DIST.2T(8.70/SQRT(18.2^2/50+20.5^2/50), 49)` | Accept .029 only. No credit for .015 (one tail). If a team pooled with df 98 per the guide's ratio rule (20.50 / 18.20 = 1.13, under 2), they get .027: give half and point to the df the question set. |
+| 500 | **Excel.** Page A: n = 50, mean $62.40, s = $18.20. Page B: n = 50, mean $71.10, s = $20.50. Two-tailed p-value with df = 49. | **p-value = .029.** SE = $3.88, t = 2.24. `=T.DIST.2T(8.70/SQRT(18.2^2/50+20.5^2/50), 49)` | Accept .029 only. No credit for .015 (one tail). If a team pooled with df 98 per the guide's ratio rule (20.50 / 18.20 = 1.13, under 2), they get .027: give half and point to the df the question set. |
 
 ### 2. Reject or Not?
 
@@ -113,10 +113,10 @@ Reading output and p-values. This Excel output is shown on the $200, $300 and $5
 
 | $ | Question | Answer | Scoring |
 |---|---|---|---|
-| 100 | Excel prints P(T<=t) two-tail = 4.7E-06. How do you write it in a memo? | **C. p < .001.** | Letter only. |
-| 200 | Do morning and evening members visit a **different** number of times? Decision at .05 from the output. | **D. Fail to reject H0: the two-tail p (.068) is above .05.** | Letter only. Talking point: the one-tail line answers a question nobody asked. |
+| 100 | Excel prints P(T<=t) two-tail = 4.7E-06. How do you write it in a memo? | **C. p-value < .001.** | Letter only. |
+| 200 | Do morning and evening members visit a **different** number of times? Decision at .05 from the output. | **D. Fail to reject H0: the two-tail p-value (.068) is above .05.** | Letter only. Talking point: the one-tail line answers a question nobody asked. |
 | 300 | A 95% interval for mu(morning) minus mu(evening) must: | **A. Contain 0.** A 95% interval and a two-tailed test at .05 always agree. | Letter only. |
-| 400 | A different test returns p = .011. Which statement is correct? | **C. A gap this large is rare (1.1%) if H0 is true.** | Letter only. Never "the chance that H0 is true". |
+| 400 | A different test returns p-value = .011. Which statement is correct? | **C. A gap this large is rare (1.1%) if H0 is true.** | Letter only. Never "the chance that H0 is true". |
 | 500 | **Excel.** Difference 1.70 visits, SE 0.92, df 90. The 95% interval for mu(morning) minus mu(evening). | **-0.13 to 3.53 visits.** t* = 1.987, margin = 1.83. `=1.70-T.INV.2T(0.05,90)*0.92` and `=1.70+...` | Endpoints within .02 earn full credit. It contains 0, which agrees with the $200 decision: say it aloud after scoring. |
 
 ### 3. ANOVA-thing Goes
@@ -139,10 +139,10 @@ Reading an ANOVA and what comes after it. Both tables are shown on the $100 to $
 | $ | Question | Answer | Scoring |
 |---|---|---|---|
 | 100 | The alternative hypothesis for this ANOVA is: | **C. At least 1 location mean differs.** | Letter only. |
-| 200 | F = 5.71 above F crit 2.816, p = .002. What can you conclude? | **D. The 4 locations do not all share the same mean.** | Letter only. F does not say which ones differ. |
+| 200 | F = 5.71 above F crit 2.816, p-value = .002. What can you conclude? | **D. The 4 locations do not all share the same mean.** | Letter only. F does not say which ones differ. |
 | 300 | ANOVA rejected H0. The right next step to find which locations differ? | **C. Run a Tukey HSD post hoc test.** | Letter only. |
 | 400 | Tukey: Colorado Springs differs from each of the other 3; no other pair differs. Which "So What?" is right? | **A. Location matters: Colorado Springs is the low one.** No difference detected among the other 3. | Letter only. Checked: HSD = 1.45 (q = 3.776 for 4 groups, df 44); Colorado Springs gaps are 1.60 to 2.00, the others 0.40 or less. |
-| 500 | **Excel.** Spend by tier (Basic, Plus, Premium), 10 each: SS between 1,840, SS within 9,720. The ANOVA p-value. | **p = .096.** df 2 and 27, MSTr 920, MSE 360, F = 2.56. `=F.DIST.RT((1840/2)/(9720/27),2,27)` | Accept .096 only. Talking point after scoring: fail to reject, so no Tukey. A post hoc test after a failed F is fishing. |
+| 500 | **Excel.** Spend by tier (Basic, Plus, Premium), 10 each: SS between 1,840, SS within 9,720. The ANOVA p-value. | **p-value = .096.** df 2 and 27, MSTr 920, MSE 360, F = 2.56. `=F.DIST.RT((1840/2)/(9720/27),2,27)` | Accept .096 only. Talking point after scoring: fail to reject, so no Tukey. A post hoc test after a failed F is fishing. |
 
 ### 4. Chi Another Day
 
@@ -160,8 +160,8 @@ Goodness of fit against a benchmark. This table is shown on the $100, $200 and $
 | 100 | Degrees of freedom for this goodness-of-fit test? | **B. 3.** Categories minus 1. | Letter only. Sample size does not enter the df. |
 | 200 | Expected yoga bookings under last year's mix? (Write the number.) | **160.00.** .40 times 400. `=0.40*400` | Accept 160. No credit for 138, the observed count. |
 | 300 | Pilates at 1% of 400 bookings has an expected count of 4. What should you do? | **C. Combine Pilates with a related class type.** | Letter only. Alpha does not fix a small expected count. |
-| 400 | Chi-square = 5.46 on 3 df, p = .141. Which conclusion is right? | **D. The mix has not been shown to differ from last year.** Critical value 7.815. `=CHISQ.INV.RT(0.05,3)` | Letter only. Failing to reject is not proof the mix is unchanged. |
-| 500 | **Excel.** Colorado Springs, 200 bookings: yoga 58, spin 74, strength 42, climbing 26, same benchmark. The chi-square statistic. | **11.22.** Expected 80, 60, 40, 20; contributions 6.05 + 3.27 + 0.10 + 1.80. `=SUMPRODUCT((O-E)^2/E)` | Accept 11.22 only. Talking point after scoring: p = .011 (`=CHISQ.DIST.RT(11.22,3)`), so reject: Colorado Springs books less yoga and more spin than the benchmark. |
+| 400 | Chi-square = 5.46 on 3 df, p-value = .141. Which conclusion is right? | **D. The mix has not been shown to differ from last year.** Critical value 7.815. `=CHISQ.INV.RT(0.05,3)` | Letter only. Failing to reject is not proof the mix is unchanged. |
+| 500 | **Excel.** Colorado Springs, 200 bookings: yoga 58, spin 74, strength 42, climbing 26, same benchmark. The chi-square statistic. | **11.22.** Expected 80, 60, 40, 20; contributions 6.05 + 3.27 + 0.10 + 1.80. `=SUMPRODUCT((O-E)^2/E)` | Accept 11.22 only. Talking point after scoring: p-value = .011 (`=CHISQ.DIST.RT(11.22,3)`), so reject: Colorado Springs books less yoga and more spin than the benchmark. |
 
 ### 5. So What? Now What?
 
@@ -171,9 +171,9 @@ Interpretation in business language. The $500 is the Daily Double.
 |---|---|---|---|
 | 100 | The app test fails to reject H0. Which statement is right? | **A. We found no evidence that the app changed visits.** | Letter only. |
 | 200 | Failed to reject, dropped the app; better data later shows it raises visits. Which error? | **C. Type II error.** A real effect was missed. | Letter only. Type I is a false alarm. |
-| 300 | 20,000 members, page B raises spend $0.40 a month, p = .003. The right read? | **D. Significant, but $0.40 may be too small to matter.** | Letter only. |
+| 300 | 20,000 members, page B raises spend $0.40 a month, p-value = .003. The right read? | **D. Significant, but $0.40 may be too small to matter.** | Letter only. |
 | 400 | Colorado Springs is the 1 location below the others. Which "Now What?" fits best? | **B. Investigate Colorado Springs before changing the rest.** | Letter only. No winner to reward, no reason to change all 4. |
-| 500 DD | 30 members, 0.9 more visits per week after the app (paired t = 3.10, p = .004, 95% interval 0.31 to 1.49). "What?", "So What?", "Now What?" memo for the VP of Member Experience, ending with 1 question to investigate next. | 4 parts: "What?" (reject H0), "So What?" with the numbers, "Now What?", next question with a reason. Model in the game. | Only the picking team answers, for its wager. Award the wager for at least 3 of 4 parts, as on the exam essays. |
+| 500 DD | 30 members, 0.9 more visits per week after the app (paired t = 3.10, p-value = .004, 95% interval 0.31 to 1.49). "What?", "So What?", "Now What?" memo for the VP of Member Experience, ending with 1 question to investigate next. | 4 parts: "What?" (reject H0), "So What?" with the numbers, "Now What?", next question with a reason. Model in the game. | Only the picking team answers, for its wager. Award the wager for at least 3 of 4 parts, as on the exam essays. |
 
 ### Final Jeopardy (tie-break only)
 
@@ -201,7 +201,7 @@ Most-missed concepts to name for the room, in the order they usually come up:
 4. **ANOVA says at least 1 mean differs. Tukey names the pairs**, and groups with no detected
    difference do not get ranked.
 5. **Chi-square: expected counts come from the benchmark**, every one must be at least 5, and a
-   tiny p-value is written p < .001.
+   tiny p-value is written p-value < .001.
 
 Confirm the final format (date, length, the Course Reference Guide as the permitted aid,
 calculator, no AI tools of any kind, which is the course rule and the Honor Code). Students can

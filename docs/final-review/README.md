@@ -56,12 +56,16 @@ python docs/final-review/check-game-values.py
    the answer: click each team that got it right and the cell value is added (click again to
    undo). A wrong answer costs nothing, so every team has a reason to try. The +/− buttons in the
    side panel still work for corrections. **Esc** returns to the board and marks the cell played.
+   A played cell stays dark with a faint dollar value, and clicking it opens the question again.
+   Awards from the first time stay on the scores, so reopening never takes points away; use the
+   +/− buttons if a reopened cell needs a correction.
 6. The **$500 cell in "So What? Now What?"** is the Daily Double, the one cell only the picking team
    answers. The game asks for that team and their wager, then shows **Award wager** and **Deduct
    wager** buttons.
 7. Scores and played cells are saved in the browser, so an accidental refresh does not lose the
    game. The final game saves under its own key, so it never loads the midterm's scores.
-   **Reset Game** clears everything.
+   **Reset Game** clears everything. Press it before class if you clicked through the board
+   while preparing, since those clicks are saved in your browser too.
 8. **Final Jeopardy** (the ★ button in the banner) is the tie-breaker. It pre-selects the teams
    tied for the lead, or everyone if there is no tie, and you can change who plays. Each playing
    team wagers up to its score, or up to $500 if its score is below $500, before the question
@@ -87,11 +91,11 @@ Answers by cell. These are the game's own verification targets, not the lab's.
 | Cell | Answer |
 |---|---|
 | Pick Your Test $100 to $400 | C paired t; D two-sample t; C one-way ANOVA; D goodness of fit |
-| Pick Your Test $500 | p = .029 (SE $3.88, t = 2.24, df 49) |
-| Reject or Not? $100 to $400 | C p < .001; D fail to reject, two-tail p .068; A contains 0; C rare if H0 is true |
+| Pick Your Test $500 | p-value = .029 (SE $3.88, t = 2.24, df 49) |
+| Reject or Not? $100 to $400 | C p-value < .001; D fail to reject, two-tail p .068; A contains 0; C rare if H0 is true |
 | Reject or Not? $500 | -0.13 to 3.53 visits (t* 1.987, margin 1.83) |
 | ANOVA-thing Goes $100 to $400 | C at least 1 differs; D not all the same mean; C Tukey HSD; A Colorado Springs is the low one |
-| ANOVA-thing Goes $500 | p = .096 (MSTr 920, MSE 360, F = 2.56) |
+| ANOVA-thing Goes $500 | p-value = .096 (MSTr 920, MSE 360, F = 2.56) |
 | Chi Another Day $100 to $400 | B 3; 160.00 (write the number); C combine; D not shown to differ (critical 7.815) |
 | Chi Another Day $500 | chi-square = 11.22 (expected 80, 60, 40, 20) |
 | So What? Now What? $100 to $400 | A no evidence; C Type II; D significant but may be too small; B investigate Colorado Springs |
