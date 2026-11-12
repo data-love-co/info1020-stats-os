@@ -42,8 +42,9 @@ python docs/final-review/check-game-values.py
 ## In the classroom
 
 1. Open the game and press **F11** (Windows) or **Ctrl+Cmd+F** (Mac) for full screen.
-2. The six teams come pre-named: Bayes Watch, Margin of Terror, Significant Others, The
-   Outliers, Mode Squad, Standard Errors. Click a name in the right-hand panel to change it.
+2. The six teams come pre-named from The Hitchhiker's Guide to the Galaxy: Don't Panic,
+   Improbability Drive, Deep Thought, The Answer Is 42, Mostly Harmless, and
+   Paranoid Androids. Click a name in the right-hand panel to change it.
 3. Each team needs one laptop with Excel open to a **blank workbook**. No CSV is needed: the
    Excel cells put every number on the screen. Lab workbooks stay closed.
 4. Click a dollar cell to show a question. A countdown starts in the top bar: 1 minute for

@@ -409,6 +409,15 @@
   .qdata .ctable { margin: 0 auto; font-size: clamp(0.8rem, min(1.3vw, 2.6vh), 1.4rem); }
   .qdata .ctable th, .qdata .ctable td { padding: 0.25rem 0.75rem; }
   .qask .options { margin-left: 0; }
+  /* One-line caption that says what a data table measures */
+  .tcap {
+    margin: 0 0 0.35rem;
+    font-family: 'Oswald', sans-serif;
+    font-size: clamp(0.8rem, min(1.2vw, 2.3vh), 1.25rem);
+    letter-spacing: 0.03em;
+    color: var(--jeo-gold);
+    text-align: center;
+  }
   @media (max-height: 860px) {
     .overlay-content { padding-top: 1rem; padding-bottom: 1rem; }
     .overlay-topbar { padding-top: 0.45rem; padding-bottom: 0.45rem; }
@@ -914,7 +923,7 @@ const VALUES = [100, 200, 300, 400, 500];
 // Run-of-Show-and-Answer-Key.md.
 const GYM = `<div class="scenario-box">Fourteener Fitness is a Colorado gym chain with 4 locations: Golden, Boulder, Fort Collins and Colorado Springs. The company and its numbers are fictional. You are the analytics intern. alpha = .05 unless the cell says otherwise.</div>`;
 
-const VISITS_OUTPUT = `<div class="tscroll"><table class="ctable" aria-label="Excel output: two-sample t-test, morning and evening members">
+const VISITS_OUTPUT = `<p class="tcap">Average visits per month, morning vs evening members</p><div class="tscroll"><table class="ctable" aria-label="Excel output: two-sample t-test, morning and evening members">
   <tr><th>t-Test: Two-Sample Assuming Unequal Variances</th><th>Morning</th><th>Evening</th></tr>
   <tr><th>Mean (visits per month)</th><td>11.80</td><td>10.10</td></tr>
   <tr><th>Variance</th><td>20.3</td><td>19.0</td></tr>
@@ -927,7 +936,7 @@ const VISITS_OUTPUT = `<div class="tscroll"><table class="ctable" aria-label="Ex
   <tr><th>t Critical two-tail</th><td>1.987</td><td></td></tr>
 </table></div>`;
 
-const SATISFACTION = `<div class="tscroll"><table class="ctable" aria-label="Member satisfaction by location">
+const SATISFACTION = `<p class="tcap">Member satisfaction (1 to 10), 12 members at each location</p><div class="tscroll"><table class="ctable" aria-label="Member satisfaction by location">
   <tr><th>Location</th><th>n</th><th>Mean</th><th>Std dev</th></tr>
   <tr><th>Golden</th><td>12</td><td>8.10</td><td>1.30</td></tr>
   <tr><th>Boulder</th><td>12</td><td>7.90</td><td>1.25</td></tr>
@@ -940,7 +949,7 @@ const SATISFACTION = `<div class="tscroll"><table class="ctable" aria-label="Mem
   <tr><th class="tot">Total</th><td class="tot">107.51</td><td class="tot">47</td><td></td><td></td><td></td><td></td></tr>
 </table></div>`;
 
-const BOOKINGS = `<div class="tscroll"><table class="ctable" aria-label="Class bookings against last year's mix">
+const BOOKINGS = `<p class="tcap">Class bookings: this year against last year's mix</p><div class="tscroll"><table class="ctable" aria-label="Class bookings against last year's mix">
   <tr><th>Class type</th><th>Benchmark share</th><th>This year (400 bookings)</th></tr>
   <tr><th>Yoga</th><td>40%</td><td>138</td></tr>
   <tr><th>Spin</th><td>30%</td><td>128</td></tr>
@@ -988,7 +997,7 @@ const QUESTIONS = {
 
   // ========= Category 2: Reject or Not? =========
   "1-0": {
-    q: GYM + "Excel prints P(T&lt;=t) two-tail = <strong>4.7E-06</strong>. How do you write that p-value in a memo?" +
+    q: GYM + "A two-sample t-test compares average first-month spend for signup pages A and B. Excel prints P(T&lt;=t) two-tail = <strong>4.7E-06</strong>. How do you write that p-value in a memo?" +
       options("p-value = 4.7E-06", "p-value = .000", "p-value &lt; .001", "p-value = 0"),
     a: "<strong>C. p-value &lt; .001</strong><br><br>Three decimals, no leading zero, and an inequality once the value is below .001."
   },
@@ -998,12 +1007,12 @@ const QUESTIONS = {
     a: "<strong>D. Fail to reject H0: the two-tail p-value (.068) is above .05</strong><br><br>\"Different\" is a two-tailed question, so read the two-tail line."
   },
   "1-2": {
-    q: split(GYM + VISITS_OUTPUT, "Same output. A 95% confidence interval for mu(morning) minus mu(evening) must:" +
+    q: split(GYM + VISITS_OUTPUT, "The output tests H0: mu(morning) = mu(evening), two-tailed at alpha = .05. A 95% confidence interval for mu(morning) minus mu(evening) must:" +
       options("Contain 0", "Be impossible to judge here", "Lie entirely above 0", "Lie entirely below 0")),
     a: "<strong>A. Contain 0</strong><br><br>The two-tailed test at .05 failed to reject, and a 95% interval always agrees with a two-tailed test at .05, so 0 is inside it."
   },
   "1-3": {
-    q: GYM + "A different test returns <strong>p-value = .011</strong>. Which statement about that p-value is correct?" +
+    q: GYM + "A two-sample t-test compares average monthly visits for Boulder and Golden members. H0: the 2 averages are equal (two-tailed, alpha = .05). The test returns <strong>p-value = .011</strong>. Which statement about that p-value is correct?" +
       options("There is a 1.1% chance that H0 is true", "There is a 98.9% chance the gap is important", "A gap this large is rare (1.1%) if H0 is true", "The 2 group means differ by exactly 1.1%"),
     a: "<strong>C. A gap this large is rare (1.1%) if H0 is true</strong><br><br>The p-value assumes H0 is true and asks how surprising the data are."
   },
@@ -1056,7 +1065,7 @@ const QUESTIONS = {
     a: "<strong>C. Combine Pilates with a related class type</strong><br><br>Every expected count must be at least 5. Combine categories on business meaning."
   },
   "3-3": {
-    q: split(GYM + BOOKINGS, "Chi-square = 5.46 on 3 df, p-value = .141. Which conclusion is right?" +
+    q: split(GYM + BOOKINGS, "Goodness-of-fit test of this year's 400 bookings against last year's mix. H0: the mix has not changed (alpha = .05). Chi-square = 5.46 on 3 df, p-value = .141. Which conclusion is right?" +
       options("The mix is proven to be the same as last year", "The mix has changed: 5.46 is a large chi-square", "The mix has changed: yoga is below expected", "The mix has not been shown to differ from last year")),
     a: "<strong>D. The mix has not been shown to differ from last year</strong><br><br>p-value = .141 is above .05, and 5.46 is below the critical value 7.815, so fail to reject H0.<div class=\"excel-check\"><code>=CHISQ.INV.RT(0.05, 3)</code></div>"
   },
@@ -1068,22 +1077,22 @@ const QUESTIONS = {
 
   // ========= Category 5: So What? Now What? =========
   "4-0": {
-    q: GYM + "The app test fails to reject H0. Which statement is right?" +
+    q: GYM + "Before launching its member app chain-wide, Fourteener Fitness ran a <strong>pilot</strong>: 10 Golden members, average weekly visits in the 2 weeks before and the 2 weeks after they got the app. H0: the app does not change average weekly visits. Ha: it does (two-tailed, alpha = .05). The paired t-test <strong>fails to reject H0</strong>. Which statement is right?" +
       options("We found no evidence that the app changed visits", "We proved that the app increased member visits", "We proved that the app has no effect on visits", "We should rerun the test until it rejects H0"),
     a: "<strong>A. We found no evidence that the app changed visits</strong><br><br>Failing to reject is not proof of no effect."
   },
   "4-1": {
-    q: GYM + "The app test failed to reject, so the gym dropped the app. A year later, better data shows the app truly raises visits. Which error was made?" +
+    q: GYM + "The 10-member app <strong>pilot</strong> at Golden failed to reject H0 (H0: the app does not change average weekly visits). Suppose the app truly does raise visits, but the gym had dropped it after the pilot. Which error would that be?" +
       options("Sampling bias", "Rounding error", "Type II error", "Type I error"),
     a: "<strong>C. Type II error</strong><br><br>A real effect was missed."
   },
   "4-2": {
-    q: GYM + "With 20,000 members in the test, page B raises average spend by $0.40 a month, p-value = .003. What is the right read?" +
+    q: GYM + "Signup page test: <strong>20,000</strong> new members were split between page A and page B. Page B members spent <strong>$0.40</strong> more a month on average (two-tailed test, p-value = .003). What is the right read?" +
       options("Not significant, because the sample is too big", "Significant, so roll out page B at any cost", "Not significant, because $0.40 is a small gap", "Significant, but $0.40 may be too small to matter"),
     a: "<strong>D. Significant, but $0.40 may be too small to matter</strong><br><br>Huge samples make tiny gaps significant. Whether $0.40 is worth acting on is a business call."
   },
   "4-3": {
-    q: GYM + "Colorado Springs is the 1 location below the others (ANOVA rejected, Tukey confirmed). Which \"Now What?\" fits the evidence best?" +
+    q: GYM + "Member satisfaction (1 to 10) by location: the ANOVA rejected H0, and Tukey shows Colorado Springs below each of the other 3 locations, with no difference detected among those 3. Which \"Now What?\" fits the evidence best?" +
       options("Give Golden a bonus for being the top location", "Investigate Colorado Springs before changing the rest", "Do nothing: the gap is probably just chance", "Overhaul the member experience at all 4 gyms"),
     a: "<strong>B. Investigate Colorado Springs before changing the rest</strong><br><br>The evidence points at 1 location. No difference was detected among the other 3."
   },
@@ -1098,7 +1107,18 @@ const QUESTIONS = {
 // ================= State =================
 const STORAGE_KEY = "info1020-final-jeopardy-fall2026";
 // Default team names. Click a name in the panel to change it; Reset Game restores these.
+// The Hitchhiker's Guide to the Galaxy, for the final review.
 const DEFAULT_TEAM_NAMES = [
+  "Team 1: Don't Panic",
+  "Team 2: Improbability Drive",
+  "Team 3: Deep Thought",
+  "Team 4: The Answer Is 42",
+  "Team 5: Mostly Harmless",
+  "Team 6: Paranoid Androids"
+];
+// Earlier default names. A browser that saved one of these gets the new default instead;
+// a name someone typed in is kept.
+const OLD_DEFAULT_TEAM_NAMES = [
   "Team 1: Bayes Watch",
   "Team 2: Margin of Terror",
   "Team 3: Significant Others",
@@ -1128,7 +1148,8 @@ function loadState() {
       s.teams.forEach((t, i) => {
         // A save from before the teams had names holds "Team 1" style placeholders; replace those.
         const saved = String(t.name || "").trim();
-        teams[i].name = (saved && saved !== `Team ${i + 1}`) ? saved.slice(0, 40) : DEFAULT_TEAM_NAMES[i];
+        const isDefault = !saved || saved === `Team ${i + 1}` || OLD_DEFAULT_TEAM_NAMES.includes(saved);
+        teams[i].name = isDefault ? DEFAULT_TEAM_NAMES[i] : saved.slice(0, 40);
         teams[i].score = Number.isFinite(Number(t.score)) ? Number(t.score) : 0;
       });
     }
