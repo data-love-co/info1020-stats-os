@@ -43,7 +43,9 @@ the hand build, not to replace it.
 ## Tukey HSD, only after a rejected H0
 
 HSD = q times SQRT(MSW / n) with q from the studentized range table for k groups and dfW (q = 3.7149
-for k = 4, df = 76). Career Services: **HSD = $3,344.74**. Any pair of means more than HSD apart
+for k = 4, df = 76). Career Services: **HSD = $3,344.74**. The online q-table linked in the
+workbook has no df = 76 row and rounds down to df = 60, giving q = 3.74 and HSD = $3,367.34.
+Either earns full credit; every pair result is the same. Any pair of means more than HSD apart
 differs. Five of six pairs differ; OR Analyst and Computer Analyst ($1,878.43 apart) do not. The
 manager sentence is about tiers, not "they differ."
 
