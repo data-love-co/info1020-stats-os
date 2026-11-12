@@ -25,7 +25,7 @@ Boulder, Fort Collins, Colorado Springs). Read the card on screen once before th
 | Time | Segment |
 |---|---|
 | 0:00 to 0:05 | Welcome, prize reveal, the tie-break rule |
-| 0:05 to 0:10 | Form six teams. Teams are pre-named in the game: Bayes Watch, Margin of Terror, Significant Others, The Outliers, Mode Squad, Standard Errors. Each team opens a blank workbook on one laptop and gets paper for written answers |
+| 0:05 to 0:10 | Form six teams. Teams are pre-named in the game, Hitchhiker's Guide style: Don't Panic, Improbability Drive, Deep Thought, The Answer Is 42, Mostly Harmless, Paranoid Androids. Each team opens a blank workbook on one laptop and gets paper for written answers |
 | 0:10 to 0:12 | Read the Fourteener Fitness card. Walk through the letter hold-up and the Daily Double |
 | 0:12 to 1:33 | Gameplay. About 81 minutes for 25 cells |
 | 1:33 to 1:40 | Final scores (Final Jeopardy if tied), prizes |
@@ -113,10 +113,10 @@ Reading output and p-values. This Excel output is shown on the $200, $300 and $5
 
 | $ | Question | Answer | Scoring |
 |---|---|---|---|
-| 100 | Excel prints P(T<=t) two-tail = 4.7E-06. How do you write it in a memo? | **C. p-value < .001.** | Letter only. |
+| 100 | Two-sample t-test on first-month spend, pages A and B: Excel prints P(T<=t) two-tail = 4.7E-06. How do you write it in a memo? | **C. p-value < .001.** | Letter only. |
 | 200 | Do morning and evening members visit a **different** number of times? Decision at .05 from the output. | **D. Fail to reject H0: the two-tail p-value (.068) is above .05.** | Letter only. Talking point: the one-tail line answers a question nobody asked. |
-| 300 | A 95% interval for mu(morning) minus mu(evening) must: | **A. Contain 0.** A 95% interval and a two-tailed test at .05 always agree. | Letter only. |
-| 400 | A different test returns p-value = .011. Which statement is correct? | **C. A gap this large is rare (1.1%) if H0 is true.** | Letter only. Never "the chance that H0 is true". |
+| 300 | The output tests H0: mu(morning) = mu(evening), two-tailed at .05. A 95% interval for mu(morning) minus mu(evening) must: | **A. Contain 0.** A 95% interval and a two-tailed test at .05 always agree. | Letter only. |
+| 400 | Boulder vs Golden average monthly visits, H0: the 2 averages are equal (two-tailed, .05), p-value = .011. Which statement is correct? | **C. A gap this large is rare (1.1%) if H0 is true.** | Letter only. Never "the chance that H0 is true". |
 | 500 | **Excel.** Difference 1.70 visits, SE 0.92, df 90. The 95% interval for mu(morning) minus mu(evening). | **-0.13 to 3.53 visits.** t* = 1.987, margin = 1.83. `=1.70-T.INV.2T(0.05,90)*0.92` and `=1.70+...` | Endpoints within .02 earn full credit. It contains 0, which agrees with the $200 decision: say it aloud after scoring. |
 
 ### 3. ANOVA-thing Goes
@@ -160,7 +160,7 @@ Goodness of fit against a benchmark. This table is shown on the $100, $200 and $
 | 100 | Degrees of freedom for this goodness-of-fit test? | **B. 3.** Categories minus 1. | Letter only. Sample size does not enter the df. |
 | 200 | Expected yoga bookings under last year's mix? (Write the number.) | **160.00.** .40 times 400. `=0.40*400` | Accept 160. No credit for 138, the observed count. |
 | 300 | Pilates at 1% of 400 bookings has an expected count of 4. What should you do? | **C. Combine Pilates with a related class type.** | Letter only. Alpha does not fix a small expected count. |
-| 400 | Chi-square = 5.46 on 3 df, p-value = .141. Which conclusion is right? | **D. The mix has not been shown to differ from last year.** Critical value 7.815. `=CHISQ.INV.RT(0.05,3)` | Letter only. Failing to reject is not proof the mix is unchanged. |
+| 400 | Goodness of fit against last year's mix, H0: the mix has not changed. Chi-square = 5.46 on 3 df, p-value = .141. Which conclusion is right? | **D. The mix has not been shown to differ from last year.** Critical value 7.815. `=CHISQ.INV.RT(0.05,3)` | Letter only. Failing to reject is not proof the mix is unchanged. |
 | 500 | **Excel.** Colorado Springs, 200 bookings: yoga 58, spin 74, strength 42, climbing 26, same benchmark. The chi-square statistic. | **11.22.** Expected 80, 60, 40, 20; contributions 6.05 + 3.27 + 0.10 + 1.80. `=SUMPRODUCT((O-E)^2/E)` | Accept 11.22 only. Talking point after scoring: p-value = .011 (`=CHISQ.DIST.RT(11.22,3)`), so reject: Colorado Springs books less yoga and more spin than the benchmark. |
 
 ### 5. So What? Now What?
@@ -169,10 +169,10 @@ Interpretation in business language. The $500 is the Daily Double.
 
 | $ | Question | Answer | Scoring |
 |---|---|---|---|
-| 100 | The app test fails to reject H0. Which statement is right? | **A. We found no evidence that the app changed visits.** | Letter only. |
-| 200 | Failed to reject, dropped the app; better data later shows it raises visits. Which error? | **C. Type II error.** A real effect was missed. | Letter only. Type I is a false alarm. |
-| 300 | 20,000 members, page B raises spend $0.40 a month, p-value = .003. The right read? | **D. Significant, but $0.40 may be too small to matter.** | Letter only. |
-| 400 | Colorado Springs is the 1 location below the others. Which "Now What?" fits best? | **B. Investigate Colorado Springs before changing the rest.** | Letter only. No winner to reward, no reason to change all 4. |
+| 100 | App pilot: 10 Golden members, weekly visits 2 weeks before and after. H0: the app does not change average weekly visits (two-tailed, .05). The paired t-test fails to reject H0. Which statement is right? | **A. We found no evidence that the app changed visits.** | Letter only. |
+| 200 | The 10-member pilot failed to reject H0. Suppose the app truly raises visits, but the gym had dropped it after the pilot. Which error would that be? | **C. Type II error.** A real effect was missed. | Letter only. Type I is a false alarm. Talking point: the 30-member test in the Daily Double did detect the gain; small samples miss real effects. |
+| 300 | Signup page test, 20,000 new members split between pages A and B: page B members spent $0.40 more a month on average (two-tailed, p-value = .003). The right read? | **D. Significant, but $0.40 may be too small to matter.** | Letter only. |
+| 400 | Satisfaction by location: ANOVA rejected H0; Tukey shows Colorado Springs below each of the other 3, with no difference detected among those 3. Which "Now What?" fits best? | **B. Investigate Colorado Springs before changing the rest.** | Letter only. No winner to reward, no reason to change all 4. |
 | 500 DD | 30 members, 0.9 more visits per week after the app (paired t = 3.10, p-value = .004, 95% interval 0.31 to 1.49). "What?", "So What?", "Now What?" memo for the VP of Member Experience, ending with 1 question to investigate next. | 4 parts: "What?" (reject H0), "So What?" with the numbers, "Now What?", next question with a reason. Model in the game. | Only the picking team answers, for its wager. Award the wager for at least 3 of 4 parts, as on the exam essays. |
 
 ### Final Jeopardy (tie-break only)
