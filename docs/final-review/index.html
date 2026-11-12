@@ -352,6 +352,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    justify-content: safe center;
     padding: 2rem 4rem;
     text-align: center;
     overflow-y: auto;
@@ -380,6 +381,40 @@
   /* Keep wide Excel output tables from stretching the question past a phone screen:
      the text block stays within its column and the table scrolls inside .tscroll. */
   .q-text, .a-text { max-width: min(1100px, 100%); }
+
+  /* Data cells: scenario and tables left, question and options right */
+  .q-text.wide { max-width: min(1600px, 100%); width: 100%; }
+  /* Size the question by screen height as well as width, so a short projector screen fits it */
+  .q-text { font-size: clamp(1.25rem, min(2.4vw, 3.7vh), 2rem); }
+  .qsplit {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: 2.5rem;
+    align-items: center;
+    text-align: left;
+  }
+  .qdata .scenario-box {
+    margin: 0 0 1rem;
+    max-width: none;
+    font-size: clamp(0.8rem, min(1.15vw, 2.2vh), 1.15rem);
+    padding: 0.6rem 1rem;
+  }
+  .qdata .tscroll + .tscroll { margin-top: 0.9rem; }
+  .qdata .ctable { margin: 0 auto; font-size: clamp(0.8rem, min(1.3vw, 2.6vh), 1.4rem); }
+  .qdata .ctable th, .qdata .ctable td { padding: 0.25rem 0.75rem; }
+  .qask .options { margin-left: 0; }
+  @media (max-height: 860px) {
+    .overlay-content { padding-top: 1rem; padding-bottom: 1rem; }
+    .overlay-topbar { padding-top: 0.45rem; padding-bottom: 0.45rem; }
+    .overlay-controls { padding-top: 0.6rem; padding-bottom: 0.6rem; }
+    .options { margin-top: 0.6rem; }
+    .options li { margin: 0.15rem 0; }
+    .qdata .ctable th, .qdata .ctable td { padding: 0.15rem 0.65rem; }
+  }
+  @media (max-width: 1000px) {
+    .qsplit { grid-template-columns: minmax(0, 1fr); gap: 1rem; text-align: center; }
+    .qask .options { margin-left: auto; }
+  }
   .a-text {
     display: none;
     margin-top: 2.5rem;
@@ -907,6 +942,12 @@ const BOOKINGS = `<div class="tscroll"><table class="ctable" aria-label="Class b
   <tr><th>Climbing</th><td>10%</td><td>42</td></tr>
 </table></div>`;
 
+// Cells with a data table put the scenario and tables on the left and the question on the right,
+// so the whole cell fits on a projected screen. Below 1000px wide the two columns stack.
+function split(data, ask) {
+  return `<div class="qsplit"><div class="qdata">${data}</div><div class="qask">${ask}</div></div>`;
+}
+
 function options(a, b, c, d) {
   return `<ol class="options"><li>${a}</li><li>${b}</li><li>${c}</li><li>${d}</li></ol>`;
 }
@@ -946,13 +987,13 @@ const QUESTIONS = {
     a: "<strong>C. p &lt; .001</strong><br><br>Three decimals, no leading zero, and an inequality once the value is below .001."
   },
   "1-1": {
-    q: GYM + VISITS_OUTPUT + "Marketing asks whether morning and evening members visit a <strong>different</strong> number of times per month. From the output, what is the decision at alpha = .05?" +
-      options("Reject H0: the t Stat (1.85) beats the one-tail critical value", "Fail to reject H0: the means differ by less than 2 visits", "Reject H0: the one-tail p-value (.034) is below .05", "Fail to reject H0: the two-tail p-value (.068) is above .05"),
+    q: split(GYM + VISITS_OUTPUT, "Marketing asks whether morning and evening members visit a <strong>different</strong> number of times per month. From the output, what is the decision at alpha = .05?" +
+      options("Reject H0: the t Stat (1.85) beats the one-tail critical value", "Fail to reject H0: the means differ by less than 2 visits", "Reject H0: the one-tail p-value (.034) is below .05", "Fail to reject H0: the two-tail p-value (.068) is above .05")),
     a: "<strong>D. Fail to reject H0: the two-tail p-value (.068) is above .05</strong><br><br>\"Different\" is a two-tailed question, so read the two-tail line."
   },
   "1-2": {
-    q: GYM + VISITS_OUTPUT + "Same output. A 95% confidence interval for mu(morning) minus mu(evening) must:" +
-      options("Contain 0", "Be impossible to judge here", "Lie entirely above 0", "Lie entirely below 0"),
+    q: split(GYM + VISITS_OUTPUT, "Same output. A 95% confidence interval for mu(morning) minus mu(evening) must:" +
+      options("Contain 0", "Be impossible to judge here", "Lie entirely above 0", "Lie entirely below 0")),
     a: "<strong>A. Contain 0</strong><br><br>The two-tailed test at .05 failed to reject, and a 95% interval always agrees with a two-tailed test at .05, so 0 is inside it."
   },
   "1-3": {
@@ -962,29 +1003,29 @@ const QUESTIONS = {
   },
   "1-4": {
     excel: true,
-    q: GYM + VISITS_OUTPUT + "<strong>Excel.</strong> From the output: difference = 1.70 visits, SE = 0.92, df = 90. What is the <strong>95% confidence interval</strong> for mu(morning) minus mu(evening)?",
+    q: split(GYM + VISITS_OUTPUT, "<strong>Excel.</strong> From the output: difference = 1.70 visits, SE = 0.92, df = 90. What is the <strong>95% confidence interval</strong> for mu(morning) minus mu(evening)?"),
     a: "<strong>-0.13 to 3.53 visits</strong><br><br>t* = T.INV.2T(.05, 90) = 1.987. Margin = 1.987 times 0.92 = 1.83. 1.70 minus and plus 1.83.<div class=\"excel-check\"><code>=1.70-T.INV.2T(0.05,90)*0.92</code> and <code>=1.70+T.INV.2T(0.05,90)*0.92</code></div>"
   },
 
   // ========= Category 3: ANOVA-thing Goes =========
   "2-0": {
-    q: GYM + SATISFACTION + "For this ANOVA, the alternative hypothesis is:" +
-      options("All 4 location means are equal", "Golden has the highest mean", "At least 1 location mean differs", "All 4 location means differ"),
+    q: split(GYM + SATISFACTION, "For this ANOVA, the alternative hypothesis is:" +
+      options("All 4 location means are equal", "Golden has the highest mean", "At least 1 location mean differs", "All 4 location means differ")),
     a: "<strong>C. At least 1 location mean differs</strong><br><br>\"All equal\" is H0. Ha is never \"all means differ\"."
   },
   "2-1": {
-    q: GYM + SATISFACTION + "F = 5.71 is above F crit = 2.816, and p = .002. What can you conclude?" +
-      options("Colorado Springs is significantly below Golden", "Location explains 5.71% of member satisfaction", "Each location differs from every other location", "The 4 locations do not all share the same mean"),
+    q: split(GYM + SATISFACTION, "F = 5.71 is above F crit = 2.816, and p = .002. What can you conclude?" +
+      options("Colorado Springs is significantly below Golden", "Location explains 5.71% of member satisfaction", "Each location differs from every other location", "The 4 locations do not all share the same mean")),
     a: "<strong>D. The 4 locations do not all share the same mean</strong><br><br>The F test says the means are not all equal. It does not say which ones differ."
   },
   "2-2": {
-    q: GYM + SATISFACTION + "The ANOVA rejected H0. What is the right next step to find <strong>which</strong> locations differ?" +
-      options("Pick the location with the lowest mean", "Run 6 separate two-sample t-tests", "Run a Tukey HSD post hoc test", "Rerun the ANOVA with alpha = .01"),
+    q: split(GYM + SATISFACTION, "The ANOVA rejected H0. What is the right next step to find <strong>which</strong> locations differ?" +
+      options("Pick the location with the lowest mean", "Run 6 separate two-sample t-tests", "Run a Tukey HSD post hoc test", "Rerun the ANOVA with alpha = .01")),
     a: "<strong>C. Run a Tukey HSD post hoc test</strong><br><br>Tukey compares every pair and holds the overall false-alarm rate at .05."
   },
   "2-3": {
-    q: GYM + SATISFACTION + "Tukey outcome: Colorado Springs differs from each of the other 3 locations. No other pair differs. Which So What is right?" +
-      options("Location matters: Colorado Springs is the low one", "All 4 of the locations differ from one another", "Golden is the best location in the whole chain", "Location has no effect on member satisfaction"),
+    q: split(GYM + SATISFACTION, "Tukey outcome: Colorado Springs differs from each of the other 3 locations. No other pair differs. Which So What is right?" +
+      options("Location matters: Colorado Springs is the low one", "All 4 of the locations differ from one another", "Golden is the best location in the whole chain", "Location has no effect on member satisfaction")),
     a: "<strong>A. Location matters: Colorado Springs is the low one</strong><br><br>No difference was detected among Golden, Boulder and Fort Collins, so none of them is named the best."
   },
   "2-4": {
@@ -995,12 +1036,12 @@ const QUESTIONS = {
 
   // ========= Category 4: Chi Another Day =========
   "3-0": {
-    q: GYM + BOOKINGS + "How many degrees of freedom does this goodness-of-fit test have?" +
-      options("9", "3", "4", "399"),
+    q: split(GYM + BOOKINGS, "How many degrees of freedom does this goodness-of-fit test have?" +
+      options("9", "3", "4", "399")),
     a: "<strong>B. 3</strong><br><br>Categories minus 1: 4 minus 1."
   },
   "3-1": {
-    q: GYM + BOOKINGS + "Under last year's mix, how many of the 400 bookings do we <strong>expect</strong> to be yoga? Write the number.",
+    q: split(GYM + BOOKINGS, "Under last year's mix, how many of the 400 bookings do we <strong>expect</strong> to be yoga? Write the number."),
     a: "<strong>160.00</strong><br><br>Expected = share times n = .40 times 400.<div class=\"excel-check\"><code>=0.40*400</code></div>"
   },
   "3-2": {
@@ -1009,8 +1050,8 @@ const QUESTIONS = {
     a: "<strong>C. Combine Pilates with a related class type</strong><br><br>Every expected count must be at least 5. Combine categories on business meaning."
   },
   "3-3": {
-    q: GYM + BOOKINGS + "Chi-square = 5.46 on 3 df, p = .141. Which conclusion is right?" +
-      options("The mix is proven to be the same as last year", "The mix has changed: 5.46 is a large chi-square", "The mix has changed: yoga is below expected", "The mix has not been shown to differ from last year"),
+    q: split(GYM + BOOKINGS, "Chi-square = 5.46 on 3 df, p = .141. Which conclusion is right?" +
+      options("The mix is proven to be the same as last year", "The mix has changed: 5.46 is a large chi-square", "The mix has changed: yoga is below expected", "The mix has not been shown to differ from last year")),
     a: "<strong>D. The mix has not been shown to differ from last year</strong><br><br>p = .141 is above .05, and 5.46 is below the critical value 7.815, so fail to reject H0.<div class=\"excel-check\"><code>=CHISQ.INV.RT(0.05, 3)</code></div>"
   },
   "3-4": {
@@ -1041,7 +1082,7 @@ const QUESTIONS = {
     a: "<strong>B. Investigate Colorado Springs before changing the rest</strong><br><br>The evidence points at 1 location. No difference was detected among the other 3."
   },
   "4-4": {
-    seconds: 180,
+    seconds: 360,
     q: GYM + "<strong>Daily Double, for your wager.</strong><br><br>The same 30 members averaged <strong>0.9 more visits per week</strong> after the app launched (paired t = 3.10, p = .004, 95% interval 0.31 to 1.49). Write the <strong>What, So What, Now What</strong> memo for the VP of Member Experience, ending with 1 question you would investigate next.",
     a: "<strong>Full credit needs at least 3 of the 4 parts:</strong><ul class=\"rubric\"><li>What: the decision, reject H0.</li><li>So What: the gain with its interval, in visits per week.</li><li>Now What: an action the evidence supports.</li><li>Next question, with the reason it matters.</li></ul><br><strong>One model:</strong><br>\"We reject the null hypothesis: visits rose after the app launched. Members came in about 0.9 more times per week, and we are 95% confident the true gain is between 0.31 and 1.49 visits. Keep the app and promote it to members who have not downloaded it. Next, does the gain hold after the first month, or is it a novelty bump? That decides whether to keep paying for new app features.\"",
     dailyDouble: true
@@ -1253,10 +1294,11 @@ function awardWager(sign) {
 
 // ================= Countdown timer =================
 // Every team answers every question within the limit for its value. Cells flagged
-// excel: true get one extra minute for Excel, so the four Excel cells run 3 minutes.
-// A cell can set its own clock with seconds: (the Daily Double memo uses 3 minutes).
-const TIME_LIMITS = { 100: 30, 200: 45, 300: 60, 400: 60, 500: 120 };
-const EXCEL_EXTRA = 60;
+// excel: true get two extra minutes for Excel, so the four Excel cells run 6 minutes.
+// A cell can set its own clock with seconds: (the Daily Double memo uses 6 minutes).
+// Fall 2026: every clock is double the original plan, for the pace of this section.
+const TIME_LIMITS = { 100: 60, 200: 90, 300: 120, 400: 120, 500: 240 };
+const EXCEL_EXTRA = 120;
 let timerRemaining = 0;
 let timerId = null;
 
@@ -1348,6 +1390,7 @@ function toggleAward(idx, btn) {
 function showQuestion() {
   const data = QUESTIONS[currentKey];
   document.getElementById('qText').innerHTML = data.q;
+  document.getElementById('qText').classList.toggle('wide', data.q.indexOf('class="qsplit"') !== -1);
   document.getElementById('aBody').innerHTML = data.a;
   document.getElementById('aText').classList.remove('active');
   document.getElementById('revealBtn').style.display = '';
@@ -1356,7 +1399,7 @@ function showQuestion() {
   document.getElementById('overlayContent').scrollTop = 0;
   awarded.clear();
   document.getElementById('allPlay').classList.remove('active');
-  timerStart(timerSecondsFor(currentKey), data.excel ? 'Time to answer, plus 1 min for Excel' : 'Time to answer');
+  timerStart(timerSecondsFor(currentKey), data.excel ? 'Time to answer, plus 2 min for Excel' : 'Time to answer');
 }
 
 function revealAnswer() {
@@ -1485,7 +1528,7 @@ function renderFinal() {
   } else if (finalStage === 'question') {
     body.innerHTML = head +
       `<div class="q-text">${FINAL.q}</div>` +
-      `<p class="final-help">Teams write their answer on paper. Sixty seconds, then reveal.</p>` +
+      `<p class="final-help">Teams write their answer on paper. Two minutes, then reveal.</p>` +
       `<div class="final-rows">${finalRowsHtml()}</div>`;
     controls.innerHTML =
       `<button class="big-btn" onclick="finalRevealAnswer()">Reveal Answer</button>` +
@@ -1532,7 +1575,7 @@ function finalLockWagers() {
   }
   finalStage = 'question';
   renderFinal();
-  timerStart(60, 'Write your answer');
+  timerStart(120, 'Write your answer');
 }
 
 function finalRevealAnswer() {

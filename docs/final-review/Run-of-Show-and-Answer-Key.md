@@ -14,9 +14,11 @@ Boulder, Fort Collins, Colorado Springs). Read the card on screen once before th
 **Daily Double:** So What? Now What?, $500.
 **Tie-break:** Final Jeopardy, the ★ button in the banner. Rules and key below.
 
-> Fill in: [class length], [prize list], [extra-credit rule], [final exam date]. The board runs in
-> about 50 minutes: the 25 clocks add up to 31 minutes, plus about 45 seconds per cell for the
-> reveal and the scoring.
+> Fill in: [class length], [prize list], [extra-credit rule], [final exam date]. The clocks are
+> double the original plan, for the pace of this section. The board runs in about 81 minutes: the
+> 25 clocks add up to 62.5 minutes, plus about 45 seconds per cell for the reveal and the scoring.
+> If the period is shorter, skip the $100 row or stop the clock early on cells every team has
+> answered.
 
 ### Run-of-show
 
@@ -25,9 +27,9 @@ Boulder, Fort Collins, Colorado Springs). Read the card on screen once before th
 | 0:00 to 0:05 | Welcome, prize reveal, the tie-break rule |
 | 0:05 to 0:10 | Form six teams. Teams are pre-named in the game: Bayes Watch, Margin of Terror, Significant Others, The Outliers, Mode Squad, Standard Errors. Each team opens a blank workbook on one laptop and gets paper for written answers |
 | 0:10 to 0:12 | Read the Fourteener Fitness card. Walk through the letter hold-up and the Daily Double |
-| 0:12 to 1:02 | Gameplay. About 50 minutes for 25 cells |
-| 1:02 to 1:07 | Final scores (Final Jeopardy if tied), prizes |
-| 1:07 to 1:12 | Wrap-up: the five things to say before the final |
+| 0:12 to 1:33 | Gameplay. About 81 minutes for 25 cells |
+| 1:33 to 1:40 | Final scores (Final Jeopardy if tied), prizes |
+| 1:40 to 1:45 | Wrap-up: the five things to say before the final |
 
 **How a cell runs: all teams play**
 
@@ -36,13 +38,13 @@ starts a countdown the moment the question appears:
 
 | Cell | Clock | Format |
 |---|---|---|
-| $100 | 30 seconds | Multiple choice, hold up a letter |
-| $200 | 45 seconds | Multiple choice (Chi Another Day $200: write the number) |
-| $300 | 1 minute | Multiple choice |
-| $400 | 1 minute | Multiple choice |
-| $500 | 3 minutes | Excel, numbers on screen (2 minutes plus the Excel minute). Daily Double: written memo, 3 minutes |
+| $100 | 1 minute | Multiple choice, hold up a letter |
+| $200 | 1.5 minutes | Multiple choice (Chi Another Day $200: write the number) |
+| $300 | 2 minutes | Multiple choice |
+| $400 | 2 minutes | Multiple choice |
+| $500 | 6 minutes | Excel, numbers on screen (4 minutes plus 2 for Excel). Daily Double: written memo, 6 minutes |
 
-The four Excel cells get the extra minute automatically: the $500 cells in Pick Your Test, Reject
+The four Excel cells get the 2 extra minutes automatically: the $500 cells in Pick Your Test, Reject
 or Not?, ANOVA-thing Goes, and Chi Another Day. **Pause** and **+30s** sit next to the clock.
 
 - $100 to $400: when the clock ends, every team holds up A, B, C or D at once. The right letter
@@ -63,7 +65,7 @@ Say this rule before the first cell is picked, so no one argues later.
   The tied teams are pre-selected; untick anyone else.
 - Each playing team writes a wager, up to its score (or up to $500 if its score is below $500),
   before the question is shown. Lock the wagers.
-- Show the question. The game runs a 60-second clock. Teams write one answer on paper and hold it
+- Show the question. The game runs a 2-minute clock. Teams write one answer on paper and hold it
   up together.
 - Reveal the answer, then mark each team **Correct** or **Wrong**. The wager is added or
   subtracted and the new score shows in the row.
@@ -179,7 +181,7 @@ Category shown before wagers: Reject or Not?
 
 | Question | Answer | Scoring |
 |---|---|---|
-| Marketing's 95% interval for mu(page B) minus mu(page A), average first-month spend, is $0.91 to $16.49. What is the margin of error? | **$7.79.** Half the width: (16.49 minus 0.91) / 2. `=(16.49-0.91)/2` | Accept $7.79 only. No credit for $15.58, the full width, or $8.70, the point estimate. Written answers, 60 seconds. |
+| Marketing's 95% interval for mu(page B) minus mu(page A), average first-month spend, is $0.91 to $16.49. What is the margin of error? | **$7.79.** Half the width: (16.49 minus 0.91) / 2. `=(16.49-0.91)/2` | Accept $7.79 only. No credit for $15.58, the full width, or $8.70, the point estimate. Written answers, 2 minutes. |
 
 **Spare question** (sudden death, or swap it into the `FINAL` object in `index.html`): the
 membership-tier ANOVA has df 2 and 27. What is the critical F at alpha = .05? Answer:

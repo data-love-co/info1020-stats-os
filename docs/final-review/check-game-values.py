@@ -321,11 +321,25 @@ check("Final key: full width (no-credit answer)", hi_fj - lo_fj, 15.58)
 check("Final key: point estimate (no-credit answer)", (hi_fj + lo_fj) / 2, 8.70)
 answers["Final margin"] = 7.79
 
-# ---------- Run-of-show timing: the 25 clocks ----------
-TIME_LIMITS = {100: 30, 200: 45, 300: 60, 400: 60, 500: 120}
-EXCEL_EXTRA = 60
-clock = sum(TIME_LIMITS.values()) * 5 + 4 * EXCEL_EXTRA + (180 - TIME_LIMITS[500])
-check("Run-of-show: the 25 clocks in minutes", clock / 60, 31, 0)
+# ---------- Run-of-show timing: the 25 clocks, read from the game itself ----------
+with open(os.path.join(HERE, "index.html"), encoding="utf-8") as f:
+    page = f.read()
+TIME_LIMITS = {int(k): int(v) for k, v in
+               re.findall(r"(\d+): (\d+)", re.search(r"const TIME_LIMITS = \{(.*?)\};", page).group(1))}
+EXCEL_EXTRA = int(re.search(r"const EXCEL_EXTRA = (\d+);", page).group(1))
+DD_SECONDS = int(re.search(r"seconds: (\d+),", page).group(1))
+FINAL_SECONDS = int(re.search(r"timerStart\((\d+), 'Write your answer'\)", page).group(1))
+check("Clock $100 (1 minute)", TIME_LIMITS[100], 60, 0)
+check("Clock $200 (1.5 minutes)", TIME_LIMITS[200], 90, 0)
+check("Clock $300 (2 minutes)", TIME_LIMITS[300], 120, 0)
+check("Clock $400 (2 minutes)", TIME_LIMITS[400], 120, 0)
+check("Clock $500 (4 minutes)", TIME_LIMITS[500], 240, 0)
+check("Clock Excel cells (6 minutes)", TIME_LIMITS[500] + EXCEL_EXTRA, 360, 0)
+check("Clock Daily Double (6 minutes)", DD_SECONDS, 360, 0)
+check("Clock Final Jeopardy (2 minutes)", FINAL_SECONDS, 120, 0)
+clock = sum(TIME_LIMITS.values()) * 5 + 4 * EXCEL_EXTRA + (DD_SECONDS - TIME_LIMITS[500])
+check("Run-of-show: the 25 clocks in minutes", clock / 60, 62.5, 1)
+check("Run-of-show: gameplay with 45 seconds per reveal, in minutes", (clock + 25 * 45) / 60, 81, 0)
 
 # ---------- Net new: no computed answer is a lab or midterm value ----------
 taken = set()

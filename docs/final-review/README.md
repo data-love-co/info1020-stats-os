@@ -18,7 +18,7 @@ The final is about choosing the right test and saying what the result means, so 
 that way:
 
 - **$100 to $400 cells are multiple choice**, in the style of the Canvas quiz. Every team holds up
-  A, B, C or D when the clock ends, and the cell is done in about a minute.
+  A, B, C or D when the clock ends, and the cell is done in about two minutes.
 - **Four $500 cells use Excel**, and every number a team needs is on the screen. There is **no
   data file to open**: one laptop per team with a blank workbook is enough.
 - **The fifth $500 is the Daily Double**: a What, So What, Now What memo in the shape of the exam
@@ -46,9 +46,10 @@ python docs/final-review/check-game-values.py
    Outliers, Mode Squad, Standard Errors. Click a name in the right-hand panel to change it.
 3. Each team needs one laptop with Excel open to a **blank workbook**. No CSV is needed: the
    Excel cells put every number on the screen. Lab workbooks stay closed.
-4. Click a dollar cell to show a question. A countdown starts in the top bar: 30 seconds for
-   $100, 45 for $200, 1 minute for $300 and $400, and 3 minutes for $500 (2 minutes plus one
-   minute on the four cells that need Excel; the Daily Double memo also gets 3 minutes).
+4. Click a dollar cell to show a question. A countdown starts in the top bar: 1 minute for
+   $100, 1.5 for $200, 2 minutes for $300 and $400, and 4 minutes for $500. The four cells that
+   need Excel get 2 more minutes (6 in all), and the Daily Double memo also gets 6 minutes. These
+   are double the original plan, set for the pace of this section.
    **Pause** and **+30s** sit next to it. **Every team** works the question within the limit;
    nobody buzzes in.
 5. **R** or the button reveals the answer and stops the clock. A row of team chips appears under
@@ -64,7 +65,7 @@ python docs/final-review/check-game-values.py
 8. **Final Jeopardy** (the ★ button in the banner) is the tie-breaker. It pre-selects the teams
    tied for the lead, or everyone if there is no tie, and you can change who plays. Each playing
    team wagers up to its score, or up to $500 if its score is below $500, before the question
-   appears. A 60-second clock runs while teams write their answer on paper. Reveal the answer,
+   appears. A 2-minute clock runs while teams write their answer on paper. Reveal the answer,
    then mark each team Correct or Wrong and the wager is added or subtracted. **R** reveals,
    **Esc** returns to the board.
 
@@ -109,8 +110,8 @@ itself (df = 49 on the signup-page cell), the question wins and the answer says 
 All content is in the `QUESTIONS` object inside `index.html`. Each entry is keyed
 `"categoryIndex-valueIndex"` (both 0-based) with `q` and `a` HTML strings. Multiple-choice options
 use the `options(a, b, c, d)` helper, which prints them as A to D. Add `dailyDouble: true` to make
-any cell the Daily Double, `excel: true` to give it the extra minute on the clock, and
-`seconds: 180` to set a cell's clock directly. Category names are in `CATEGORIES`. The shared
+any cell the Daily Double, `excel: true` to give it the extra Excel time on the clock, and
+`seconds: 360` to set a cell's clock directly. Category names are in `CATEGORIES`. The shared
 scenario card and tables (`GYM`, `VISITS_OUTPUT`, `SATISFACTION`, `BOOKINGS`) are constants above
 the question bank, so a change shows up in every cell that uses it. The time limits are in
 `TIME_LIMITS` and `EXCEL_EXTRA`.
